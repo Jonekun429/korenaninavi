@@ -81,15 +81,30 @@
   .sb-sub{font-size:11px;color:var(--ink-faint);font-weight:600;letter-spacing:.04em}
   .sb-nav{display:flex;flex-direction:column;gap:2px}
   .sb-sec{padding:6px 0 10px}
-  .sb-label{font-family:var(--mono);font-size:10.5px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-faint);padding:6px 12px 7px}
+  .sb-label{font-family:var(--mono);font-size:10.5px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--g);padding:6px 12px 7px}
+  .sb-dot{width:8px;height:8px;border-radius:3px;background:var(--g);flex:0 0 auto;margin-right:7px}
   .modetab{position:relative;display:flex;align-items:center;gap:12px;width:100%;text-align:left;border:none;background:transparent;color:var(--ink-soft);font-family:var(--sans);font-weight:700;font-size:14.5px;padding:11px 13px;border-radius:10px;cursor:pointer;transition:background .14s,color .14s}
-  .modetab .ic{font-family:var(--mono);font-weight:700;font-size:13px;width:26px;height:26px;border-radius:7px;background:#F2F5F2;display:grid;place-items:center;color:var(--ink-soft);flex:0 0 auto;transition:all .14s}
-  .modetab:hover{background:#F5F7FA}
-  .modetab.active{background:var(--excel-wash);color:var(--excel)}
-  .modetab.active .ic{background:var(--excel);color:#fff}
-  .modetab.active::before{content:"";position:absolute;left:-14px;top:9px;bottom:9px;width:4px;border-radius:0 4px 4px 0;background:var(--excel)}
+  .modetab .ic{font-family:var(--mono);font-weight:700;font-size:13px;width:26px;height:26px;border-radius:7px;background:color-mix(in srgb,var(--g) 14%,#fff);display:grid;place-items:center;color:var(--g);flex:0 0 auto;transition:all .14s}
+  .modetab:hover{background:color-mix(in srgb,var(--g) 7%,#fff)}
+  .modetab.active{background:color-mix(in srgb,var(--g) 13%,#fff);color:var(--g)}
+  .modetab.active .ic{background:var(--g);color:#fff}
+  .modetab.active::before{content:"";position:absolute;left:-14px;top:9px;bottom:9px;width:4px;border-radius:0 4px 4px 0;background:var(--g)}
   .sb-foot{margin-top:auto;padding:14px 12px 2px;font-size:12px;color:var(--ink-faint);font-weight:600;display:flex;align-items:center;gap:8px;border-top:1px solid var(--line)}
   .sb-fmark{font-family:var(--mono);font-weight:700;color:var(--excel)}
+
+  /* モバイル：トップバー＋ドロワー（PCでは非表示） */
+  .mtopbar{display:none;position:fixed;top:0;left:0;right:0;height:52px;z-index:40;align-items:center;gap:10px;padding:0 14px;background:rgba(255,255,255,.92);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+  .mburger{display:inline-flex;flex-direction:column;justify-content:center;gap:4px;width:38px;height:38px;padding:8px;background:none;border:none;cursor:pointer}
+  .mburger span{display:block;height:2.5px;border-radius:2px;background:var(--ink);transition:transform .22s,opacity .22s}
+  body.drawer-open .mburger span:nth-child(1){transform:translateY(6.5px) rotate(45deg)}
+  body.drawer-open .mburger span:nth-child(2){opacity:0}
+  body.drawer-open .mburger span:nth-child(3){transform:translateY(-6.5px) rotate(-45deg)}
+  .mtop-brand{font-weight:900;font-size:17px;letter-spacing:-.01em;display:flex;align-items:center;gap:8px}
+  .mtop-mark{font-family:var(--mono);font-weight:700;color:#fff;background:var(--excel);width:26px;height:26px;border-radius:8px;display:grid;place-items:center;font-size:14px}
+  .mbackdrop{display:none;position:fixed;inset:0;z-index:110;background:rgba(15,20,28,.42);opacity:0;visibility:hidden;transition:opacity .26s,visibility .26s}
+  body.drawer-open .mbackdrop{opacity:1;visibility:visible}
+  .sb-close{display:none;position:absolute;top:12px;right:12px;width:34px;height:34px;border-radius:9px;border:1.5px solid var(--line);background:var(--card);color:var(--ink-soft);font-size:20px;line-height:1;cursor:pointer;place-items:center}
+  .sb-close:hover{border-color:var(--excel);color:var(--excel)}
   /* 並べ替え */
   .sb-edit{margin:0 6px 6px;align-self:flex-start;font-family:var(--sans);font-weight:700;font-size:12px;color:var(--ink-soft);background:transparent;border:1.5px solid var(--line);border-radius:8px;padding:5px 12px;cursor:pointer;transition:all .14s}
   .sb-edit:hover{border-color:var(--ink-faint);color:var(--ink)}
@@ -101,7 +116,7 @@
   .rb:hover{border-color:var(--excel);color:var(--excel)}
   .sb-label{display:flex;align-items:center}
   .sidebar.editing .modetab{cursor:default;background:#FAFBFD}
-  .sidebar.editing .modetab.active{background:var(--excel-wash)}
+  .sidebar.editing .modetab.active{background:color-mix(in srgb,var(--g) 13%,#fff)}
   /* アクセス数バッジ */
   .ac{display:inline-flex;align-items:center;gap:7px;background:var(--card);border:1.5px solid var(--line);border-radius:999px;padding:6px 13px;box-shadow:var(--shadow)}
   .ac-dot{width:7px;height:7px;border-radius:50%;background:var(--excel-bright);box-shadow:0 0 0 0 rgba(25,168,114,.5);animation:nbpulse 2s infinite}
@@ -128,22 +143,18 @@
   }
 
   @media(max-width:900px){
+    .mtopbar{display:flex}
     .appshell{grid-template-columns:1fr}
-    .sidebar{position:static;height:auto;border-right:none;border-bottom:1px solid var(--line);padding:11px 14px 10px;gap:9px;overflow:visible}
-    .sb-brand{padding:0;padding-right:118px}
-    .sb-sub{display:none}
-    .sb-edit,.sb-hint,.sb-foot{display:none}
-    .sb-nav{flex-direction:row;gap:8px;overflow-x:auto;-webkit-overflow-scrolling:touch}
-    .sb-nav::-webkit-scrollbar{display:none}
-    .sb-sec{display:flex;align-items:center;gap:8px;padding:0}
-    .sb-label{display:none}
-    .modetab{width:auto;padding:8px 14px;border:1.5px solid var(--line);border-radius:999px;font-size:13px;white-space:nowrap}
-    .modetab .ic{width:auto;height:auto;background:transparent;border-radius:0;font-size:13px}
-    .modetab.active{border-color:var(--excel)}
-    .modetab.active::before{display:none}
-    .modetab.active .ic{background:transparent;color:var(--excel)}
-    .content{padding:14px 16px 80px}
+    .content{padding:64px 16px 80px}
     .ctop-title{font-size:21px}
+    .sidebar{position:fixed;top:0;left:0;height:100%;width:286px;max-width:84vw;z-index:120;
+      transform:translateX(-100%);transition:transform .26s cubic-bezier(.4,0,.2,1);
+      border-right:1px solid var(--line);box-shadow:24px 0 60px -24px rgba(15,20,28,.45);
+      overflow-y:auto;background:var(--card);padding:18px 16px 24px}
+    body.drawer-open .sidebar{transform:none}
+    .sb-close{display:grid}
+    .mbackdrop{display:block}
+    .sb-brand{padding:2px 4px 18px}
   }
 
   .platwrap{display:none;justify-content:flex-start;margin-top:14px}
@@ -288,6 +299,14 @@
   .rc-chip:hover{border-color:var(--excel);color:var(--ink);transform:translateY(-1px)}
   .rc-mk{font-family:var(--mono);font-size:10.5px;font-weight:700;color:#fff;background:var(--excel);min-width:18px;height:18px;border-radius:5px;display:inline-grid;place-items:center;line-height:1}
 
+  /* 敬語・言い換え */
+  .kg-scene{font-size:11px;font-weight:700;color:var(--ink-faint);background:var(--paper);border:1px solid var(--line);border-radius:999px;padding:3px 10px;white-space:nowrap}
+  .kg-label{font-size:11.5px;font-weight:700;color:var(--ink-faint);margin:12px 0 8px}
+  .kg-polite{display:flex;flex-wrap:wrap;gap:8px}
+  .kg-chip{font-family:var(--sans);font-weight:700;font-size:14px;color:var(--excel);background:var(--excel-wash);border:1.5px solid #BCE3D2;border-radius:10px;padding:8px 14px;cursor:pointer;transition:all .14s}
+  .kg-chip:hover{border-color:var(--excel);transform:translateY(-1px)}
+  .kg-chip.copied{background:var(--excel);color:#fff;border-color:var(--excel)}
+
   /* サブスク管理 */
   .subpanel{display:none}
   .sub-card{background:var(--card);border:1.5px solid var(--line);border-radius:16px;box-shadow:var(--shadow)}
@@ -345,6 +364,40 @@
   .si-edit,.si-del{font-family:var(--sans);font-size:12px;font-weight:700;border-radius:8px;padding:6px 12px;cursor:pointer;border:1.5px solid var(--line);background:var(--card);color:var(--ink-soft)}
   .si-edit:hover{border-color:var(--excel);color:var(--excel)}
   .si-del:hover{border-color:#E0524B;color:#E0524B}
+
+  /* 割り勘 */
+  .waripanel{display:none}
+  .wari-members{padding:16px;margin-bottom:12px}
+  .wari-mhead,.wari-fhead{font-size:13px;font-weight:800;color:var(--ink);margin-bottom:10px}
+  .wari-mrow{display:flex;gap:8px;align-items:center}
+  .wari-mrow #wariName{flex:1}
+  .wari-chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+  .wari-chip{display:inline-flex;align-items:center;gap:4px;font-size:13.5px;font-weight:700;color:var(--ink);background:var(--paper);border:1.5px solid var(--line);border-radius:999px;padding:6px 6px 6px 13px}
+  .wari-x{width:20px;height:20px;border-radius:999px;border:none;background:#E6E9F0;color:var(--ink-soft);font-size:14px;line-height:1;cursor:pointer;display:grid;place-items:center}
+  .wari-x:hover{background:#E0524B;color:#fff}
+  .wari-empty{font-size:13px;color:var(--ink-faint)}
+  #wariForm{margin-bottom:12px}
+  .wari-parts-label{font-size:11.5px;font-weight:700;color:var(--ink-faint);margin:12px 0 8px}
+  .wari-parts{display:flex;flex-wrap:wrap;gap:7px}
+  .wp-part{font-family:var(--sans);font-size:12.5px;font-weight:700;color:var(--ink-faint);background:var(--paper);border:1.5px solid var(--line);border-radius:999px;padding:6px 13px;cursor:pointer;transition:all .14s}
+  .wp-part.on{color:var(--excel);border-color:var(--excel);background:var(--excel-wash)}
+  .wari-result{margin-bottom:14px}
+  .wari-sum{padding:18px}
+  .wari-block-label{font-size:11.5px;font-weight:800;color:var(--ink-faint);letter-spacing:.04em;margin:16px 0 9px}
+  .wb-list{display:flex;flex-direction:column;gap:6px}
+  .wb-row{display:flex;justify-content:space-between;align-items:center;font-size:14px;padding:2px 0}
+  .wb-name{font-weight:700;color:var(--ink)}
+  .wb-val{font-family:var(--mono);font-weight:700;color:var(--ink-faint)}
+  .wb-val.plus{color:var(--excel)}
+  .wb-val.minus{color:#E0524B}
+  .wt-list{display:flex;flex-direction:column;gap:8px}
+  .wt-row{display:flex;align-items:center;gap:10px;background:var(--excel-wash);border:1px solid #BCE3D2;border-radius:11px;padding:11px 14px}
+  .wt-from{font-weight:800;color:var(--ink)}
+  .wt-arrow{color:var(--excel);font-weight:800}
+  .wt-to{font-weight:800;color:var(--ink)}
+  .wt-amt{margin-left:auto;font-family:var(--mono);font-weight:700;font-size:16px;color:var(--excel)}
+  .wari-done{font-size:14px;font-weight:700;color:var(--excel);text-align:center;padding:8px}
+  .wari-cat{font-size:11px;font-weight:700;padding:2px 9px;border-radius:999px;background:var(--excel-wash);color:var(--excel)}
   @media(max-width:600px){
     .sub-form-row{flex-direction:column;align-items:stretch;gap:9px}
     .sub-form-row>*{width:100%}
@@ -360,6 +413,8 @@
     .sum-top{flex-direction:column}
     .sum-side{text-align:left}
     .sum-big{font-size:30px}
+    .wari-mrow{flex-direction:column;align-items:stretch}
+    .wari-mrow .sub-add{width:100%}
   }
   /* 辞書 */
   .dict-card{border-left:4px solid #2B6CB0}
@@ -387,8 +442,14 @@
 </head>
 <body>
 <div class="ptr" id="ptr"><div class="ptr-spin"></div></div>
+<header class="mtopbar" id="mtopbar">
+  <button class="mburger" id="mBurger" aria-label="メニューを開く"><span></span><span></span><span></span></button>
+  <span class="mtop-brand"><span class="mtop-mark">？</span>ナニコレナビ</span>
+</header>
+<div class="mbackdrop" id="mBackdrop"></div>
 <div class="appshell">
   <aside class="sidebar" id="sidebar">
+    <button class="sb-close" id="sbClose" aria-label="メニューを閉じる">×</button>
     <div class="sb-brand"><span class="sb-mark">？</span><div><div class="sb-name">ナニコレナビ</div><div class="sb-sub">早引き検索</div></div></div>
     <button class="sb-edit" id="sbEdit">並べ替え</button>
     <div class="sb-hint" id="sbHint" hidden>▲▼ で順番を入れ替え。自動で保存されます。</div>
@@ -469,6 +530,32 @@
       <div class="sub-presets" id="subPresets"></div>
     </div>
     <div class="sub-list" id="subList"></div>
+  </div>
+
+  <div class="waripanel" id="waripanel">
+    <div class="sub-card wari-members">
+      <div class="wari-mhead">メンバー</div>
+      <div class="wari-mrow">
+        <input id="wariName" class="sub-in" type="text" placeholder="名前を追加（例：田中）" autocomplete="off" spellcheck="false">
+        <button id="wariAddMember" class="sub-add">追加</button>
+      </div>
+      <div class="wari-chips" id="wariChips"></div>
+    </div>
+
+    <div class="sub-card sub-form" id="wariForm">
+      <div class="wari-fhead">立替えを記録</div>
+      <div class="sub-form-row">
+        <input id="wariTitle" class="sub-in" type="text" placeholder="何に使った？（例：ランチ）" autocomplete="off" spellcheck="false">
+        <div class="sub-amt"><span class="sub-yen">¥</span><input id="wariAmount" class="sub-in" type="number" inputmode="numeric" min="0" placeholder="金額"></div>
+        <select id="wariPayer" class="sub-in sub-sel" aria-label="立替えた人"></select>
+        <button id="wariAdd" class="sub-add">追加</button>
+      </div>
+      <div class="wari-parts-label">割る相手（タップで対象を切り替え）</div>
+      <div class="wari-parts" id="wariParts"></div>
+    </div>
+
+    <div class="wari-result" id="wariResult"></div>
+    <div class="sub-list" id="wariList"></div>
   </div>
 
   <div class="ad-banner" id="adFoot" style="display:none"></div>
@@ -798,6 +885,96 @@ function uiCard(it){
     <p class="fn-desc" style="margin-top:0">${it.d}</p></article>`;
 }
 
+/* ============ ビジネス敬語・言い換え ============ */
+const KEIGO=[
+  {casual:'了解しました', polite:['承知いたしました','かしこまりました'], scene:'返信', keys:['了解','りょうかい','わかりました','把握','OK']},
+  {casual:'すみません', polite:['恐れ入ります','申し訳ございません'], scene:'謝罪・依頼', note:'依頼の前置きなら「恐れ入りますが」、お詫びなら「申し訳ございません」。', keys:['すみません','すいません','ごめん']},
+  {casual:'ごめんなさい', polite:['申し訳ございません','お詫び申し上げます'], scene:'謝罪', keys:['ごめん','謝る','陳謝']},
+  {casual:'ありがとうございます', polite:['厚く御礼申し上げます','感謝申し上げます'], scene:'御礼', keys:['ありがとう','感謝','お礼','御礼']},
+  {casual:'お願いします', polite:['お願い申し上げます','〜いただけますと幸いです'], scene:'依頼', keys:['お願い','頼む','依頼']},
+  {casual:'教えてください', polite:['ご教示いただけますでしょうか','お聞かせいただけますか'], scene:'依頼', keys:['教えて','知りたい','聞きたい']},
+  {casual:'確認してください', polite:['ご確認いただけますでしょうか','ご査収ください'], scene:'依頼', note:'資料を送って確認を求めるなら「ご査収ください」。', keys:['確認','チェック','見て','目を通して']},
+  {casual:'知っていますか', polite:['ご存じでしょうか'], scene:'確認', keys:['知ってる','ご存知']},
+  {casual:'言っておきます', polite:['申し伝えます'], scene:'伝言', keys:['伝える','伝言','言っとく','申し伝え']},
+  {casual:'会いたいです', polite:['お目にかかりたく存じます'], scene:'アポイント', keys:['会う','面会','お会いしたい']},
+  {casual:'行きます', polite:['伺います','参ります'], scene:'訪問', keys:['行く','訪問','来訪','お伺い']},
+  {casual:'もらえますか', polite:['いただけますでしょうか','頂戴できますでしょうか'], scene:'依頼', keys:['もらう','ください','頂戴']},
+  {casual:'やっておきます', polite:['対応いたします','進めてまいります'], scene:'返信', keys:['やる','対応','対処','進める']},
+  {casual:'できません', polite:['いたしかねます','対応が難しい状況です'], scene:'断り', note:'やわらかく断るときは「いたしかねます」。', keys:['無理','断る','できない','お断り']},
+  {casual:'待ってください', polite:['お待ちいただけますでしょうか','少々お時間を頂戴できますか'], scene:'依頼', keys:['待って','保留','時間がほしい']},
+  {casual:'忙しいところ', polite:['ご多用のところ','お忙しいところ'], scene:'クッション', keys:['忙しい','多忙','お忙しい']},
+  {casual:'すぐに', polite:['早急に','速やかに'], scene:'表現', keys:['すぐ','至急','急いで']},
+  {casual:'ちょっと', polite:['少々','些少'], scene:'表現', keys:['ちょっと','少し']},
+  {casual:'見ました', polite:['拝見しました'], scene:'返信', keys:['見た','読んだ','確認した']},
+  {casual:'もらいました', polite:['頂戴しました','賜りました'], scene:'返信', keys:['もらった','受け取った','受領']},
+  {casual:'行けません', polite:['都合がつかず欠席いたします'], scene:'欠席', keys:['欠席','行けない','不参加','参加できない']},
+  {casual:'大丈夫です', polite:['問題ございません','差し支えございません'], scene:'返信', keys:['大丈夫','OK','問題ない']},
+  {casual:'受け取ってください', polite:['ご査収ください','お納めください'], scene:'添付', keys:['査収','添付','送る','受け取って']},
+  {casual:'都合はどうですか', polite:['ご都合はいかがでしょうか'], scene:'アポイント', keys:['都合','日程','スケジュール','空いてる']},
+  {casual:'思います', polite:['存じます','〜と考えております'], scene:'表現', keys:['思う','考える']},
+  {casual:'わかりました（理解）', polite:['承知いたしました','理解いたしました'], scene:'返信', keys:['わかった','理解','把握']},
+  {casual:'すごいですね', polite:['素晴らしいですね','感服いたします'], scene:'称賛', keys:['すごい','さすが']},
+  {casual:'クッション言葉', polite:['恐れ入りますが','お手数をおかけしますが','差し支えなければ','勝手ながら'], scene:'前置き', note:'依頼やお願いの前に置くと、角が立ちにくくなります。', keys:['クッション','前置き','やわらかく','枕詞']},
+];
+const keigoRecord=it=>({name:it.casual, read:'', desc:it.polite.join(' ')+' '+(it.note||''), keys:it.keys});
+function keigoCard(it){
+  return `<article class="card kg-card" tabindex="0">
+    <div class="card-top"><div><div class="fn-name">${esc(it.casual)}</div><div class="fn-read">ふだんの言い方</div></div><span class="kg-scene">${esc(it.scene)}</span></div>
+    <div class="kg-label">ビジネス向けの言い換え（タップでコピー）</div>
+    <div class="kg-polite">${it.polite.map(p=>`<span class="kg-chip" data-copy="${esc(p)}" role="button" tabindex="0" title="クリックでコピー">${esc(p)}</span>`).join('')}</div>
+    ${it.note?`<p class="ex-note">${esc(it.note)}</p>`:''}
+  </article>`;
+}
+
+/* ============ カタカナ語・略語辞典 ============ */
+const KATAGO=[
+  {term:'アジェンダ', en:'agenda', mean:'会議の議題・進行表。話し合う項目をまとめたもの。', keys:['アジェンダ','議題','進行表']},
+  {term:'エビデンス', en:'evidence', mean:'証拠・根拠。主張を裏づけるデータや資料。', keys:['エビデンス','証拠','根拠']},
+  {term:'コンセンサス', en:'consensus', mean:'関係者の合意・意見の一致。', keys:['コンセンサス','合意','同意']},
+  {term:'リソース', en:'resource', mean:'人員・資金・時間などの資源。', keys:['リソース','人手','資源']},
+  {term:'ペンディング', en:'pending', mean:'保留・先送り。結論を出さずに置いておくこと。', keys:['ペンディング','保留','先送り']},
+  {term:'アサイン', en:'assign', mean:'担当として割り当てること。', keys:['アサイン','割り当て','担当']},
+  {term:'フィックス', en:'fix', mean:'内容を確定させること。', keys:['フィックス','確定','決定']},
+  {term:'ナレッジ', en:'knowledge', mean:'蓄積された知識・ノウハウ。', keys:['ナレッジ','知見','知識']},
+  {term:'ローンチ', en:'launch', mean:'新サービスや製品の公開・開始。', keys:['ローンチ','公開','開始','リリース']},
+  {term:'スキーム', en:'scheme', mean:'計画・仕組み。物事の枠組み。', keys:['スキーム','仕組み','枠組み']},
+  {term:'ボトルネック', en:'bottleneck', mean:'全体の進行を妨げている要因。', keys:['ボトルネック','障害','詰まり']},
+  {term:'リスケ', en:'reschedule', mean:'予定の組み直し・日程変更。', keys:['リスケ','日程変更','スケジュール変更']},
+  {term:'ペルソナ', en:'persona', mean:'想定する典型的なユーザー像。', keys:['ペルソナ','ユーザー像']},
+  {term:'KPI', en:'Key Performance Indicator', mean:'重要業績評価指標。目標の達成度を測る中間指標。', keys:['KPI','指標']},
+  {term:'KGI', en:'Key Goal Indicator', mean:'最終目標を数値化した指標。', keys:['KGI','目標指標']},
+  {term:'PDCA', en:'Plan-Do-Check-Action', mean:'計画→実行→評価→改善を繰り返す業務改善の手法。', keys:['PDCA','改善']},
+  {term:'ASAP', en:'as soon as possible', mean:'できるだけ早く。', keys:['ASAP','至急','なるはや']},
+  {term:'FYI', en:'for your information', mean:'ご参考まで。情報共有のときの前置き。', keys:['FYI','参考まで']},
+  {term:'MTG', en:'meeting', mean:'会議・打ち合わせ。', keys:['MTG','会議','打合せ','ミーティング']},
+  {term:'リマインド', en:'remind', mean:'再確認のための連絡・念押し。', keys:['リマインド','催促','念押し']},
+  {term:'ブラッシュアップ', en:'brush up', mean:'内容をより良く磨き上げること。', keys:['ブラッシュアップ','改善','磨く']},
+  {term:'ドラフト', en:'draft', mean:'下書き・草案。', keys:['ドラフト','下書き','草案','たたき台']},
+  {term:'オンスケ', en:'on schedule', mean:'予定どおり進んでいること。', keys:['オンスケ','予定通り']},
+  {term:'バッファ', en:'buffer', mean:'余裕。時間や予算のゆとり。', keys:['バッファ','余裕','ゆとり']},
+  {term:'デフォルト', en:'default', mean:'初期設定・標準の状態。', keys:['デフォルト','初期','標準']},
+  {term:'イニシアチブ', en:'initiative', mean:'主導権。物事を率先して進める力。', keys:['イニシアチブ','主導権']},
+  {term:'コミット', en:'commit', mean:'責任を持って関与・約束すること。', keys:['コミット','約束','関与']},
+  {term:'アライアンス', en:'alliance', mean:'企業同士の提携・連携。', keys:['アライアンス','提携','連携']},
+  {term:'ステークホルダー', en:'stakeholder', mean:'利害関係者。事業に関わる人や組織。', keys:['ステークホルダー','利害関係者']},
+  {term:'リテラシー', en:'literacy', mean:'情報や知識を正しく理解・活用する力。', keys:['リテラシー','活用能力']},
+  {term:'ニッチ', en:'niche', mean:'すき間。大手が手をつけていない小さな市場。', keys:['ニッチ','すき間','隙間']},
+];
+const kataRecord=it=>({name:it.term, read:it.en, desc:it.mean, keys:it.keys});
+function kataCard(it){
+  return `<article class="card" tabindex="0">
+    <div class="card-top"><div><div class="fn-name">${esc(it.term)}</div><div class="fn-read">${esc(it.en||'')}</div></div><span class="kg-scene">カタカナ語</span></div>
+    <p class="fn-desc">${esc(it.mean)}</p>
+  </article>`;
+}
+function bindCopySel(sel){
+  document.querySelectorAll(sel).forEach(el=>{
+    const t=el.dataset.copy||el.textContent;
+    const f=()=>{navigator.clipboard?.writeText(t).then(()=>{el.classList.add('copied');setTimeout(()=>el.classList.remove('copied'),1100);}).catch(()=>{});};
+    el.onclick=f; el.onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();f();}};
+  });
+}
+
 const MODES = {
   fn:{data:FN, rec:fnRecord, card:fnCard, cats:CATS, listLabel:'関数一覧', catSuffix:'の関数', plat:false,
       fxtab:'<span class="fxmark">fx</span><span class="eq">=</span>', placeholder:'例：合計 / 足す / 重複を消す …',
@@ -823,6 +1000,19 @@ const MODES = {
   sub:{cats:{}, plat:false,
       fxtab:'<span class="fxmark" style="font-style:normal;font-size:15px">¥</span>', placeholder:'',
       lede:'毎月のサブスクを登録して、合計・1日あたり・見直し候補を管理できます（このブラウザに保存）。'},
+  wari:{cats:{}, plat:false,
+      fxtab:'<span class="fxmark" style="font-style:normal;font-size:15px">割</span>', placeholder:'',
+      lede:'メンバーと立替えを入れると、誰が誰にいくら払えば精算完了かを自動計算します（このブラウザに保存）。'},
+  keigo:{data:KEIGO, rec:keigoRecord, card:keigoCard, cats:{}, listLabel:'言い換え一覧', catSuffix:'', plat:false,
+      fxtab:'<span class="fxmark" style="font-style:normal;font-size:15px">礼</span>', placeholder:'例：了解 / すみません / お願いします …',
+      lede:'ふだんの言い方を入れると、ビジネス向けの丁寧な言い換えが出ます。',
+      emptyHint:'「了解」「すみません」「お願い」など、ふだんの言い方で探せます。',
+      suggest:[['了解','了解しました'],['すみません','すみません'],['お願い','お願いします'],['確認','確認してください'],['ありがとう','ありがとうございます']]},
+  kata:{data:KATAGO, rec:kataRecord, card:kataCard, cats:{}, listLabel:'カタカナ語一覧', catSuffix:'', plat:false,
+      fxtab:'<span class="fxmark" style="font-style:normal;font-size:15px">カ</span>', placeholder:'例：アジェンダ / KPI / エビデンス / ASAP …',
+      lede:'カタカナ語・ビジネス略語の意味をすぐに引けます。',
+      emptyHint:'「アジェンダ」「KPI」「FYI」「リスケ」などで探せます。',
+      suggest:[['アジェンダ','アジェンダ'],['エビデンス','エビデンス'],['KPI','KPI'],['FYI','FYI'],['リスケ','リスケ']]},
 };
 
 /* ============ レンダリング ============ */
@@ -832,7 +1022,7 @@ const elQ=document.getElementById('q'), elClear=document.getElementById('clear')
       elMetaLabel=document.getElementById('metaLabel'), elPlat=document.getElementById('platwrap'),
       elFxtab=document.getElementById('fxtab'), elLede=document.getElementById('lede'),
       elCtopTitle=document.getElementById('ctopTitle');
-const MODE_LABELS={fn:'Excelの関数',sc:'ショートカットキー',ui:'UIパーツ',char:'漢字手書き検索',dict:'英語⇄日本語の辞書',sub:'サブスク管理'};
+const MODE_LABELS={fn:'Excelの関数',sc:'ショートカットキー',ui:'UIパーツ',char:'漢字手書き検索',dict:'英語⇄日本語の辞書',sub:'サブスク管理',keigo:'ビジネス敬語・言い換え',kata:'カタカナ語・略語辞典',wari:'割り勘・立替の精算'};
 const adTopEl=document.getElementById('adTop'), adFootEl=document.getElementById('adFoot'), adAnchorEl=document.getElementById('adAnchor');
 
 function render(){
@@ -869,7 +1059,7 @@ function render(){
     return;
   }
   elResults.innerHTML=withFeedAds(rest.map(x=>cardOf(x.it)));
-  if(mode==='fn') bindCopy();
+  if(mode==='fn') bindCopy(); else if(mode==='keigo') bindCopySel('.kg-chip');
 }
 
 /* 結果一覧に「広告」カードを差し込む（先頭の答えと検索の間には入れない） */
@@ -901,7 +1091,7 @@ function bindCopy(){
 /* ============ よく使う（アカウント不要・このブラウザに記録）============ */
 const RECENT_KEY='nanikore_recent_v1', RECENT_MAX=40, RECENT_SHOW=8;
 const recentBar=document.getElementById('recentBar');
-const RMARK={fn:'fx',sc:'⌨',ui:'▦',char:'字',dict:'A'};
+const RMARK={fn:'fx',sc:'⌨',ui:'▦',char:'字',dict:'A',keigo:'礼',kata:'カ'};
 let heroLogTimer=null;
 function recentLoad(){ try{ const a=JSON.parse(localStorage.getItem(RECENT_KEY)); return Array.isArray(a)?a:[]; }catch(e){ return []; } }
 function recentSave(a){ try{ localStorage.setItem(RECENT_KEY, JSON.stringify(a.slice(0,RECENT_MAX))); }catch(e){} }
@@ -917,7 +1107,7 @@ function logUse(m,key,label,q){
 function scheduleHeroLog(m,it){
   clearTimeout(heroLogTimer);
   heroLogTimer=setTimeout(()=>{
-    let key; if(m==='fn'||m==='ui') key=it.n; else if(m==='sc') key=it.a;
+    let key; if(m==='fn'||m==='ui') key=it.n; else if(m==='sc') key=it.a; else if(m==='keigo') key=it.casual; else if(m==='kata') key=it.term;
     if(key) logUse(m,key,key,key);
   },1100);
 }
@@ -938,7 +1128,7 @@ function renderRecent(){
   updateRecentVisibility();
 }
 function updateRecentVisibility(){
-  recentBar.hidden=!(recentLoad().length>0 && !elQ.value.trim() && mode!=='sub');
+  recentBar.hidden=!(recentLoad().length>0 && !elQ.value.trim() && mode!=='sub' && mode!=='wari');
 }
 
 /* ============ サブスク管理（アカウント不要・このブラウザに保存）============ */
@@ -1035,6 +1225,97 @@ function initSub(){
   [subEl.subName,subEl.subAmount].forEach(el=>el.addEventListener('keydown',e=>{ if(e.key==='Enter') subSubmit(); }));
 }
 
+/* ============ 割り勘・立替の精算（アカウント不要・このブラウザに保存）============ */
+const WARI_KEY='nanikore_wari_v1';
+const wariPanel=document.getElementById('waripanel');
+const wEl={};
+['wariName','wariAddMember','wariChips','wariTitle','wariAmount','wariPayer','wariAdd','wariParts','wariResult','wariList','wariForm'].forEach(id=>wEl[id]=document.getElementById(id));
+let wariSel={};
+function wariLoad(){ try{ const d=JSON.parse(localStorage.getItem(WARI_KEY)); if(d&&Array.isArray(d.members)&&Array.isArray(d.items)) return d; }catch(e){} return {members:[],items:[]}; }
+function wariSave(d){ try{ localStorage.setItem(WARI_KEY, JSON.stringify(d)); }catch(e){} }
+function wUID(){ return 'w'+Date.now().toString(36)+Math.random().toString(36).slice(2,5); }
+function wmName(d,id){ const m=d.members.find(x=>x.id===id); return m?m.name:'?'; }
+function wAddMember(){
+  const name=wEl.wariName.value.trim(); if(!name){ wEl.wariName.focus(); return; }
+  const d=wariLoad(); d.members.push({id:wUID(),name}); wariSave(d);
+  wEl.wariName.value=''; wariSel={}; renderWari(); wEl.wariName.focus();
+}
+function wRemoveMember(id){
+  const d=wariLoad();
+  d.members=d.members.filter(m=>m.id!==id);
+  d.items=d.items.filter(it=>it.payer!==id).map(it=>({...it,parts:it.parts.filter(p=>p!==id)})).filter(it=>it.parts.length>0);
+  wariSave(d); wariSel={}; renderWari();
+}
+function wAddItem(){
+  const d=wariLoad();
+  const title=wEl.wariTitle.value.trim()||'立替え';
+  const amount=Math.round(parseFloat(wEl.wariAmount.value));
+  if(isNaN(amount)||amount<=0){ wEl.wariAmount.focus(); return; }
+  const payer=wEl.wariPayer.value; if(!payer) return;
+  const parts=d.members.map(m=>m.id).filter(id=>wariSel[id]!==false);
+  if(!parts.length) return;
+  d.items.push({id:wUID(),title,amount,payer,parts}); wariSave(d);
+  wEl.wariTitle.value=''; wEl.wariAmount.value=''; renderWari(); wEl.wariTitle.focus();
+}
+function wDelItem(id){ const d=wariLoad(); d.items=d.items.filter(it=>it.id!==id); wariSave(d); renderWari(); }
+function wSettle(d){
+  const net={}; d.members.forEach(m=>net[m.id]=0);
+  d.items.forEach(it=>{
+    if(net[it.payer]!==undefined) net[it.payer]+=it.amount;
+    const share=it.amount/it.parts.length;
+    it.parts.forEach(p=>{ if(net[p]!==undefined) net[p]-=share; });
+  });
+  const debt=[], cred=[];
+  d.members.forEach(m=>{ const v=net[m.id]; if(v<-0.5) debt.push({id:m.id,amt:-v}); else if(v>0.5) cred.push({id:m.id,amt:v}); });
+  debt.sort((a,b)=>b.amt-a.amt); cred.sort((a,b)=>b.amt-a.amt);
+  const tx=[]; let i=0,j=0;
+  while(i<debt.length&&j<cred.length){
+    const pay=Math.min(debt[i].amt,cred[j].amt);
+    tx.push({from:debt[i].id,to:cred[j].id,amount:Math.round(pay)});
+    debt[i].amt-=pay; cred[j].amt-=pay;
+    if(debt[i].amt<=0.5) i++; if(cred[j].amt<=0.5) j++;
+  }
+  return {net, tx:tx.filter(t=>t.amount>0)};
+}
+function renderWari(){
+  const d=wariLoad();
+  wEl.wariChips.innerHTML=d.members.length? d.members.map(m=>`<span class="wari-chip">${esc(m.name)}<button class="wari-x" data-id="${m.id}" aria-label="削除">×</button></span>`).join('') : `<span class="wari-empty">まずは割り勘するメンバーを2人以上追加してください。</span>`;
+  wEl.wariChips.querySelectorAll('.wari-x').forEach(b=>b.onclick=()=>wRemoveMember(b.dataset.id));
+  wEl.wariPayer.innerHTML=d.members.map(m=>`<option value="${m.id}">${esc(m.name)}が立替</option>`).join('');
+  wEl.wariParts.innerHTML=d.members.map(m=>`<button type="button" class="wp-part ${wariSel[m.id]!==false?'on':''}" data-id="${m.id}">${esc(m.name)}</button>`).join('');
+  wEl.wariParts.querySelectorAll('.wp-part').forEach(b=>b.onclick=()=>{ const id=b.dataset.id; const sel=wariSel[id]!==false; wariSel[id]=!sel; b.classList.toggle('on',!sel); });
+  const ready=d.members.length>=2;
+  wEl.wariForm.style.opacity=ready?'1':'.45';
+  wEl.wariForm.style.pointerEvents=ready?'':'none';
+  if(ready && d.items.length){
+    const {net,tx}=wSettle(d);
+    const total=d.items.reduce((s,x)=>s+x.amount,0);
+    const bal=d.members.map(m=>{ const v=Math.round(net[m.id]); return `<div class="wb-row"><span class="wb-name">${esc(m.name)}</span><span class="wb-val ${v>0?'plus':(v<0?'minus':'')}">${v>0?'+':''}${yen(v)}</span></div>`; }).join('');
+    const txh=tx.length? tx.map(t=>`<div class="wt-row"><span class="wt-from">${esc(wmName(d,t.from))}</span><span class="wt-arrow">→</span><span class="wt-to">${esc(wmName(d,t.to))}</span><span class="wt-amt">${yen(t.amount)}</span></div>`).join('') : `<div class="wari-done">精算の必要はありません 🎉</div>`;
+    wEl.wariResult.innerHTML=`<div class="sub-card wari-sum">
+      <div class="sum-top"><div><div class="sum-big">${yen(total)}</div><div class="sum-label">立替え合計 ・ ${d.items.length}件</div></div></div>
+      <div class="wari-block-label">各メンバーの収支（＋は受け取り／−は支払い）</div>
+      <div class="wb-list">${bal}</div>
+      <div class="wari-block-label">精算方法（誰が誰にいくら払う）</div>
+      <div class="wt-list">${txh}</div>
+    </div>`;
+  } else { wEl.wariResult.innerHTML=''; }
+  wEl.wariList.innerHTML=d.items.slice().reverse().map(it=>`<div class="sub-card sub-item wari-item">
+      <div class="si-main"><div class="si-name">${esc(it.title)} <span class="wari-cat">${esc(wmName(d,it.payer))}が立替</span></div>
+      <div class="si-cost"><b>${yen(it.amount)}</b><span class="si-cyc">${it.parts.length}人で割る</span></div></div>
+      <div class="si-acts"><button class="si-del" data-id="${it.id}">削除</button></div>
+    </div>`).join('');
+  wEl.wariList.querySelectorAll('.si-del').forEach(b=>b.onclick=()=>wDelItem(b.dataset.id));
+}
+function initWari(){
+  if(!wariPanel) return;
+  wEl.wariAddMember.onclick=wAddMember;
+  wEl.wariAdd.onclick=wAddItem;
+  wEl.wariName.addEventListener('keydown',e=>{ if(e.key==='Enter') wAddMember(); });
+  wEl.wariTitle.addEventListener('keydown',e=>{ if(e.key==='Enter') wEl.wariAmount.focus(); });
+  wEl.wariAmount.addEventListener('keydown',e=>{ if(e.key==='Enter') wAddItem(); });
+}
+
 /* ============ チップ・トグル ============ */
 function buildChips(){
   const cats = MODES[mode].cats;
@@ -1059,18 +1340,20 @@ function setMode(m){
   elQ.placeholder=cfg.placeholder;
   elLede.textContent=cfg.lede;
   if(elCtopTitle) elCtopTitle.textContent=MODE_LABELS[m]||'';
-  const isChar=(m==='char'), isDict=(m==='dict'), isSub=(m==='sub'), isData=!isChar&&!isDict&&!isSub;
+  const isChar=(m==='char'), isDict=(m==='dict'), isSub=(m==='sub'), isWari=(m==='wari'), isData=!isChar&&!isDict&&!isSub&&!isWari;
   charPanel.style.display = isChar?'block':'none';
   subPanel.style.display = isSub?'block':'none';
-  searchwrapEl.style.display = isSub?'none':'';
+  wariPanel.style.display = isWari?'block':'none';
+  searchwrapEl.style.display = (isSub||isWari)?'none':'';
   elChips.style.display = isData?'flex':'none';
-  document.querySelector('.meta').style.display = (isChar||isSub)?'none':'flex';
-  elAnswer.style.display = (isChar||isSub)?'none':'';
-  elResults.style.display = (isChar||isSub)?'none':'';
-  if(ADS.enabled&&ADS.top) adTopEl.style.display = (isChar||isSub)?'none':'flex';
+  document.querySelector('.meta').style.display = (isChar||isSub||isWari)?'none':'flex';
+  elAnswer.style.display = (isChar||isSub||isWari)?'none':'';
+  elResults.style.display = (isChar||isSub||isWari)?'none':'';
+  if(ADS.enabled&&ADS.top) adTopEl.style.display = (isChar||isSub||isWari)?'none':'flex';
   if(isChar){ detailEl.innerHTML=charIntro(); candEl.innerHTML=''; elQ.focus(); }
   else if(isDict){ elAnswer.innerHTML=''; elMetaLabel.textContent='辞書'; elCount.innerHTML=''; dictIntro(); elQ.focus(); }
   else if(isSub){ renderSubs(); }
+  else if(isWari){ renderWari(); }
   else { buildChips(); render(); elQ.focus(); }
 }
 
@@ -1096,15 +1379,19 @@ const ITEMS={
   ui:{icon:'▦',label:'UIパーツ'},
   char:{icon:'字',label:'漢字手書き検索'},
   dict:{icon:'A',label:'英語⇄日本語の辞書'},
+  keigo:{icon:'礼',label:'ビジネス敬語・言い換え'},
+  kata:{icon:'カ',label:'カタカナ語・略語辞典'},
   sub:{icon:'¥',label:'サブスク管理'},
+  wari:{icon:'割',label:'割り勘・精算'},
 };
 let MENU=[
   {id:'excel', label:'Excel', items:['fn','sc']},
-  {id:'word',  label:'ことば', items:['char','dict']},
+  {id:'word',  label:'辞書・翻訳', items:['char','dict']},
+  {id:'biz',   label:'ビジネス', items:['keigo','kata']},
   {id:'screen',label:'システム開発', items:['ui']},
-  {id:'subsc', label:'サブスク', items:['sub']},
+  {id:'subsc', label:'おかね', items:['sub','wari']},
 ];
-const ORDER_KEY='nanikore_menu_order_v1';
+const ORDER_KEY='nanikore_menu_order_v3';
 function saveOrder(){ try{ localStorage.setItem(ORDER_KEY, JSON.stringify(MENU.map(g=>({id:g.id,items:g.items})))); }catch(e){} }
 function loadOrder(){
   try{
@@ -1125,6 +1412,8 @@ function loadOrder(){
 let editMode=false;
 const sbEl=document.getElementById('sidebar'), navEl=document.getElementById('modetabs');
 const sbEdit=document.getElementById('sbEdit'), sbHint=document.getElementById('sbHint');
+const GROUP_COLORS={excel:'#12855B',word:'#2B6CB0',biz:'#B7791F',screen:'#7C5CD6',subsc:'#C0398B'};
+function groupColor(id){ return GROUP_COLORS[id]||'#5A6473'; }
 function renderNav(){
   navEl.innerHTML=MENU.map((g,gi)=>{
     const items=g.items.map((id,ii)=>{
@@ -1134,9 +1423,9 @@ function renderNav(){
       return `<button class="modetab ${id===mode?'active':''}" data-mode="${id}">${ic}<span class="mt-label">${it.label}</span>${ctrls}</button>`;
     }).join('');
     const gc=editMode?`<span class="reorder"><button class="rb" data-act="gu" data-g="${gi}" aria-label="グループを上へ">▲</button><button class="rb" data-act="gdn" data-g="${gi}" aria-label="グループを下へ">▼</button></span>`:'';
-    return `<div class="sb-sec"><div class="sb-label">${g.label}${gc}</div>${items}</div>`;
+    return `<div class="sb-sec" style="--g:${groupColor(g.id)}"><div class="sb-label"><span class="sb-dot"></span>${g.label}${gc}</div>${items}</div>`;
   }).join('');
-  navEl.querySelectorAll('.modetab').forEach(t=>t.onclick=()=>{ if(!editMode) setMode(t.dataset.mode); });
+  navEl.querySelectorAll('.modetab').forEach(t=>t.onclick=()=>{ if(!editMode){ setMode(t.dataset.mode); closeDrawer(); } });
   navEl.querySelectorAll('.rb').forEach(b=>b.onclick=e=>{
     e.stopPropagation();
     const a=b.dataset.act, gi=+b.dataset.g, ii=+b.dataset.i;
@@ -1147,6 +1436,16 @@ function renderNav(){
 function swapGroup(i,j){ if(j<0||j>=MENU.length) return; [MENU[i],MENU[j]]=[MENU[j],MENU[i]]; saveOrder(); renderNav(); }
 function swapItem(gi,i,j){ const a=MENU[gi].items; if(j<0||j>=a.length) return; [a[i],a[j]]=[a[j],a[i]]; saveOrder(); renderNav(); }
 sbEdit.onclick=()=>{ editMode=!editMode; sbEl.classList.toggle('editing',editMode); sbEdit.classList.toggle('on',editMode); sbEdit.textContent=editMode?'完了':'並べ替え'; sbHint.hidden=!editMode; renderNav(); };
+
+/* ============ モバイル：ドロワー開閉 ============ */
+const mBurger=document.getElementById('mBurger'), mBackdrop=document.getElementById('mBackdrop'), sbClose=document.getElementById('sbClose');
+function openDrawer(){ document.body.classList.add('drawer-open'); }
+function closeDrawer(){ document.body.classList.remove('drawer-open'); }
+if(mBurger) mBurger.onclick=()=>{ document.body.classList.contains('drawer-open')?closeDrawer():openDrawer(); };
+if(mBackdrop) mBackdrop.onclick=closeDrawer;
+if(sbClose) sbClose.onclick=closeDrawer;
+document.addEventListener('keydown',e=>{ if(e.key==='Escape') closeDrawer(); });
+
 loadOrder(); renderNav();
 
 /* ============ アクセス数（リアルタイム・GitHub公開後に有効）============ */
@@ -1435,7 +1734,7 @@ document.getElementById('foot').innerHTML =
   `<span class="fxmini">？</span> ナニコレナビ — Excel関数 ${FN.length}・ショートカットキー ${SC.length}・UIパーツ ${UI.length} を収録<br>`+
   `「文字」「辞書」タブは手書き認識・翻訳のオンラインサービスを使うため、インターネット接続が必要です。`;
 
-initAds(); buildChips(); render(); renderRecent(); initSub();
+initAds(); buildChips(); render(); renderRecent(); initSub(); initWari();
 
 /* ============ 時計 ============ */
 const nbDate=document.getElementById('nbDate'), nbWd=document.getElementById('nbWd'), nbTime=document.getElementById('nbTime');
