@@ -1,1 +1,1 @@
-# nanikorenavi-.jp
+# nanikorenavi
