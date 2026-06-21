@@ -285,6 +285,69 @@
   .rc-chip{display:inline-flex;align-items:center;gap:7px;font-family:var(--sans);font-weight:700;font-size:13px;color:var(--ink-soft);background:var(--card);border:1.5px solid var(--line);border-radius:999px;padding:6px 13px 6px 8px;cursor:pointer;transition:all .14s;box-shadow:var(--shadow)}
   .rc-chip:hover{border-color:var(--excel);color:var(--ink);transform:translateY(-1px)}
   .rc-mk{font-family:var(--mono);font-size:10.5px;font-weight:700;color:#fff;background:var(--excel);min-width:18px;height:18px;border-radius:5px;display:inline-grid;place-items:center;line-height:1}
+
+  /* サブスク管理 */
+  .subpanel{display:none}
+  .sub-card{background:var(--card);border:1.5px solid var(--line);border-radius:16px;box-shadow:var(--shadow)}
+  .sub-summary{margin-bottom:14px}
+  .sub-intro{padding:18px;font-size:14px;color:var(--ink-soft);line-height:1.75}
+  .sub-sum{padding:18px}
+  .sum-top{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;flex-wrap:wrap}
+  .sum-big{font-family:var(--mono);font-size:34px;font-weight:700;color:var(--excel);line-height:1}
+  .sum-label{font-size:12px;color:var(--ink-faint);font-weight:600;margin-top:5px}
+  .sum-side{font-size:13px;color:var(--ink-soft);text-align:right;line-height:1.7}
+  .sum-side b{color:var(--ink);font-family:var(--mono)}
+  .sc-list{margin-top:16px;display:flex;flex-direction:column;gap:8px}
+  .sc-row{display:flex;align-items:center;gap:10px;font-size:12.5px}
+  .sc-name{display:flex;align-items:center;gap:6px;min-width:72px;color:var(--ink-soft);font-weight:600}
+  .sc-dot{width:9px;height:9px;border-radius:3px;display:inline-block}
+  .sc-bar{flex:1;height:8px;background:var(--paper);border-radius:5px;overflow:hidden}
+  .sc-bar>span{display:block;height:100%;border-radius:5px}
+  .sc-val{font-family:var(--mono);font-size:12px;color:var(--ink);min-width:62px;text-align:right}
+  .sub-review{margin-top:14px;padding:10px 13px;background:#FFF6EC;border:1px solid #F4D4A8;border-radius:10px;font-size:12.5px;color:#7A4E12}
+  .sub-review b{color:#B5660A}
+  .sub-form{padding:14px}
+  .sub-form-row{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+  .sub-in{font-family:var(--sans);font-size:14px;font-weight:600;color:var(--ink);background:var(--paper);border:1.5px solid var(--line);border-radius:10px;padding:9px 12px;outline:none}
+  .sub-in:focus{border-color:var(--excel)}
+  #subName{flex:1 1 150px;min-width:120px}
+  .sub-amt{display:flex;align-items:center;gap:2px;background:var(--paper);border:1.5px solid var(--line);border-radius:10px;padding:0 4px 0 11px}
+  .sub-amt:focus-within{border-color:var(--excel)}
+  .sub-yen{color:var(--ink-faint);font-weight:700}
+  #subAmount{border:none;background:transparent;width:86px;padding:9px 6px}
+  .sub-seg{display:inline-flex;background:var(--paper);border:1.5px solid var(--line);border-radius:10px;overflow:hidden}
+  .sub-seg button{font-family:var(--sans);font-size:13px;font-weight:700;color:var(--ink-faint);background:none;border:none;padding:9px 13px;cursor:pointer}
+  .sub-seg button.active{background:var(--excel);color:#fff}
+  .sub-sel{cursor:pointer}
+  .sub-date{color:var(--ink-soft)}
+  .sub-add{font-family:var(--sans);font-size:14px;font-weight:700;color:#fff;background:var(--excel);border:none;border-radius:10px;padding:10px 22px;cursor:pointer;box-shadow:0 6px 14px -6px rgba(18,133,91,.55)}
+  .sub-add:hover{filter:brightness(1.06)}
+  .sub-cancel{font-family:var(--sans);font-size:13px;font-weight:600;color:var(--ink-faint);background:none;border:1.5px solid var(--line);border-radius:10px;padding:9px 14px;cursor:pointer}
+  .sub-presets{display:flex;flex-wrap:wrap;gap:7px;margin-top:12px}
+  .sub-preset{font-family:var(--sans);font-size:12.5px;font-weight:700;color:var(--ink-soft);background:var(--paper);border:1.5px solid var(--line);border-radius:999px;padding:6px 13px;cursor:pointer;transition:all .14s}
+  .sub-preset:hover{border-color:var(--excel);color:var(--excel)}
+  .sub-list{margin-top:14px;display:flex;flex-direction:column;gap:10px}
+  .sub-item{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:13px 16px}
+  .sub-item.low{border-color:#F4C98A;background:#FFFAF2}
+  .si-main{min-width:0}
+  .si-name{font-size:15px;font-weight:800;color:var(--ink);display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+  .si-cat{font-size:11px;font-weight:700;padding:2px 9px;border-radius:999px}
+  .si-cost{margin-top:5px;font-size:12.5px;color:var(--ink-soft);display:flex;align-items:center;gap:9px;flex-wrap:wrap}
+  .si-cost b{font-family:var(--mono);font-size:15px;color:var(--ink)}
+  .si-cyc,.si-day{color:var(--ink-faint)}
+  .si-next{color:var(--excel);font-weight:600}
+  .si-stars{margin-top:8px;display:flex;gap:2px}
+  .sub-star{font-size:15px;line-height:1;background:none;border:none;cursor:pointer;color:#D8DEE6;padding:0 1px}
+  .sub-star.on{color:#F5B945}
+  .si-acts{display:flex;flex-direction:column;gap:6px;flex:0 0 auto}
+  .si-edit,.si-del{font-family:var(--sans);font-size:12px;font-weight:700;border-radius:8px;padding:6px 12px;cursor:pointer;border:1.5px solid var(--line);background:var(--card);color:var(--ink-soft)}
+  .si-edit:hover{border-color:var(--excel);color:var(--excel)}
+  .si-del:hover{border-color:#E0524B;color:#E0524B}
+  @media(max-width:560px){
+    .sub-add{flex:1 1 100%}
+    .si-acts{flex-direction:row}
+    .sum-big{font-size:30px}
+  }
   /* 辞書 */
   .dict-card{border-left:4px solid #2B6CB0}
   .dict-word{font-family:"Hiragino Mincho ProN","Yu Mincho",serif;font-size:25px;font-weight:600;line-height:1.15;color:var(--ink)}
@@ -376,6 +439,23 @@
     </div>
     <div class="candidates" id="candidates"></div>
     <div id="chardetail"></div>
+  </div>
+
+  <div class="subpanel" id="subpanel">
+    <div class="sub-summary" id="subSummary"></div>
+    <div class="sub-card sub-form">
+      <div class="sub-form-row">
+        <input id="subName" class="sub-in" type="text" placeholder="サービス名（例：Netflix）" autocomplete="off" spellcheck="false">
+        <div class="sub-amt"><span class="sub-yen">¥</span><input id="subAmount" class="sub-in" type="number" inputmode="numeric" min="0" placeholder="金額"></div>
+        <div class="sub-seg" id="subCycle"><button type="button" data-c="m" class="active">月額</button><button type="button" data-c="y">年額</button></div>
+        <select id="subCat" class="sub-in sub-sel" aria-label="カテゴリ"></select>
+        <input id="subNext" class="sub-in sub-date" type="date" aria-label="次回支払日（任意）">
+        <button id="subAdd" class="sub-add">追加</button>
+        <button id="subCancel" class="sub-cancel" hidden>取消</button>
+      </div>
+      <div class="sub-presets" id="subPresets"></div>
+    </div>
+    <div class="sub-list" id="subList"></div>
   </div>
 
   <div class="ad-banner" id="adFoot" style="display:none"></div>
@@ -727,6 +807,9 @@ const MODES = {
   dict:{cats:{}, plat:false,
       fxtab:'<span class="fxmark" style="font-style:normal;font-size:15px">辞</span>', placeholder:'英単語や日本語を入力（例：apple / りんご / 走る）…',
       lede:'英単語の意味も、日本語からの英訳も引けます（このタブはインターネット接続が必要です）。'},
+  sub:{cats:{}, plat:false,
+      fxtab:'<span class="fxmark" style="font-style:normal;font-size:15px">¥</span>', placeholder:'',
+      lede:'毎月のサブスクを登録して、合計・1日あたり・見直し候補を管理できます（このブラウザに保存）。'},
 };
 
 /* ============ レンダリング ============ */
@@ -736,7 +819,7 @@ const elQ=document.getElementById('q'), elClear=document.getElementById('clear')
       elMetaLabel=document.getElementById('metaLabel'), elPlat=document.getElementById('platwrap'),
       elFxtab=document.getElementById('fxtab'), elLede=document.getElementById('lede'),
       elCtopTitle=document.getElementById('ctopTitle');
-const MODE_LABELS={fn:'Excelの関数',sc:'ショートカットキー',ui:'UIパーツ',char:'漢字手書き検索',dict:'英語⇄日本語の辞書'};
+const MODE_LABELS={fn:'Excelの関数',sc:'ショートカットキー',ui:'UIパーツ',char:'漢字手書き検索',dict:'英語⇄日本語の辞書',sub:'サブスク管理'};
 const adTopEl=document.getElementById('adTop'), adFootEl=document.getElementById('adFoot'), adAnchorEl=document.getElementById('adAnchor');
 
 function render(){
@@ -842,7 +925,101 @@ function renderRecent(){
   updateRecentVisibility();
 }
 function updateRecentVisibility(){
-  recentBar.hidden=!(recentLoad().length>0 && !elQ.value.trim());
+  recentBar.hidden=!(recentLoad().length>0 && !elQ.value.trim() && mode!=='sub');
+}
+
+/* ============ サブスク管理（アカウント不要・このブラウザに保存）============ */
+const SUBS_KEY='nanikore_subs_v1';
+const subPanel=document.getElementById('subpanel');
+const searchwrapEl=document.querySelector('.searchwrap');
+const SUBCATS=[
+  {k:'video',ja:'動画',c:'#E0524B'},{k:'music',ja:'音楽',c:'#12855B'},
+  {k:'work',ja:'仕事',c:'#3B6FE0'},{k:'study',ja:'学習',c:'#C98A12'},
+  {k:'game',ja:'ゲーム',c:'#8A4FD0'},{k:'comm',ja:'通信',c:'#0E9E9E'},
+  {k:'other',ja:'その他',c:'#7A8694'},
+];
+const SUBPRESET=[
+  {name:'Netflix',amount:1490,cycle:'m',cat:'video'},
+  {name:'Spotify',amount:980,cycle:'m',cat:'music'},
+  {name:'YouTube Premium',amount:1280,cycle:'m',cat:'video'},
+  {name:'Amazonプライム',amount:600,cycle:'m',cat:'video'},
+  {name:'Apple Music',amount:1080,cycle:'m',cat:'music'},
+  {name:'Disney+',amount:990,cycle:'m',cat:'video'},
+  {name:'ChatGPT Plus',amount:3000,cycle:'m',cat:'work'},
+  {name:'Adobe CC',amount:6480,cycle:'m',cat:'work'},
+];
+let subEditId=null;
+const subEl={};
+['subName','subAmount','subCat','subNext','subAdd','subCancel','subPresets','subList','subSummary','subCycle'].forEach(id=>subEl[id]=document.getElementById(id));
+function subsLoad(){ try{const a=JSON.parse(localStorage.getItem(SUBS_KEY));return Array.isArray(a)?a:[];}catch(e){return [];} }
+function subsSave(a){ try{localStorage.setItem(SUBS_KEY,JSON.stringify(a));}catch(e){} }
+function yen(n){ return '¥'+Math.round(n).toLocaleString('ja-JP'); }
+function subMonthly(s){ return s.cycle==='y'? s.amount/12 : s.amount; }
+function subCatOf(k){ return SUBCATS.find(c=>c.k===k)||SUBCATS[SUBCATS.length-1]; }
+function subCycleVal(){ const b=subEl.subCycle.querySelector('button.active'); return b?b.dataset.c:'m'; }
+function subSetCycle(c){ subEl.subCycle.querySelectorAll('button').forEach(b=>b.classList.toggle('active',b.dataset.c===c)); }
+function subUID(){ return 's'+Date.now().toString(36)+Math.random().toString(36).slice(2,6); }
+function subClearForm(){ subEl.subName.value=''; subEl.subAmount.value=''; subEl.subNext.value=''; subEl.subCat.value='video'; subSetCycle('m'); subEditId=null; subEl.subAdd.textContent='追加'; subEl.subCancel.hidden=true; }
+function subSubmit(){
+  const name=subEl.subName.value.trim(), amount=Math.round(parseFloat(subEl.subAmount.value));
+  if(!name){ subEl.subName.focus(); return; }
+  if(isNaN(amount)||amount<0){ subEl.subAmount.focus(); return; }
+  const cycle=subCycleVal(), cat=subEl.subCat.value, next=subEl.subNext.value||'';
+  const a=subsLoad();
+  if(subEditId){ const it=a.find(x=>x.id===subEditId); if(it){ it.name=name; it.amount=amount; it.cycle=cycle; it.cat=cat; it.next=next; } }
+  else a.push({id:subUID(),name,amount,cycle,cat,next,rating:0});
+  subsSave(a); subClearForm(); renderSubs();
+}
+function subEditStart(id){ const s=subsLoad().find(x=>x.id===id); if(!s) return; subEl.subName.value=s.name; subEl.subAmount.value=s.amount; subSetCycle(s.cycle); subEl.subCat.value=s.cat; subEl.subNext.value=s.next||''; subEditId=id; subEl.subAdd.textContent='更新'; subEl.subCancel.hidden=false; subEl.subName.focus(); subEl.subName.scrollIntoView({behavior:'smooth',block:'center'}); }
+function subDelete(id){ const a=subsLoad().filter(x=>x.id!==id); subsSave(a); if(subEditId===id) subClearForm(); renderSubs(); }
+function subAddPreset(p){ const a=subsLoad(); a.push({id:subUID(),name:p.name,amount:p.amount,cycle:p.cycle,cat:p.cat,next:'',rating:0}); subsSave(a); renderSubs(); }
+function subSetRating(id,r){ const a=subsLoad(); const it=a.find(x=>x.id===id); if(it){ it.rating=(it.rating===r?0:r); subsSave(a); renderSubs(); } }
+function renderSubs(){
+  const a=subsLoad();
+  if(!a.length){
+    subEl.subSummary.innerHTML=`<div class="sub-card sub-intro">サブスクを登録すると、<b>月額・年額・1日あたり</b>を自動計算します。満足度の低いものは「見直し候補」として表示。データはこのブラウザにだけ保存されます（アカウント不要）。<br>下の例から1タップで追加できます。</div>`;
+  } else {
+    const monthly=a.reduce((s,x)=>s+subMonthly(x),0), year=monthly*12, day=year/365;
+    const byCat={}; a.forEach(x=>{ byCat[x.cat]=(byCat[x.cat]||0)+subMonthly(x); });
+    const bars=SUBCATS.filter(c=>byCat[c.k]).sort((p,q)=>byCat[q.k]-byCat[p.k]).map(c=>{
+      const v=byCat[c.k], pct=monthly?Math.round(v/monthly*100):0;
+      return `<div class="sc-row"><span class="sc-name"><span class="sc-dot" style="background:${c.c}"></span>${c.ja}</span><span class="sc-bar"><span style="width:${pct}%;background:${c.c}"></span></span><span class="sc-val">${yen(v)}</span></div>`;
+    }).join('');
+    const review=a.filter(x=>x.rating>=1&&x.rating<=2); const save=review.reduce((s,x)=>s+subMonthly(x)*12,0);
+    subEl.subSummary.innerHTML=`<div class="sub-card sub-sum">
+      <div class="sum-top"><div><div class="sum-big">${yen(monthly)}</div><div class="sum-label">月額合計 ・ ${a.length}件</div></div>
+      <div class="sum-side">年間 <b>${yen(year)}</b><br>1日あたり <b>${yen(day)}</b></div></div>
+      <div class="sc-list">${bars}</div>
+      ${review.length?`<div class="sub-review">満足度の低い <b>${review.length}件</b> を見直すと、年間 <b>${yen(save)}</b> の節約に</div>`:''}
+    </div>`;
+  }
+  const sorted=a.slice().sort((p,q)=>subMonthly(q)-subMonthly(p));
+  subEl.subList.innerHTML=sorted.map(s=>{
+    const m=subMonthly(s), perDay=m*12/365, c=subCatOf(s.cat);
+    const stars=[1,2,3,4,5].map(n=>`<button class="sub-star ${s.rating>=n?'on':''}" data-id="${s.id}" data-r="${n}" aria-label="満足度${n}">★</button>`).join('');
+    return `<div class="sub-card sub-item${s.rating&&s.rating<=2?' low':''}">
+      <div class="si-main">
+        <div class="si-name">${esc(s.name)} <span class="si-cat" style="background:${c.c}1f;color:${c.c}">${c.ja}</span></div>
+        <div class="si-cost"><b>${yen(s.amount)}</b><span class="si-cyc">/${s.cycle==='y'?'年':'月'}</span><span class="si-day">${yen(perDay)}／日</span>${s.next?`<span class="si-next">次回 ${esc(s.next)}</span>`:''}</div>
+        <div class="si-stars">${stars}</div>
+      </div>
+      <div class="si-acts"><button class="si-edit" data-id="${s.id}">編集</button><button class="si-del" data-id="${s.id}">削除</button></div>
+    </div>`;
+  }).join('');
+  subEl.subList.querySelectorAll('.si-edit').forEach(b=>b.onclick=()=>subEditStart(b.dataset.id));
+  subEl.subList.querySelectorAll('.si-del').forEach(b=>b.onclick=()=>subDelete(b.dataset.id));
+  subEl.subList.querySelectorAll('.sub-star').forEach(b=>b.onclick=()=>subSetRating(b.dataset.id,+b.dataset.r));
+}
+function initSub(){
+  if(!subPanel) return;
+  subEl.subCat.innerHTML=SUBCATS.map(c=>`<option value="${c.k}">${c.ja}</option>`).join('');
+  subEl.subCat.value='video';
+  subEl.subPresets.innerHTML=SUBPRESET.map((p,i)=>`<button class="sub-preset" data-i="${i}">＋ ${esc(p.name)}</button>`).join('');
+  subEl.subPresets.querySelectorAll('.sub-preset').forEach(b=>b.onclick=()=>subAddPreset(SUBPRESET[+b.dataset.i]));
+  subEl.subCycle.querySelectorAll('button').forEach(b=>b.onclick=()=>subSetCycle(b.dataset.c));
+  subEl.subAdd.onclick=subSubmit;
+  subEl.subCancel.onclick=subClearForm;
+  [subEl.subName,subEl.subAmount].forEach(el=>el.addEventListener('keydown',e=>{ if(e.key==='Enter') subSubmit(); }));
 }
 
 /* ============ チップ・トグル ============ */
@@ -869,15 +1046,18 @@ function setMode(m){
   elQ.placeholder=cfg.placeholder;
   elLede.textContent=cfg.lede;
   if(elCtopTitle) elCtopTitle.textContent=MODE_LABELS[m]||'';
-  const isChar=(m==='char'), isDict=(m==='dict'), isData=!isChar&&!isDict;
+  const isChar=(m==='char'), isDict=(m==='dict'), isSub=(m==='sub'), isData=!isChar&&!isDict&&!isSub;
   charPanel.style.display = isChar?'block':'none';
+  subPanel.style.display = isSub?'block':'none';
+  searchwrapEl.style.display = isSub?'none':'';
   elChips.style.display = isData?'flex':'none';
-  document.querySelector('.meta').style.display = isChar?'none':'flex';
-  elAnswer.style.display = isChar?'none':'';
-  elResults.style.display = isChar?'none':'';
-  if(ADS.enabled&&ADS.top) adTopEl.style.display = isChar?'none':'flex';
+  document.querySelector('.meta').style.display = (isChar||isSub)?'none':'flex';
+  elAnswer.style.display = (isChar||isSub)?'none':'';
+  elResults.style.display = (isChar||isSub)?'none':'';
+  if(ADS.enabled&&ADS.top) adTopEl.style.display = (isChar||isSub)?'none':'flex';
   if(isChar){ detailEl.innerHTML=charIntro(); candEl.innerHTML=''; elQ.focus(); }
   else if(isDict){ elAnswer.innerHTML=''; elMetaLabel.textContent='辞書'; elCount.innerHTML=''; dictIntro(); elQ.focus(); }
+  else if(isSub){ renderSubs(); }
   else { buildChips(); render(); elQ.focus(); }
 }
 
@@ -903,13 +1083,15 @@ const ITEMS={
   ui:{icon:'▦',label:'UIパーツ'},
   char:{icon:'字',label:'漢字手書き検索'},
   dict:{icon:'A',label:'英語⇄日本語の辞書'},
+  sub:{icon:'¥',label:'サブスク管理'},
 };
 let MENU=[
   {id:'excel', label:'Excel', items:['fn','sc']},
-  {id:'screen',label:'システム開発', items:['ui']},
   {id:'word',  label:'ことば', items:['char','dict']},
+  {id:'screen',label:'システム開発', items:['ui']},
+  {id:'subsc', label:'サブスク', items:['sub']},
 ];
-const ORDER_KEY='kotae_menu_order_v1';
+const ORDER_KEY='nanikore_menu_order_v1';
 function saveOrder(){ try{ localStorage.setItem(ORDER_KEY, JSON.stringify(MENU.map(g=>({id:g.id,items:g.items})))); }catch(e){} }
 function loadOrder(){
   try{
@@ -1240,7 +1422,7 @@ document.getElementById('foot').innerHTML =
   `<span class="fxmini">？</span> ナニコレナビ — Excel関数 ${FN.length}・ショートカットキー ${SC.length}・UIパーツ ${UI.length} を収録<br>`+
   `「文字」「辞書」タブは手書き認識・翻訳のオンラインサービスを使うため、インターネット接続が必要です。`;
 
-initAds(); buildChips(); render(); renderRecent();
+initAds(); buildChips(); render(); renderRecent(); initSub();
 
 /* ============ 時計 ============ */
 const nbDate=document.getElementById('nbDate'), nbWd=document.getElementById('nbWd'), nbTime=document.getElementById('nbTime');
