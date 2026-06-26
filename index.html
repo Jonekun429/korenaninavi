@@ -3,7 +3,1756 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ナニコレナビ｜読めない漢字の手書き検索・Excel関数・ショートカットの早引き</title>
+<title>ナニコレナビ｜読めない漢字の手書き検索・Excel関数・ショートカットの早引き</title><!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>コレなにナビ｜読めない漢字の手書き検索・Excel関数・ショートカットの早引き</title>
+<meta name="description" content="読めない漢字を手書きで検索、Excel関数やショートカットキー、画面のUIパーツの名前、英和・和英まで。「これ何？」をまとめて引ける無料の早引き検索ツール「コレなにナビ」。">
+<meta property="og:title" content="コレなにナビ｜「これ何？」をまとめて引ける早引き検索">
+<meta property="og:description" content="読めない漢字の手書き検索・Excel関数・ショートカット・UIパーツ・英和和英を、ひとつで。">
+<meta property="og:type" content="website">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Noto+Sans+JP:wght@400;500;700;900&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#F4F6FA; --card:#FFFFFF; --ink:#161A21; --ink-soft:#5A6473; --ink-faint:#99A2B1;
+    --excel:#12855B; --excel-bright:#19A872; --excel-wash:#E9F6F0;
+    --grid:#E6E9F0; --grid-soft:#EDEFF5; --line:#E6E9F0; --select:#12855B;
+    --shadow:0 1px 2px rgba(20,24,33,.04), 0 14px 30px -18px rgba(20,24,33,.22);
+    --mono:'JetBrains Mono',ui-monospace,SFMono-Regular,Menlo,monospace;
+    --sans:'Noto Sans JP',system-ui,-apple-system,sans-serif;
+    --c-agg:#12855B; --c-log:#B7791F; --c-look:#2B6CB0; --c-text:#805AD5;
+    --c-date:#2C9C9C; --c-math:#C05621; --c-stat:#B83280; --c-new:#C53030;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  html{overflow-x:hidden}
+  body{
+    font-family:var(--sans);color:var(--ink);background-color:var(--paper);
+    background-image:radial-gradient(1100px 460px at 50% -170px, var(--excel-wash) 0%, rgba(233,246,240,0) 70%);
+    background-repeat:no-repeat;line-height:1.7;-webkit-font-smoothing:antialiased;min-height:100vh;
+    overflow-x:hidden;
+  }
+  .wrap{max-width:1040px;margin:0 auto;padding:0 20px 96px}
+
+  /* トップバー（ブランド＋時計・上部に固定） */
+  .nowbar{position:sticky;top:0;z-index:40;display:flex;align-items:center;justify-content:space-between;gap:14px;padding:11px 18px;margin:0 -4px 6px;background:rgba(255,255,255,.8);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}
+  .tb-brand{display:flex;align-items:center;gap:9px;font-weight:900;font-size:17px;letter-spacing:.01em;color:var(--ink)}
+  .tb-brand .tb-mark{font-family:var(--mono);font-weight:700;font-size:15px;color:#fff;background:var(--excel);width:28px;height:28px;border-radius:8px;display:grid;place-items:center}
+  .tb-clock{display:flex;align-items:center;gap:12px}
+  .nb-date{font-size:12.5px;font-weight:700;color:var(--ink-soft)}
+  .nb-date .nb-wd{color:var(--ink-faint);margin-left:4px;font-weight:600}
+  .nb-time{display:flex;align-items:center;gap:7px;font-family:var(--mono);font-size:18px;font-weight:700;color:var(--ink);line-height:1}
+  .nb-time .nb-sec{color:var(--ink-faint);font-size:13px;font-weight:500}
+  .nb-dot{width:7px;height:7px;border-radius:50%;background:var(--excel-bright);box-shadow:0 0 0 0 rgba(25,168,114,.5);animation:nbpulse 2s infinite}
+  @keyframes nbpulse{0%{box-shadow:0 0 0 0 rgba(25,168,114,.45)}70%{box-shadow:0 0 0 7px rgba(25,168,114,0)}100%{box-shadow:0 0 0 0 rgba(25,168,114,0)}}
+  @media(max-width:480px){.nb-time{font-size:16px}.nb-time .nb-sec{font-size:12px}.nb-date{font-size:11px}.tb-brand{font-size:15px}}
+
+  /* 引っ張って更新 */
+  .ptr{position:fixed;top:-48px;left:0;right:0;display:flex;justify-content:center;z-index:70;pointer-events:none;opacity:0}
+  .ptr-spin{width:36px;height:36px;border-radius:50%;background:var(--card);border:1.5px solid var(--line);box-shadow:var(--shadow);display:grid;place-items:center}
+  .ptr-spin::after{content:"";width:16px;height:16px;border-radius:50%;border:2.6px solid var(--grid);border-top-color:var(--excel);transition:border-top-color .15s}
+  .ptr.ready .ptr-spin::after{border-top-color:var(--excel-bright);border-right-color:var(--excel-bright)}
+  .ptr.spinning .ptr-spin::after{animation:ptrspin .6s linear infinite}
+  @keyframes ptrspin{to{transform:rotate(360deg)}}
+
+  header{padding:36px 0 10px;text-align:center}
+  h1{font-size:clamp(28px,5vw,44px);font-weight:900;letter-spacing:-.02em;line-height:1.15;margin-bottom:10px;color:var(--ink)}
+  h1 .hl{color:var(--excel)}
+  .lede{color:var(--ink-soft);font-size:15px;max-width:540px;margin:0 auto;font-weight:500}
+
+  .searchwrap{margin:18px 0 22px;max-width:640px}
+  /* 大きな検索フィールド */
+  .formulabar{display:flex;align-items:center;background:var(--card);border:1.5px solid var(--line);border-radius:999px;box-shadow:0 2px 4px rgba(20,24,33,.04),0 18px 38px -22px rgba(20,24,33,.3);overflow:hidden;transition:border-color .18s,box-shadow .18s}
+  .formulabar:focus-within{border-color:var(--excel);box-shadow:0 0 0 4px rgba(18,133,91,.13),0 18px 38px -22px rgba(20,24,33,.3)}
+  .fxtab{display:flex;align-items:center;justify-content:center;padding:0 4px 0 22px;color:var(--ink-faint)}
+  .fxtab svg{width:21px;height:21px;display:block}
+  .formulabar:focus-within .fxtab{color:var(--excel)}
+  #q{flex:1;border:none;outline:none;background:transparent;font-family:var(--sans);font-size:17px;font-weight:500;color:var(--ink);padding:17px 14px}
+  #q::placeholder{color:var(--ink-faint);font-weight:400}
+  .clearbtn{border:none;background:transparent;cursor:pointer;color:var(--ink-faint);font-size:20px;padding:0 22px;display:none;align-items:center}
+  .clearbtn:hover{color:var(--ink)}
+  .clearbtn.show{display:flex}
+
+  /* ===== 左サイドバー・レイアウト ===== */
+  .appshell{display:grid;grid-template-columns:264px 1fr;align-items:start}
+  .sidebar{position:sticky;top:0;height:100vh;overflow-y:auto;background:var(--card);border-right:1px solid var(--line);padding:18px 14px 24px;display:flex;flex-direction:column;gap:2px}
+  .sb-brand{display:flex;align-items:center;gap:11px;padding:6px 8px 18px}
+  .sb-mark{font-family:var(--mono);font-weight:700;font-size:17px;color:#fff;background:var(--excel);width:36px;height:36px;border-radius:10px;display:grid;place-items:center;box-shadow:0 6px 14px -6px rgba(18,133,91,.55)}
+  .sb-name{font-weight:900;font-size:18px;line-height:1.1}
+  .sb-sub{font-size:11px;color:var(--ink-faint);font-weight:600;letter-spacing:.04em}
+  .sb-nav{display:flex;flex-direction:column;gap:2px}
+  .sb-sec{padding:6px 0 10px}
+  .sb-label{font-family:var(--mono);font-size:10.5px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--g);padding:6px 12px 7px}
+  .sb-dot{width:8px;height:8px;border-radius:3px;background:var(--g);flex:0 0 auto;margin-right:7px}
+  .modetab{position:relative;display:flex;align-items:center;gap:12px;width:100%;text-align:left;border:none;background:transparent;color:var(--ink-soft);font-family:var(--sans);font-weight:700;font-size:14.5px;padding:11px 13px;border-radius:10px;cursor:pointer;transition:background .14s,color .14s}
+  .modetab .ic{font-family:var(--mono);font-weight:700;font-size:13px;width:26px;height:26px;border-radius:7px;background:color-mix(in srgb,var(--g) 14%,#fff);display:grid;place-items:center;color:var(--g);flex:0 0 auto;transition:all .14s}
+  .modetab:hover{background:color-mix(in srgb,var(--g) 7%,#fff)}
+  .modetab.active{background:color-mix(in srgb,var(--g) 13%,#fff);color:var(--g)}
+  .modetab.active .ic{background:var(--g);color:#fff}
+  .modetab.active::before{content:"";position:absolute;left:-14px;top:9px;bottom:9px;width:4px;border-radius:0 4px 4px 0;background:var(--g)}
+  .sb-foot{margin-top:auto;padding:14px 12px 2px;font-size:12px;color:var(--ink-faint);font-weight:600;display:flex;align-items:center;gap:8px;border-top:1px solid var(--line)}
+  .sb-fmark{font-family:var(--mono);font-weight:700;color:var(--excel)}
+
+  /* モバイル：トップバー＋ドロワー（PCでは非表示） */
+  .mtopbar{display:none;position:fixed;top:0;left:0;right:0;height:52px;z-index:40;align-items:center;gap:10px;padding:0 14px;background:rgba(255,255,255,.92);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+  .mburger{display:inline-flex;flex-direction:column;justify-content:center;gap:4px;width:38px;height:38px;padding:8px;background:none;border:none;cursor:pointer}
+  .mburger span{display:block;height:2.5px;border-radius:2px;background:var(--ink);transition:transform .22s,opacity .22s}
+  body.drawer-open .mburger span:nth-child(1){transform:translateY(6.5px) rotate(45deg)}
+  body.drawer-open .mburger span:nth-child(2){opacity:0}
+  body.drawer-open .mburger span:nth-child(3){transform:translateY(-6.5px) rotate(-45deg)}
+  .mtop-brand{font-weight:900;font-size:17px;letter-spacing:-.01em;display:flex;align-items:center;gap:8px}
+  .mtop-mark{font-family:var(--mono);font-weight:700;color:#fff;background:var(--excel);width:26px;height:26px;border-radius:8px;display:grid;place-items:center;font-size:14px}
+  .mbackdrop{display:none;position:fixed;inset:0;z-index:110;background:rgba(15,20,28,.42);opacity:0;visibility:hidden;transition:opacity .26s,visibility .26s}
+  body.drawer-open .mbackdrop{opacity:1;visibility:visible}
+  .sb-close{display:none;position:absolute;top:12px;right:12px;width:34px;height:34px;border-radius:9px;border:1.5px solid var(--line);background:var(--card);color:var(--ink-soft);font-size:20px;line-height:1;cursor:pointer;place-items:center}
+  .sb-close:hover{border-color:var(--excel);color:var(--excel)}
+  /* 並べ替え */
+  .sb-edit{margin:0 6px 6px;align-self:flex-start;font-family:var(--sans);font-weight:700;font-size:12px;color:var(--ink-soft);background:transparent;border:1.5px solid var(--line);border-radius:8px;padding:5px 12px;cursor:pointer;transition:all .14s}
+  .sb-edit:hover{border-color:var(--ink-faint);color:var(--ink)}
+  .sb-edit.on{background:var(--excel);color:#fff;border-color:var(--excel)}
+  .sb-hint{font-size:11px;color:var(--ink-faint);font-weight:600;padding:0 10px 8px;line-height:1.5}
+  .mt-label{flex:1}
+  .reorder{display:inline-flex;gap:3px;margin-left:auto}
+  .rb{border:1px solid var(--line);background:var(--card);color:var(--ink-soft);width:22px;height:20px;border-radius:5px;font-size:8px;cursor:pointer;display:grid;place-items:center;line-height:1;padding:0}
+  .rb:hover{border-color:var(--excel);color:var(--excel)}
+  .sb-label{display:flex;align-items:center}
+  .sidebar.editing .modetab{cursor:default;background:#FAFBFD}
+  .sidebar.editing .modetab.active{background:color-mix(in srgb,var(--g) 13%,#fff)}
+  /* アクセス数バッジ */
+  .ac{display:inline-flex;align-items:center;gap:7px;background:var(--card);border:1.5px solid var(--line);border-radius:999px;padding:6px 13px;box-shadow:var(--shadow)}
+  .ac-dot{width:7px;height:7px;border-radius:50%;background:var(--excel-bright);box-shadow:0 0 0 0 rgba(25,168,114,.5);animation:nbpulse 2s infinite}
+  .ac-num{font-family:var(--mono);font-weight:700;font-size:15px;color:var(--ink)}
+  .ac-cap{font-size:11px;color:var(--ink-faint);font-weight:700}
+
+  .content{padding:24px 30px 70px;min-width:0;max-width:1120px}
+  .ctop{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;flex-wrap:wrap;margin-bottom:4px}
+  .ctop-title{font-size:25px;font-weight:900;letter-spacing:-.01em}
+  .ctop-sub{font-size:13.5px;color:var(--ink-soft);font-weight:600;margin-top:2px}
+  .ctop-clock{position:fixed;top:10px;right:16px;z-index:50;display:flex;align-items:center;gap:9px;background:rgba(255,255,255,.88);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border:1px solid var(--line);border-radius:999px;padding:7px 15px;box-shadow:var(--shadow);font-family:var(--mono);white-space:nowrap}
+  .cc-dot{width:7px;height:7px;border-radius:50%;background:var(--excel-bright);box-shadow:0 0 0 0 rgba(25,168,114,.5);animation:nbpulse 2s infinite;flex:0 0 auto}
+  .cc-date{font-size:12.5px;font-weight:700;color:var(--ink-soft)}
+  .cc-date .nb-wd{color:var(--ink-faint);margin-left:3px;font-weight:600}
+  .cc-time{font-size:14px;font-weight:700;color:var(--ink)}
+  .cc-time .nb-sec{color:var(--ink-faint);font-size:12px;font-weight:500}
+  .cc-sep{color:var(--ink-faint)}
+  .cc-ac{font-size:12.5px;font-weight:700;color:var(--ink-soft)}
+  .cc-ac b{color:var(--excel);margin-right:4px}
+  @media(max-width:900px){
+    .ctop-clock{top:8px;right:8px;gap:7px;padding:5px 11px}
+    .cc-date,.cc-sep{display:none}
+    .cc-time{font-size:12.5px}.cc-ac{font-size:11.5px}
+  }
+
+  @media(max-width:900px){
+    .mtopbar{display:flex}
+    .appshell{grid-template-columns:1fr}
+    .content{padding:64px 16px 80px}
+    .ctop-title{font-size:21px}
+    .sidebar{position:fixed;top:0;left:0;height:100%;width:286px;max-width:84vw;z-index:120;
+      transform:translateX(-100%);transition:transform .26s cubic-bezier(.4,0,.2,1);
+      border-right:1px solid var(--line);box-shadow:24px 0 60px -24px rgba(15,20,28,.45);
+      overflow-y:auto;background:var(--card);padding:18px 16px 24px}
+    body.drawer-open .sidebar{transform:none}
+    .sb-close{display:grid}
+    .mbackdrop{display:block}
+    .sb-brand{padding:2px 4px 18px}
+  }
+
+  .platwrap{display:none;justify-content:flex-start;margin-top:14px}
+  .platwrap.show{display:flex}
+  .platseg{display:inline-flex;border:1.5px solid var(--line);border-radius:999px;overflow:hidden;background:var(--card);box-shadow:var(--shadow)}
+  .platseg button{border:none;background:transparent;font-family:var(--sans);font-weight:700;font-size:12.5px;color:var(--ink-soft);padding:7px 18px;cursor:pointer;transition:all .14s}
+  .platseg button.active{background:var(--ink);color:#fff}
+
+  .chips{display:flex;flex-wrap:wrap;gap:8px;justify-content:flex-start;margin-top:16px}
+  .chip{font-family:var(--sans);font-size:13px;font-weight:700;border:1.5px solid var(--line);background:var(--card);color:var(--ink-soft);padding:7px 14px;border-radius:999px;cursor:pointer;display:inline-flex;align-items:center;gap:7px;transition:all .15s}
+  .chip .dot{width:8px;height:8px;border-radius:50%;background:var(--ink-faint)}
+  .chip:hover{border-color:var(--ink-faint);color:var(--ink)}
+  .chip.active{background:var(--ink);color:#fff;border-color:var(--ink)}
+  .chip.active .dot{background:#fff}
+
+  .meta{display:flex;align-items:baseline;justify-content:space-between;margin:30px 4px 16px;gap:12px;flex-wrap:wrap}
+  .meta .label{font-family:var(--mono);font-size:12px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-faint)}
+  .meta .count{font-size:13px;color:var(--ink-soft);font-weight:600}
+  .meta .count b{color:var(--excel)}
+
+  .answer{margin-bottom:30px}
+  .answer .ans-eyebrow{font-family:var(--mono);font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--excel);margin:0 4px 10px;display:flex;align-items:center;gap:8px}
+  .answer .ans-eyebrow::before{content:"";width:20px;height:2px;background:var(--excel)}
+  .selected-cell{position:relative}
+  .selected-cell .card{border:2px solid var(--select);box-shadow:0 0 0 4px rgba(33,115,70,.1), var(--shadow)}
+  .selected-cell::after{content:"";position:absolute;right:-5px;bottom:-5px;width:11px;height:11px;background:var(--select);border:2px solid var(--card);border-radius:2px}
+
+  .grid{display:grid;grid-template-columns:repeat(2,1fr);gap:16px}
+  @media(max-width:680px){.grid{grid-template-columns:1fr}}
+
+  .card{background:var(--card);border:1.5px solid var(--line);border-radius:14px;padding:20px 20px 18px;box-shadow:var(--shadow);border-left:4px solid var(--cat,var(--excel));transition:transform .14s,box-shadow .14s}
+  .card:hover{transform:translateY(-2px);box-shadow:0 1px 0 rgba(27,36,32,.04),0 14px 30px -14px rgba(27,36,32,.26)}
+  .card-top{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:4px}
+  .fn-name{font-family:var(--mono);font-weight:700;font-size:23px;letter-spacing:-.01em;color:var(--ink)}
+  .fn-read{font-size:12px;color:var(--ink-faint);font-weight:500;margin-top:1px}
+  .sc-action{font-family:var(--sans);font-weight:900;font-size:19px;color:var(--ink);line-height:1.3}
+  .cat-tag{font-family:var(--mono);font-size:10.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:4px 9px;border-radius:6px;white-space:nowrap;background:var(--cat-wash,var(--excel-wash));color:var(--cat,var(--excel))}
+  .fn-desc{font-size:14px;color:var(--ink-soft);font-weight:500;margin:10px 0 14px;line-height:1.65}
+
+  .syntax{font-family:var(--mono);font-size:12.5px;color:var(--ink);background:#F6F8F6;border:1px solid var(--line);border-radius:8px;padding:9px 11px;margin-bottom:12px;line-height:1.55;word-break:break-word}
+  .syntax .arg{color:var(--cat,var(--excel));font-weight:500}
+  .example{display:flex;align-items:center;gap:9px;flex-wrap:wrap}
+  .ex-cell{font-family:var(--mono);font-size:12.5px;font-weight:500;border:1px solid var(--grid);background:#fff;border-radius:6px;padding:7px 10px;color:var(--ink);position:relative;cursor:pointer;transition:background .12s,border-color .12s}
+  .ex-cell.formula:hover{background:var(--excel-wash);border-color:var(--excel-bright)}
+  .ex-cell.formula::after{content:"コピー";position:absolute;top:-9px;right:6px;font-family:var(--sans);font-size:9px;font-weight:700;color:var(--excel);background:var(--card);padding:0 4px;opacity:0;transition:opacity .12s}
+  .ex-cell.formula:hover::after{opacity:1}
+  .ex-cell.copied::after{content:"コピーしました";opacity:1;color:var(--excel)}
+  .ex-cell.result{background:var(--excel-wash);border-color:#CDE5D8;color:var(--excel);font-weight:700}
+  .ex-arrow{color:var(--ink-faint);font-weight:700;font-family:var(--mono)}
+  .ex-note{font-size:12px;color:var(--ink-faint);margin-top:9px;font-weight:500}
+
+  /* keycaps */
+  .kcombo{display:flex;align-items:center;gap:7px;flex-wrap:wrap;margin:14px 0 12px}
+  .kbd{font-family:var(--mono);font-size:14px;font-weight:700;color:var(--ink);background:linear-gradient(180deg,#fff,#EFF2EF);border:1.5px solid var(--grid);border-bottom-width:3px;border-radius:8px;min-width:34px;padding:8px 11px;text-align:center;line-height:1}
+  .kplus{color:var(--ink-faint);font-weight:700;font-family:var(--mono);font-size:13px}
+  .sc-note{font-size:11.5px;color:var(--ink-faint);margin-top:2px;font-weight:500}
+  /* UIパーツ */
+  .ui-en{font-family:var(--mono);font-size:12px;color:var(--ink-faint);font-weight:500;margin-top:2px}
+  .ui-ico{display:flex;align-items:center;justify-content:center;height:78px;background:#F6F8F6;border:1px solid var(--line);border-radius:10px;margin:13px 0;color:var(--cat,var(--excel))}
+  .ui-ico svg{width:84px;height:56px}
+
+  /* 文字（手書き・読み）*/
+  .modetab{white-space:nowrap}
+  .charpanel{display:none}
+  .hw{display:flex;gap:16px;background:var(--card);border:1.5px solid var(--line);border-radius:14px;padding:16px;box-shadow:var(--shadow);flex-wrap:wrap}
+  #hwcanvas{width:240px;max-width:100%;aspect-ratio:1/1;height:auto;touch-action:none;background:#fff;border:1.5px dashed var(--grid);border-radius:12px;cursor:crosshair;background-image:linear-gradient(var(--grid-soft) 1px,transparent 1px),linear-gradient(90deg,var(--grid-soft) 1px,transparent 1px);background-size:120px 120px;background-position:center}
+  .hw-side{flex:1;min-width:160px;display:flex;flex-direction:column;gap:9px;justify-content:center}
+  .hw-side h4{font-size:14px;font-weight:900;color:var(--ink)}
+  .hw-side p{font-size:12px;color:var(--ink-faint);font-weight:500;line-height:1.6}
+  .hw-btns{display:flex;gap:8px;flex-wrap:wrap}
+  .hw-btn{font-family:var(--sans);font-weight:700;font-size:13.5px;border:1.5px solid var(--line);background:#fff;color:var(--ink-soft);padding:9px 16px;border-radius:9px;cursor:pointer;transition:all .14s}
+  .hw-btn:hover{border-color:var(--ink-faint);color:var(--ink)}
+  .hw-btn.primary{background:var(--excel);color:#fff;border-color:var(--excel)}
+  .hw-btn.primary:hover{background:#1c633c;color:#fff}
+  .candidates{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin:14px 0 4px}
+  .cand-label{font-family:var(--mono);font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-faint);width:100%}
+  .cand{font-family:"Hiragino Mincho ProN","Yu Mincho",serif;font-size:24px;line-height:1;border:1.5px solid var(--line);background:#fff;border-radius:9px;padding:8px 12px;cursor:pointer;transition:all .13s}
+  .cand:hover{border-color:var(--excel);background:var(--excel-wash);transform:translateY(-1px)}
+  .cand-msg{font-size:13px;color:var(--ink-soft);font-weight:500;margin:12px 0}
+  .cand-msg.err{color:#C53030}
+  #chardetail{margin-top:8px}
+  .char-card{background:var(--card);border:1.5px solid var(--line);border-left:4px solid var(--excel);border-radius:14px;padding:22px;box-shadow:var(--shadow)}
+  .char-head{display:flex;align-items:center;gap:20px;border-bottom:1px solid var(--line);padding-bottom:16px;margin-bottom:16px}
+  .char-glyph{font-family:"Hiragino Mincho ProN","Yu Mincho",serif;font-size:74px;line-height:.95;font-weight:500;color:var(--ink)}
+  .char-stats{display:flex;flex-wrap:wrap;gap:8px}
+  .char-stats span{font-size:12px;font-weight:700;color:var(--ink-soft);background:#F2F5F2;border:1px solid var(--line);border-radius:6px;padding:5px 10px}
+  .yomi{display:flex;flex-direction:column;gap:14px}
+  .yomi-row{display:flex;gap:16px;align-items:baseline}
+  .yomi-label{flex:0 0 52px;font-size:13px;font-weight:900;color:var(--ink)}
+  .yomi-vals{display:flex;flex-wrap:wrap;gap:8px}
+  .yomi-chip{font-size:17px;font-weight:700;padding:5px 12px;border-radius:8px}
+  .yomi-chip.on{background:var(--excel-wash);color:var(--excel)}
+  .yomi-chip.kun{background:#F0EAFA;color:#6B46C1}
+  .yomi-none{color:var(--ink-faint);font-size:15px}
+  .char-mean{margin-top:16px;font-size:13.5px;color:var(--ink-soft);border-top:1px solid var(--line);padding-top:14px;line-height:1.7}
+  .char-mean b{color:var(--ink);margin-right:8px;font-weight:700}
+  .char-note{font-size:11.5px;color:var(--ink-faint);margin-top:12px;line-height:1.6}
+  .char-msg{padding:34px 20px;text-align:center;color:var(--ink-soft);background:var(--card);border:1.5px dashed var(--line);border-radius:14px;font-size:14px}
+  .char-msg.err{color:#9B2C2C;border-color:#E8C9C9}
+  .rr-label{font-size:13px;font-weight:700;color:var(--ink);margin-bottom:10px}
+  .rr-chips{display:flex;flex-wrap:wrap;gap:8px}
+  .rr-chip{font-family:"Hiragino Mincho ProN","Yu Mincho",serif;font-size:22px;border:1.5px solid var(--line);background:#fff;border-radius:8px;padding:5px 11px;cursor:pointer;transition:all .13s}
+  .rr-chip:hover{border-color:var(--excel);background:var(--excel-wash)}
+
+  /* 広告スロット */
+  .ad-tag{position:absolute;top:9px;right:11px;font-family:var(--mono);font-size:9.5px;font-weight:700;letter-spacing:.1em;color:#9A7B2E;background:#FBF3DE;border:1px solid #ECDCB2;border-radius:5px;padding:2px 7px;z-index:2}
+  .ad-banner{position:relative;display:flex;align-items:center;justify-content:center;background:var(--card);border:1.5px dashed var(--line);border-radius:13px;min-height:96px;margin:18px 0;box-shadow:var(--shadow)}
+  .ad-banner-inner{color:var(--ink-faint);font-size:13px;font-weight:700;text-align:center;line-height:1.7}
+  .ad-mini{font-weight:500;font-size:11px}
+  .ad-card{position:relative;display:flex;align-items:center;justify-content:center;min-height:150px;background:#FCFAF4;border:1.5px dashed #E6DCBF;border-left:4px solid #E3C770;box-shadow:var(--shadow)}
+  .ad-card:hover{transform:none;box-shadow:var(--shadow)}
+  .ad-body{text-align:center;color:var(--ink-faint)}
+  .ad-body .ad-ico{font-size:26px;color:#D8C176;margin-bottom:6px;font-family:var(--mono)}
+  .ad-body p{font-size:13px;font-weight:700;color:var(--ink-soft)}
+  .ad-body .ad-mini{display:block;margin-top:4px}
+  .ad-anchor{display:none}
+  .ad-anchor-close{position:absolute;top:3px;right:9px;border:none;background:transparent;font-size:19px;line-height:1;color:var(--ink-faint);cursor:pointer;z-index:3}
+  @media(max-width:680px){
+    .ad-anchor.show{display:flex;align-items:center;justify-content:center;position:fixed;left:0;right:0;bottom:0;z-index:60;min-height:58px;background:var(--card);border-top:1.5px solid var(--line);box-shadow:0 -6px 20px -10px rgba(27,36,32,.25)}
+    body.has-anchor{padding-bottom:66px}
+  }
+
+  .empty{text-align:center;padding:56px 20px;color:var(--ink-soft);background:var(--card);border:1.5px dashed var(--line);border-radius:14px}
+  .empty .big{font-family:var(--mono);font-size:34px;color:var(--ink-faint);margin-bottom:14px}
+  .empty h3{font-size:17px;font-weight:700;color:var(--ink);margin-bottom:8px}
+  .empty p{font-size:14px;max-width:380px;margin:0 auto 16px}
+  .empty .sugg{display:flex;flex-wrap:wrap;gap:8px;justify-content:center}
+  .empty .sugg button{font-family:var(--sans);font-size:13px;font-weight:600;cursor:pointer;border:1.5px solid var(--line);background:#fff;color:var(--ink-soft);padding:6px 13px;border-radius:999px;transition:all .14s}
+  .empty .sugg button:hover{border-color:var(--excel);color:var(--excel)}
+
+  footer{text-align:center;margin-top:48px;color:var(--ink-faint);font-size:12px;line-height:1.7}
+  footer .fxmini{font-family:var(--mono);font-style:italic;color:var(--excel);font-weight:700}
+
+  /* よく使う（履歴）バー */
+  .recentbar{max-width:640px;margin:0 auto;padding:10px 2px 0}
+  .rc-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}
+  .rc-title{font-family:var(--mono);font-size:10.5px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-faint)}
+  .rc-clear{font-family:var(--sans);font-size:11.5px;font-weight:600;color:var(--ink-faint);background:none;border:none;cursor:pointer;padding:2px}
+  .rc-clear:hover{color:var(--excel);text-decoration:underline}
+  .rc-chips{display:flex;flex-wrap:wrap;gap:7px}
+  .rc-chip{display:inline-flex;align-items:center;gap:7px;font-family:var(--sans);font-weight:700;font-size:13px;color:var(--ink-soft);background:var(--card);border:1.5px solid var(--line);border-radius:999px;padding:6px 13px 6px 8px;cursor:pointer;transition:all .14s;box-shadow:var(--shadow)}
+  .rc-chip:hover{border-color:var(--excel);color:var(--ink);transform:translateY(-1px)}
+  .rc-mk{font-family:var(--mono);font-size:10.5px;font-weight:700;color:#fff;background:var(--excel);min-width:18px;height:18px;border-radius:5px;display:inline-grid;place-items:center;line-height:1}
+
+  /* 敬語・言い換え */
+  .kg-scene{font-size:11px;font-weight:700;color:var(--ink-faint);background:var(--paper);border:1px solid var(--line);border-radius:999px;padding:3px 10px;white-space:nowrap}
+  .kg-label{font-size:11.5px;font-weight:700;color:var(--ink-faint);margin:12px 0 8px}
+  .kg-polite{display:flex;flex-wrap:wrap;gap:8px}
+  .kg-chip{font-family:var(--sans);font-weight:700;font-size:14px;color:var(--excel);background:var(--excel-wash);border:1.5px solid #BCE3D2;border-radius:10px;padding:8px 14px;cursor:pointer;transition:all .14s}
+  .kg-chip:hover{border-color:var(--excel);transform:translateY(-1px)}
+  .kg-chip.copied{background:var(--excel);color:#fff;border-color:var(--excel)}
+
+  /* サブスク管理 */
+  .subpanel{display:none}
+  .sub-card{background:var(--card);border:1.5px solid var(--line);border-radius:16px;box-shadow:var(--shadow)}
+  .sub-summary{margin-bottom:14px}
+  .sub-intro{padding:18px;font-size:14px;color:var(--ink-soft);line-height:1.75}
+  .sub-sum{padding:18px}
+  .sum-top{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;flex-wrap:wrap}
+  .sum-big{font-family:var(--mono);font-size:34px;font-weight:700;color:var(--excel);line-height:1}
+  .sum-label{font-size:12px;color:var(--ink-faint);font-weight:600;margin-top:5px}
+  .sum-side{font-size:13px;color:var(--ink-soft);text-align:right;line-height:1.7}
+  .sum-side b{color:var(--ink);font-family:var(--mono)}
+  .sc-list{margin-top:16px;display:flex;flex-direction:column;gap:8px}
+  .sc-row{display:flex;align-items:center;gap:10px;font-size:12.5px}
+  .sc-name{display:flex;align-items:center;gap:6px;min-width:72px;color:var(--ink-soft);font-weight:600}
+  .sc-dot{width:9px;height:9px;border-radius:3px;display:inline-block}
+  .sc-bar{flex:1;height:8px;background:var(--paper);border-radius:5px;overflow:hidden}
+  .sc-bar>span{display:block;height:100%;border-radius:5px}
+  .sc-val{font-family:var(--mono);font-size:12px;color:var(--ink);min-width:62px;text-align:right}
+  .sub-review{margin-top:14px;padding:10px 13px;background:#FFF6EC;border:1px solid #F4D4A8;border-radius:10px;font-size:12.5px;color:#7A4E12}
+  .sub-review b{color:#B5660A}
+  .sub-form{padding:14px}
+  .sub-form-row{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+  .sub-in{font-family:var(--sans);font-size:14px;font-weight:600;color:var(--ink);background:var(--paper);border:1.5px solid var(--line);border-radius:10px;padding:9px 12px;outline:none}
+  .sub-in:focus{border-color:var(--excel)}
+  #subName{flex:1 1 150px;min-width:120px}
+  .sub-amt{display:flex;align-items:center;gap:2px;background:var(--paper);border:1.5px solid var(--line);border-radius:10px;padding:0 4px 0 11px}
+  .sub-amt:focus-within{border-color:var(--excel)}
+  .sub-yen{color:var(--ink-faint);font-weight:700}
+  #subAmount{border:none;background:transparent;width:86px;padding:9px 6px}
+  .sub-seg{display:inline-flex;background:var(--paper);border:1.5px solid var(--line);border-radius:10px;overflow:hidden}
+  .sub-seg button{font-family:var(--sans);font-size:13px;font-weight:700;color:var(--ink-faint);background:none;border:none;padding:9px 13px;cursor:pointer}
+  .sub-seg button.active{background:var(--excel);color:#fff}
+  .sub-sel{cursor:pointer}
+  .sub-date{color:var(--ink-soft)}
+  .sub-add{font-family:var(--sans);font-size:14px;font-weight:700;color:#fff;background:var(--excel);border:none;border-radius:10px;padding:10px 22px;cursor:pointer;box-shadow:0 6px 14px -6px rgba(18,133,91,.55)}
+  .sub-add:hover{filter:brightness(1.06)}
+  .sub-cancel{font-family:var(--sans);font-size:13px;font-weight:600;color:var(--ink-faint);background:none;border:1.5px solid var(--line);border-radius:10px;padding:9px 14px;cursor:pointer}
+  .sub-presets{display:flex;flex-wrap:wrap;gap:7px;margin-top:12px}
+  .sub-preset{font-family:var(--sans);font-size:12.5px;font-weight:700;color:var(--ink-soft);background:var(--paper);border:1.5px solid var(--line);border-radius:999px;padding:6px 13px;cursor:pointer;transition:all .14s}
+  .sub-preset:hover{border-color:var(--excel);color:var(--excel)}
+  .sub-list{margin-top:14px;display:flex;flex-direction:column;gap:10px}
+  .sub-item{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:13px 16px}
+  .sub-item.low{border-color:#F4C98A;background:#FFFAF2}
+  .si-main{min-width:0}
+  .si-name{font-size:15px;font-weight:800;color:var(--ink);display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+  .si-cat{font-size:11px;font-weight:700;padding:2px 9px;border-radius:999px}
+  .si-cost{margin-top:5px;font-size:12.5px;color:var(--ink-soft);display:flex;align-items:center;gap:9px;flex-wrap:wrap}
+  .si-cost b{font-family:var(--mono);font-size:15px;color:var(--ink)}
+  .si-cyc,.si-day{color:var(--ink-faint)}
+  .si-next{color:var(--excel);font-weight:600}
+  .si-stars{margin-top:8px;display:flex;gap:2px}
+  .sub-star{font-size:15px;line-height:1;background:none;border:none;cursor:pointer;color:#D8DEE6;padding:0 1px}
+  .sub-star.on{color:#F5B945}
+  .si-acts{display:flex;flex-direction:column;gap:6px;flex:0 0 auto}
+  .si-edit,.si-del{font-family:var(--sans);font-size:12px;font-weight:700;border-radius:8px;padding:6px 12px;cursor:pointer;border:1.5px solid var(--line);background:var(--card);color:var(--ink-soft)}
+  .si-edit:hover{border-color:var(--excel);color:var(--excel)}
+  .si-del:hover{border-color:#E0524B;color:#E0524B}
+
+  /* 割り勘 */
+  .waripanel{display:none}
+  .wari-members{padding:16px;margin-bottom:12px}
+  .wari-mhead,.wari-fhead{font-size:13px;font-weight:800;color:var(--ink);margin-bottom:10px}
+  .wari-mrow{display:flex;gap:8px;align-items:center}
+  .wari-mrow #wariName{flex:1}
+  .wari-chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+  .wari-chip{display:inline-flex;align-items:center;gap:4px;font-size:13.5px;font-weight:700;color:var(--ink);background:var(--paper);border:1.5px solid var(--line);border-radius:999px;padding:6px 6px 6px 13px}
+  .wari-x{width:20px;height:20px;border-radius:999px;border:none;background:#E6E9F0;color:var(--ink-soft);font-size:14px;line-height:1;cursor:pointer;display:grid;place-items:center}
+  .wari-x:hover{background:#E0524B;color:#fff}
+  .wari-empty{font-size:13px;color:var(--ink-faint)}
+  #wariForm{margin-bottom:12px}
+  .wari-parts-label{font-size:11.5px;font-weight:700;color:var(--ink-faint);margin:12px 0 8px}
+  .wari-parts{display:flex;flex-wrap:wrap;gap:7px}
+  .wp-part{font-family:var(--sans);font-size:12.5px;font-weight:700;color:var(--ink-faint);background:var(--paper);border:1.5px solid var(--line);border-radius:999px;padding:6px 13px;cursor:pointer;transition:all .14s}
+  .wp-part.on{color:var(--excel);border-color:var(--excel);background:var(--excel-wash)}
+  .wari-result{margin-bottom:14px}
+  .wari-sum{padding:18px}
+  .wari-block-label{font-size:11.5px;font-weight:800;color:var(--ink-faint);letter-spacing:.04em;margin:16px 0 9px}
+  .wb-list{display:flex;flex-direction:column;gap:6px}
+  .wb-row{display:flex;justify-content:space-between;align-items:center;font-size:14px;padding:2px 0}
+  .wb-name{font-weight:700;color:var(--ink)}
+  .wb-val{font-family:var(--mono);font-weight:700;color:var(--ink-faint)}
+  .wb-val.plus{color:var(--excel)}
+  .wb-val.minus{color:#E0524B}
+  .wt-list{display:flex;flex-direction:column;gap:8px}
+  .wt-row{display:flex;align-items:center;gap:10px;background:var(--excel-wash);border:1px solid #BCE3D2;border-radius:11px;padding:11px 14px}
+  .wt-from{font-weight:800;color:var(--ink)}
+  .wt-arrow{color:var(--excel);font-weight:800}
+  .wt-to{font-weight:800;color:var(--ink)}
+  .wt-amt{margin-left:auto;font-family:var(--mono);font-weight:700;font-size:16px;color:var(--excel)}
+  .wari-done{font-size:14px;font-weight:700;color:var(--excel);text-align:center;padding:8px}
+  .wari-cat{font-size:11px;font-weight:700;padding:2px 9px;border-radius:999px;background:var(--excel-wash);color:var(--excel)}
+  @media(max-width:600px){
+    .sub-form-row{flex-direction:column;align-items:stretch;gap:9px}
+    .sub-form-row>*{width:100%}
+    #subName{flex:none;min-width:0}
+    .sub-amt{box-sizing:border-box}
+    #subAmount{width:100%;min-width:0}
+    .sub-seg{display:flex}
+    .sub-seg button{flex:1}
+    .sub-sel,.sub-date{width:100%}
+    .sub-add,.sub-cancel{width:100%}
+    .sub-item{flex-direction:column;align-items:stretch;gap:10px}
+    .si-acts{flex-direction:row;justify-content:flex-end}
+    .sum-top{flex-direction:column}
+    .sum-side{text-align:left}
+    .sum-big{font-size:30px}
+    .wari-mrow{flex-direction:column;align-items:stretch}
+    .wari-mrow .sub-add{width:100%}
+  }
+  /* 辞書 */
+  .dict-card{border-left:4px solid #2B6CB0}
+  .dict-word{font-family:"Hiragino Mincho ProN","Yu Mincho",serif;font-size:25px;font-weight:600;line-height:1.15;color:var(--ink)}
+  .dict-kana{font-size:12.5px;color:var(--ink-faint);font-weight:500;margin-top:2px}
+  .dict-common{font-family:var(--mono);font-size:10px;font-weight:700;letter-spacing:.06em;color:#2B6CB0;background:#E4EEF8;border-radius:6px;padding:4px 9px;white-space:nowrap}
+  .senses{list-style:none;margin-top:13px;display:flex;flex-direction:column;gap:9px}
+  .senses li{display:flex;gap:10px;align-items:baseline;font-size:14px;color:var(--ink);line-height:1.55}
+  .sense-no{font-family:var(--mono);font-size:11px;font-weight:700;color:var(--ink-faint);background:#F2F5F2;border:1px solid var(--line);border-radius:5px;min-width:21px;height:21px;display:inline-flex;align-items:center;justify-content:center;flex:0 0 auto}
+  .sense-glo{flex:1}
+  .sense-pos{font-size:11px;color:var(--ink-faint);font-weight:600;white-space:nowrap}
+  .tr-main{display:flex;align-items:baseline;gap:12px;margin-top:14px;flex-wrap:wrap}
+  .tr-label{flex:0 0 auto;font-size:12px;font-weight:800;color:#2B6CB0;background:#E4EEF8;border-radius:7px;padding:4px 11px}
+  .tr-val{font-size:20px;font-weight:800;color:var(--ink);line-height:1.4}
+  .tr-alts{display:flex;flex-wrap:wrap;gap:7px;margin-top:10px}
+  .tr-alt{font-size:13px;color:var(--ink-soft);background:#F2F5F2;border:1px solid var(--line);border-radius:7px;padding:4px 10px}
+  .mean-block{margin-top:14px;border-top:1px solid var(--line);padding-top:12px}
+  .mean-pos{font-size:11px;font-weight:700;color:var(--ink-faint);text-transform:uppercase;letter-spacing:.05em}
+  .mean-block ol{margin:8px 0 0;padding-left:18px;font-size:13.5px;color:var(--ink);line-height:1.6;display:flex;flex-direction:column;gap:5px}
+  .dict-src{font-size:11px;color:var(--ink-faint);margin-top:14px;border-top:1px solid var(--line);padding-top:10px}
+
+  :focus-visible{outline:2.5px solid var(--excel);outline-offset:2px;border-radius:4px}
+  @media (prefers-reduced-motion: reduce){*{transition:none!important;scroll-behavior:auto!important}.nb-dot{animation:none}}
+</style>
+</head>
+<body>
+<div class="ptr" id="ptr"><div class="ptr-spin"></div></div>
+<header class="mtopbar" id="mtopbar">
+  <button class="mburger" id="mBurger" aria-label="メニューを開く"><span></span><span></span><span></span></button>
+  <span class="mtop-brand"><span class="mtop-mark">？</span>コレなにナビ</span>
+</header>
+<div class="mbackdrop" id="mBackdrop"></div>
+<div class="appshell">
+  <aside class="sidebar" id="sidebar">
+    <button class="sb-close" id="sbClose" aria-label="メニューを閉じる">×</button>
+    <div class="sb-brand"><span class="sb-mark">？</span><div><div class="sb-name">コレなにナビ</div><div class="sb-sub">早引き検索</div></div></div>
+    <button class="sb-edit" id="sbEdit">並べ替え</button>
+    <div class="sb-hint" id="sbHint" hidden>▲▼ で順番を入れ替え。自動で保存されます。</div>
+    <nav class="sb-nav" id="modetabs"></nav>
+    <div class="sb-foot"><span class="sb-fmark">？</span>これ何？を、すぐ答えに。</div>
+  </aside>
+  <main class="content">
+    <div class="ctop">
+      <div class="ctop-head">
+        <div class="ctop-title" id="ctopTitle">Excelの関数</div>
+        <div class="ctop-sub" id="lede">Excelの関数を、入れたら答え。</div>
+      </div>
+      <div class="ctop-clock" id="ctopClock" title="日時とアクセス数（リアルタイム更新）">
+        <span class="cc-dot" aria-hidden="true"></span>
+        <span class="cc-date"><span id="nbDate"></span><span class="nb-wd" id="nbWd"></span></span>
+        <span class="cc-time" id="nbTime"></span>
+        <span class="cc-sep">·</span>
+        <span class="cc-ac"><b id="acNum">—</b>アクセス</span>
+      </div>
+    </div>
+
+    <div class="searchwrap">
+      <div class="formulabar">
+        <div class="fxtab" id="fxtab"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><line x1="16.5" y1="16.5" x2="21" y2="21"/></svg></div>
+        <input id="q" type="text" autocomplete="off" spellcheck="false" placeholder="例：合計 / 足す / 重複を消す …" aria-label="検索">
+        <button class="clearbtn" id="clear" aria-label="入力をクリア">×</button>
+      </div>
+      <div class="platwrap" id="platwrap">
+        <div class="platseg">
+          <button data-plat="win" class="active">Windows</button>
+          <button data-plat="mac">Mac</button>
+        </div>
+      </div>
+      <div class="chips" id="chips"></div>
+    </div>
+
+    <div class="recentbar" id="recentBar" hidden></div>
+
+  <div class="meta">
+    <span class="label" id="metaLabel">関数一覧</span>
+    <span class="count" id="count"></span>
+  </div>
+
+  <div id="answer"></div>
+  <div class="ad-banner" id="adTop" style="display:none"></div>
+  <div class="grid" id="results"></div>
+
+  <div class="charpanel" id="charpanel">
+    <div class="hw">
+      <canvas id="hwcanvas" width="260" height="260" aria-label="手書き入力エリア"></canvas>
+      <div class="hw-side">
+        <h4>手書きで漢字を探す</h4>
+        <p>枠の中に漢字を1文字書いて「認識」を押すと、候補が出ます。候補をタップすると読みが表示されます。</p>
+        <div class="hw-btns">
+          <button class="hw-btn primary" id="hwRecognize">認識する</button>
+          <button class="hw-btn" id="hwUndo">1画 戻す</button>
+          <button class="hw-btn" id="hwClear">消去</button>
+        </div>
+        <p>上の入力欄に漢字を貼り付けたり、読み（カタカナ・ひらがな）を入力して探すこともできます。</p>
+      </div>
+    </div>
+    <div class="candidates" id="candidates"></div>
+    <div id="chardetail"></div>
+  </div>
+
+  <div class="subpanel" id="subpanel">
+    <div class="sub-summary" id="subSummary"></div>
+    <div class="sub-card sub-form">
+      <div class="sub-form-row">
+        <input id="subName" class="sub-in" type="text" placeholder="サービス名（例：Netflix）" autocomplete="off" spellcheck="false">
+        <div class="sub-amt"><span class="sub-yen">¥</span><input id="subAmount" class="sub-in" type="number" inputmode="numeric" min="0" placeholder="金額"></div>
+        <div class="sub-seg" id="subCycle"><button type="button" data-c="m" class="active">月額</button><button type="button" data-c="y">年額</button></div>
+        <select id="subCat" class="sub-in sub-sel" aria-label="カテゴリ"></select>
+        <input id="subNext" class="sub-in sub-date" type="date" aria-label="次回支払日（任意）">
+        <button id="subAdd" class="sub-add">追加</button>
+        <button id="subCancel" class="sub-cancel" hidden>取消</button>
+      </div>
+      <div class="sub-presets" id="subPresets"></div>
+    </div>
+    <div class="sub-list" id="subList"></div>
+  </div>
+
+  <div class="waripanel" id="waripanel">
+    <div class="sub-card wari-members">
+      <div class="wari-mhead">メンバー</div>
+      <div class="wari-mrow">
+        <input id="wariName" class="sub-in" type="text" placeholder="名前を追加（例：田中）" autocomplete="off" spellcheck="false">
+        <button id="wariAddMember" class="sub-add">追加</button>
+      </div>
+      <div class="wari-chips" id="wariChips"></div>
+    </div>
+
+    <div class="sub-card sub-form" id="wariForm">
+      <div class="wari-fhead">立替えを記録</div>
+      <div class="sub-form-row">
+        <input id="wariTitle" class="sub-in" type="text" placeholder="何に使った？（例：ランチ）" autocomplete="off" spellcheck="false">
+        <div class="sub-amt"><span class="sub-yen">¥</span><input id="wariAmount" class="sub-in" type="number" inputmode="numeric" min="0" placeholder="金額"></div>
+        <select id="wariPayer" class="sub-in sub-sel" aria-label="立替えた人"></select>
+        <button id="wariAdd" class="sub-add">追加</button>
+      </div>
+      <div class="wari-parts-label">割る相手（タップで対象を切り替え）</div>
+      <div class="wari-parts" id="wariParts"></div>
+    </div>
+
+    <div class="wari-result" id="wariResult"></div>
+    <div class="sub-list" id="wariList"></div>
+  </div>
+
+  <div class="ad-banner" id="adFoot" style="display:none"></div>
+  <footer id="foot"></footer>
+  </main>
+</div>
+<div class="ad-anchor" id="adAnchor"></div>
+
+<script>
+/* ============ カテゴリ ============ */
+const CATS = {
+  agg:{ja:'集計',v:'--c-agg',wash:'#E7F1EB'}, log:{ja:'論理',v:'--c-log',wash:'#FAF1DF'},
+  look:{ja:'検索・参照',v:'--c-look',wash:'#E4EEF8'}, text:{ja:'文字列',v:'--c-text',wash:'#F0EAFA'},
+  date:{ja:'日付・時刻',v:'--c-date',wash:'#E1F2F2'}, math:{ja:'数学',v:'--c-math',wash:'#FBEBDF'},
+  stat:{ja:'統計',v:'--c-stat',wash:'#FAE6F1'}, new:{ja:'新しい関数',v:'--c-new',wash:'#FBE6E6'},
+};
+const SCATS = {
+  basic:{ja:'基本操作',v:'--c-agg',wash:'#E7F1EB'}, move:{ja:'移動・選択',v:'--c-look',wash:'#E4EEF8'},
+  edit:{ja:'編集',v:'--c-text',wash:'#F0EAFA'}, fmt:{ja:'書式',v:'--c-math',wash:'#FBEBDF'},
+  formula:{ja:'数式',v:'--c-log',wash:'#FAF1DF'}, struct:{ja:'行・列・シート',v:'--c-date',wash:'#E1F2F2'},
+};
+
+/* ============ 関数データ ============ */
+const FN = [
+{n:'SUM',r:'サム',c:'agg',s:'SUM(数値1, [数値2], …)',d:'指定した範囲やセルの合計を求めます。',ex:{f:'=SUM(A1:A5)',res:'150'},note:'A1〜A5の数値をすべて足します。',k:['合計','合計する','合計を出す','たし算','足し算','足す','たす','足したい','加算','加える','総計','総和','和','全部足す','まとめて足す','集計','トータル','sum','ごうけい','サム']},
+{n:'AVERAGE',r:'アベレージ',c:'agg',s:'AVERAGE(数値1, [数値2], …)',d:'範囲の平均値（算術平均）を求めます。',ex:{f:'=AVERAGE(B2:B10)',res:'72.5'},note:'空白セルは計算から除かれます。',k:['平均','平均値','平均する','平均を出す','ならし','ならす','average','へいきん']},
+{n:'COUNT',r:'カウント',c:'agg',s:'COUNT(値1, [値2], …)',d:'範囲の中で「数値」が入っているセルの個数を数えます。',ex:{f:'=COUNT(A1:A20)',res:'14'},note:'文字や空白は数えません。',k:['個数','数える','数','数値の数','件数','何個','いくつ','カウント','count']},
+{n:'COUNTA',r:'カウントエー',c:'agg',s:'COUNTA(値1, [値2], …)',d:'空白でないセルの個数を数えます（文字も含む）。',ex:{f:'=COUNTA(A1:A20)',res:'18'},note:'入力済みのデータ数を知りたいときに。',k:['個数','数える','空白以外','データ数','件数','何件','入力数','counta']},
+{n:'COUNTBLANK',r:'カウントブランク',c:'agg',s:'COUNTBLANK(範囲)',d:'空白セルの個数を数えます。',ex:{f:'=COUNTBLANK(A1:A20)',res:'2'},note:'未入力のセルを把握したいときに。',k:['空白','空欄','未入力','数える','空白の数','空白を数える','countblank']},
+{n:'MAX',r:'マックス',c:'agg',s:'MAX(数値1, [数値2], …)',d:'範囲の中の最大値を返します。',ex:{f:'=MAX(C2:C100)',res:'980'},note:'一番大きい数値を取り出します。',k:['最大','最大値','一番大きい','最も大きい','ピーク','max','maximum']},
+{n:'MIN',r:'ミン',c:'agg',s:'MIN(数値1, [数値2], …)',d:'範囲の中の最小値を返します。',ex:{f:'=MIN(C2:C100)',res:'15'},note:'一番小さい数値を取り出します。',k:['最小','最小値','一番小さい','最も小さい','min']},
+{n:'SUMIF',r:'サムイフ',c:'agg',s:'SUMIF(範囲, 条件, [合計範囲])',d:'条件に一致する行だけを合計します。',ex:{f:'=SUMIF(B:B,"東京",C:C)',res:'4200'},note:'B列が「東京」の行だけ、C列を合計。',k:['条件','合計','条件付き合計','条件で合計','もし','集計','絞って合計','該当だけ合計','sumif']},
+{n:'SUMIFS',r:'サムイフス',c:'agg',s:'SUMIFS(合計範囲, 範囲1, 条件1, …)',d:'複数の条件すべてに一致する行を合計します。',ex:{f:'=SUMIFS(D:D,B:B,"東京",C:C,"4月")',res:'1800'},note:'条件をいくつでも追加できます。',k:['複数条件','合計','条件付き合計','複数','絞り込み合計','クロス集計','sumifs']},
+{n:'COUNTIF',r:'カウントイフ',c:'agg',s:'COUNTIF(範囲, 条件)',d:'条件に一致するセルの個数を数えます。',ex:{f:'=COUNTIF(A:A,"合格")',res:'23'},note:'「合格」が何件あるか数えます。',k:['条件','個数','数える','条件付き個数','何件','該当数','カウント','countif']},
+{n:'COUNTIFS',r:'カウントイフス',c:'agg',s:'COUNTIFS(範囲1, 条件1, …)',d:'複数条件すべてに一致するセルを数えます。',ex:{f:'=COUNTIFS(B:B,"男",C:C,">=20")',res:'12'},note:'クロス集計のような数えかたに。',k:['複数条件','個数','数える','複数','クロス集計','countifs']},
+{n:'AVERAGEIF',r:'アベレージイフ',c:'agg',s:'AVERAGEIF(範囲, 条件, [平均範囲])',d:'条件に一致する行だけの平均を求めます。',ex:{f:'=AVERAGEIF(B:B,"A組",C:C)',res:'68.4'},note:'特定グループだけの平均に。',k:['条件','平均','条件付き平均','グループ平均','絞って平均','averageif']},
+{n:'SUBTOTAL',r:'サブトータル',c:'agg',s:'SUBTOTAL(集計方法, 範囲)',d:'フィルターで隠れた行を除いて集計できます。',ex:{f:'=SUBTOTAL(9,A2:A100)',res:'3400'},note:'9=合計。1=平均、3=個数など。',k:['小計','フィルター','集計','表示行','絞り込み集計','見えている分だけ','subtotal']},
+{n:'SUMPRODUCT',r:'サムプロダクト',c:'agg',s:'SUMPRODUCT(配列1, [配列2], …)',d:'各要素を掛け合わせて、その合計を求めます。',ex:{f:'=SUMPRODUCT(B2:B5,C2:C5)',res:'15600'},note:'単価×数量の合計などに便利。',k:['積和','掛けて足す','単価','数量','合計','内積','金額合計','sumproduct']},
+{n:'IF',r:'イフ',c:'log',s:'IF(論理式, 真の場合, 偽の場合)',d:'条件によって表示する値を変えます（条件分岐）。',ex:{f:'=IF(A1>=60,"合格","不合格")',res:'合格'},note:'A1が60以上なら合格、そうでなければ不合格。',k:['もし','条件','分岐','条件分岐','場合分け','判定','だったら','なら','if']},
+{n:'IFS',r:'イフス',c:'log',s:'IFS(論理式1, 値1, 論理式2, 値2, …)',d:'複数の条件を上から順に判定します（IFの入れ子の代わり）。',ex:{f:'=IFS(A1>=80,"A",A1>=60,"B",TRUE,"C")',res:'B'},note:'最後にTRUEを置くと「それ以外」に。',k:['複数条件','分岐','ランク','評価','段階','場合分け','ifs']},
+{n:'IFERROR',r:'イフエラー',c:'log',s:'IFERROR(値, エラーの場合の値)',d:'数式がエラーになったとき、別の値を表示します。',ex:{f:'=IFERROR(A1/B1,"")',res:'(空白)'},note:'0除算や#N/Aを隠したいときに。',k:['エラー','回避','処理','空白','エラー処理','エラーを消す','エラーを隠す','iferror']},
+{n:'AND',r:'アンド',c:'log',s:'AND(論理式1, 論理式2, …)',d:'すべての条件が成立するときTRUEを返します。',ex:{f:'=AND(A1>=60,B1>=60)',res:'TRUE'},note:'IFと組み合わせて「かつ」の条件に。',k:['かつ','すべて','全部','両方','ともに','and']},
+{n:'OR',r:'オア',c:'log',s:'OR(論理式1, 論理式2, …)',d:'いずれかの条件が成立するときTRUEを返します。',ex:{f:'=OR(A1="東京",A1="大阪")',res:'TRUE'},note:'IFと組み合わせて「または」の条件に。',k:['または','いずれか','どれか','どちらか','or']},
+{n:'NOT',r:'ノット',c:'log',s:'NOT(論理式)',d:'TRUEとFALSEを反転させます。',ex:{f:'=NOT(A1="")',res:'TRUE'},note:'「〜でない」という条件に。',k:['否定','反転','でない','逆','not']},
+{n:'SWITCH',r:'スイッチ',c:'log',s:'SWITCH(対象, 値1, 結果1, …, [既定])',d:'対象の値を順に照合し、一致した結果を返します。',ex:{f:'=SWITCH(A1,1,"月",2,"火","他")',res:'月'},note:'値ごとの置き換えに向いています。',k:['切り替え','照合','置き換え','値で分岐','変換','switch']},
+{n:'VLOOKUP',r:'ブイルックアップ',c:'look',s:'VLOOKUP(検索値, 範囲, 列番号, [検索方法])',d:'表を縦方向に検索し、対応する値を取り出します。',ex:{f:'=VLOOKUP(A2,商品表,2,FALSE)',res:'りんご'},note:'最後はFALSE（完全一致）が基本。',k:['検索','縦','表引き','参照','探す','取り出す','引っ張る','対応','一致','コード変換','照合','vlookup']},
+{n:'HLOOKUP',r:'エイチルックアップ',c:'look',s:'HLOOKUP(検索値, 範囲, 行番号, [検索方法])',d:'表を横方向に検索し、対応する値を取り出します。',ex:{f:'=HLOOKUP(A1,範囲,3,FALSE)',res:'2400'},note:'横並びの表を引くときに。',k:['検索','横','表引き','参照','探す','hlookup']},
+{n:'XLOOKUP',r:'エックスルックアップ',c:'look',s:'XLOOKUP(検索値, 検索範囲, 戻り範囲, …)',d:'VLOOKUPの上位版。左方向・複数列もそのまま検索できます。',ex:{f:'=XLOOKUP(A2,商品名,価格)',res:'180'},note:'列番号の指定が不要で、見つからない時の指定も簡単。',k:['検索','新しい','双方向','vlookupの代わり','後継','探す','xlookup']},
+{n:'INDEX',r:'インデックス',c:'look',s:'INDEX(範囲, 行番号, [列番号])',d:'範囲の中で、指定した行・列の位置にある値を返します。',ex:{f:'=INDEX(B2:D10,3,2)',res:'大阪'},note:'MATCHと組み合わせて柔軟な検索に。',k:['位置','参照','取り出す','行列','指定位置','index']},
+{n:'MATCH',r:'マッチ',c:'look',s:'MATCH(検索値, 範囲, [照合の型])',d:'検索値が範囲の何番目にあるか、位置（番号）を返します。',ex:{f:'=MATCH("東京",A1:A20,0)',res:'5'},note:'0で完全一致。INDEXと併用が定番。',k:['位置','何番目','検索','位置を探す','番号','match']},
+{n:'OFFSET',r:'オフセット',c:'look',s:'OFFSET(基準, 行数, 列数, [高さ], [幅])',d:'基準セルから指定したぶんだけ移動した位置を参照します。',ex:{f:'=OFFSET(A1,2,1)',res:'B3を参照'},note:'動的な範囲指定に使われます。',k:['ずらす','移動','参照','動的','範囲','offset']},
+{n:'INDIRECT',r:'インダイレクト',c:'look',s:'INDIRECT(参照文字列)',d:'文字列で書いたセル番地を、本物の参照として扱います。',ex:{f:'=INDIRECT("A"&B1)',res:'A5を参照'},note:'シート名を変数にしたいときなどに。',k:['文字列','参照','間接','シート参照','可変参照','indirect']},
+{n:'CHOOSE',r:'チューズ',c:'look',s:'CHOOSE(番号, 値1, 値2, …)',d:'番号に応じて、リストの中から値を選びます。',ex:{f:'=CHOOSE(2,"松","竹","梅")',res:'竹'},note:'番号での簡単な振り分けに。',k:['選ぶ','番号','振り分け','選択','choose']},
+{n:'ROW',r:'ロウ',c:'look',s:'ROW([参照])',d:'セルの行番号を返します。連番づくりに便利。',ex:{f:'=ROW()-1',res:'1'},note:'見出し行ぶんを引いて連番に。',k:['行番号','連番','番号','通し番号','row']},
+{n:'COLUMN',r:'カラム',c:'look',s:'COLUMN([参照])',d:'セルの列番号を返します。',ex:{f:'=COLUMN(C1)',res:'3'},note:'横方向の連番や数式コピーに。',k:['列番号','連番','番号','column']},
+{n:'LEFT',r:'レフト',c:'text',s:'LEFT(文字列, [文字数])',d:'文字列の左から、指定した文字数を取り出します。',ex:{f:'=LEFT("東京都港区",3)',res:'東京都'},note:'先頭の数文字を抜き出すときに。',k:['左','取り出す','抽出','切り出し','先頭','頭','左から','left']},
+{n:'RIGHT',r:'ライト',c:'text',s:'RIGHT(文字列, [文字数])',d:'文字列の右から、指定した文字数を取り出します。',ex:{f:'=RIGHT("2024年",2)',res:'年'},note:'末尾の数文字を抜き出すときに。',k:['右','取り出す','抽出','末尾','後ろ','右から','right']},
+{n:'MID',r:'ミッド',c:'text',s:'MID(文字列, 開始位置, 文字数)',d:'文字列の途中から、指定した位置・文字数を取り出します。',ex:{f:'=MID("ABC1234",4,4)',res:'1234'},note:'真ん中の一部を抜き出すときに。',k:['途中','真ん中','取り出す','抽出','部分','一部','mid']},
+{n:'LEN',r:'レン',c:'text',s:'LEN(文字列)',d:'文字列の文字数を数えます。',ex:{f:'=LEN("Excel関数")',res:'7'},note:'入力チェックや桁数確認に。',k:['文字数','長さ','カウント','何文字','桁数','文字を数える','len']},
+{n:'FIND',r:'ファインド',c:'text',s:'FIND(検索文字列, 対象, [開始位置])',d:'文字が何文字目にあるか位置を返します（大文字小文字を区別）。',ex:{f:'=FIND("@","a@b.com")',res:'2'},note:'区切り位置の特定などに。',k:['位置','検索','何文字目','探す','見つける','find']},
+{n:'SUBSTITUTE',r:'サブスティチュート',c:'text',s:'SUBSTITUTE(文字列, 検索文字, 置換文字, [対象])',d:'指定した文字を別の文字に置き換えます。',ex:{f:'=SUBSTITUTE(A1,"-","")',res:'09012345678'},note:'ハイフン除去などに便利。',k:['置換','置き換え','削除','文字を消す','文字を変える','ハイフン除去','変換','substitute']},
+{n:'REPLACE',r:'リプレース',c:'text',s:'REPLACE(文字列, 開始位置, 文字数, 置換文字)',d:'位置を指定して、その範囲を別の文字に置き換えます。',ex:{f:'=REPLACE("090****",4,4,"1234")',res:'0901234'},note:'マスキングや一部書き換えに。',k:['置換','位置','書き換え','マスキング','伏せ字','replace']},
+{n:'CONCAT',r:'コンカット',c:'text',s:'CONCAT(文字列1, [文字列2], …)',d:'複数の文字列やセルを1つにつなげます。',ex:{f:'=CONCAT(A1,B1)',res:'東京都港区'},note:'& 記号でも同じことができます。',k:['結合','つなげる','つなぐ','連結','くっつける','合体','一つにする','concat','concatenate']},
+{n:'TEXTJOIN',r:'テキストジョイン',c:'text',s:'TEXTJOIN(区切り文字, 空白無視, 文字列1, …)',d:'区切り文字を挟みながら、複数の文字列をつなげます。',ex:{f:'=TEXTJOIN("/",TRUE,A1:A3)',res:'赤/青/黄'},note:'リストをカンマ区切りにするときに。',k:['結合','区切り','つなげる','連結','カンマ区切り','まとめる','textjoin']},
+{n:'TEXT',r:'テキスト',c:'text',s:'TEXT(値, 表示形式)',d:'数値や日付を、指定した書式の文字列に変換します。',ex:{f:'=TEXT(A1,"0000")',res:'0042'},note:'ゼロ埋めや日付の形式変換に。',k:['書式','表示形式','フォーマット','ゼロ埋め','0埋め','日付変換','文字に変換','形式を変える','text']},
+{n:'TRIM',r:'トリム',c:'text',s:'TRIM(文字列)',d:'前後の余分な空白を取り除きます（語間の1つは残す）。',ex:{f:'=TRIM("  田中  太郎 ")',res:'田中 太郎'},note:'コピペで入った空白の掃除に。',k:['空白','削除','除去','整える','スペース削除','空白を消す','空白を取る','trim']},
+{n:'UPPER',r:'アッパー',c:'text',s:'UPPER(文字列)',d:'英字をすべて大文字に変換します。',ex:{f:'=UPPER("excel")',res:'EXCEL'},note:'LOWERは小文字、PROPERは先頭だけ大文字。',k:['大文字','変換','大文字に','小文字','lower','upper']},
+{n:'VALUE',r:'バリュー',c:'text',s:'VALUE(文字列)',d:'数字に見える文字列を、計算できる数値に変換します。',ex:{f:'=VALUE("1,200")',res:'1200'},note:'文字として入った数字を直すときに。',k:['数値','変換','文字を数字に','数字にする','数値化','value']},
+{n:'TODAY',r:'トゥデイ',c:'date',s:'TODAY()',d:'今日の日付を返します（ファイルを開くたび更新）。',ex:{f:'=TODAY()',res:'2026/6/20'},note:'引数は不要です。',k:['今日','日付','本日','きょう','今日の日付','today']},
+{n:'NOW',r:'ナウ',c:'date',s:'NOW()',d:'現在の日付と時刻を返します。',ex:{f:'=NOW()',res:'2026/6/20 14:30'},note:'タイムスタンプに。',k:['今','現在','日時','時刻','ただいま','現在時刻','now']},
+{n:'DATE',r:'デート',c:'date',s:'DATE(年, 月, 日)',d:'年・月・日の数値から、日付データを作ります。',ex:{f:'=DATE(2026,6,20)',res:'2026/6/20'},note:'バラバラの数値を日付にまとめます。',k:['日付','作る','年月日','日付にする','日付を作る','date']},
+{n:'YEAR',r:'イヤー',c:'date',s:'YEAR(日付)',d:'日付から「年」だけを取り出します。',ex:{f:'=YEAR(A1)',res:'2026'},note:'MONTHは月、DAYは日を取り出します。',k:['年','取り出す','何年','年だけ','month','day','year']},
+{n:'WEEKDAY',r:'ウィークデイ',c:'date',s:'WEEKDAY(日付, [種類])',d:'日付が何曜日かを番号で返します。',ex:{f:'=WEEKDAY(A1,1)',res:'7'},note:'1=日曜。TEXTで曜日名にも。',k:['曜日','何曜日','曜日番号','曜日を出す','weekday']},
+{n:'DATEDIF',r:'デートディフ',c:'date',s:'DATEDIF(開始日, 終了日, 単位)',d:'2つの日付の差を、年・月・日単位で求めます。',ex:{f:'=DATEDIF(A1,TODAY(),"Y")',res:'34'},note:'"Y"=満年数。年齢や勤続年数に。',k:['期間','年齢','経過','差','勤続','何年','何日','日数','年数','日付の差','datedif']},
+{n:'EDATE',r:'エデート',c:'date',s:'EDATE(開始日, 月数)',d:'指定した月数だけ後（前）の日付を返します。',ex:{f:'=EDATE(A1,3)',res:'3か月後'},note:'支払期日や更新日の計算に。',k:['月後','期日','日付','何か月後','数か月後','更新日','edate']},
+{n:'EOMONTH',r:'イーオーマンス',c:'date',s:'EOMONTH(開始日, 月数)',d:'指定した月数後の「月末」の日付を返します。',ex:{f:'=EOMONTH(A1,0)',res:'当月末'},note:'締め日の計算に便利。',k:['月末','締め','末日','月の終わり','締め日','eomonth']},
+{n:'ROUND',r:'ラウンド',c:'math',s:'ROUND(数値, 桁数)',d:'指定した桁で四捨五入します。',ex:{f:'=ROUND(3.567,1)',res:'3.6'},note:'0で整数、-1で十の位に丸め。',k:['四捨五入','丸め','丸める','round']},
+{n:'ROUNDUP',r:'ラウンドアップ',c:'math',s:'ROUNDUP(数値, 桁数)',d:'指定した桁で切り上げます。',ex:{f:'=ROUNDUP(3.21,1)',res:'3.3'},note:'常に大きい方へ丸めます。',k:['切り上げ','丸め','繰り上げ','上げる','roundup']},
+{n:'ROUNDDOWN',r:'ラウンドダウン',c:'math',s:'ROUNDDOWN(数値, 桁数)',d:'指定した桁で切り捨てます。',ex:{f:'=ROUNDDOWN(3.89,1)',res:'3.8'},note:'消費税の端数処理などに。',k:['切り捨て','丸め','端数','切る','下げる','rounddown']},
+{n:'INT',r:'イント',c:'math',s:'INT(数値)',d:'小数点以下を切り捨てて整数にします。',ex:{f:'=INT(7.9)',res:'7'},note:'マイナスは小さい側へ丸めます。',k:['整数','切り捨て','小数を消す','整数にする','小数点以下','int']},
+{n:'MOD',r:'モッド',c:'math',s:'MOD(数値, 除数)',d:'割り算の「余り」を求めます。',ex:{f:'=MOD(10,3)',res:'1'},note:'偶数奇数判定や周期処理に。',k:['余り','剰余','割り算','あまり','偶数','奇数','mod']},
+{n:'ABS',r:'アブス',c:'math',s:'ABS(数値)',d:'数値の絶対値（符号を取った値）を返します。',ex:{f:'=ABS(-15)',res:'15'},note:'差の大きさだけ見たいときに。',k:['絶対値','符号','プラスにする','差の大きさ','マイナスを消す','abs']},
+{n:'PRODUCT',r:'プロダクト',c:'math',s:'PRODUCT(数値1, [数値2], …)',d:'指定した数値をすべて掛け合わせます。',ex:{f:'=PRODUCT(A1:A3)',res:'120'},note:'まとめて掛け算したいときに。',k:['積','掛け算','かけ算','かける','掛ける','まとめて掛ける','product']},
+{n:'POWER',r:'パワー',c:'math',s:'POWER(数値, 指数)',d:'数値を指定した回数だけ掛けたべき乗を返します。',ex:{f:'=POWER(2,10)',res:'1024'},note:'2^10 のような計算に。',k:['べき乗','累乗','二乗','何乗','power']},
+{n:'RANK',r:'ランク',c:'stat',s:'RANK(数値, 範囲, [順序])',d:'範囲の中での順位を返します。',ex:{f:'=RANK(A2,$A$2:$A$50)',res:'3'},note:'0で大きい順、1で小さい順。',k:['順位','ランキング','何位','順番','順位付け','rank']},
+{n:'LARGE',r:'ラージ',c:'stat',s:'LARGE(範囲, 順位)',d:'大きい方から数えてn番目の値を返します。',ex:{f:'=LARGE(A1:A20,2)',res:'920'},note:'2位の点数などを取り出す。',k:['n番目','大きい','上位','何番目に大きい','トップ','large']},
+{n:'SMALL',r:'スモール',c:'stat',s:'SMALL(範囲, 順位)',d:'小さい方から数えてn番目の値を返します。',ex:{f:'=SMALL(A1:A20,3)',res:'42'},note:'下位の値を取り出すときに。',k:['n番目','小さい','下位','何番目に小さい','small']},
+{n:'MEDIAN',r:'メジアン',c:'stat',s:'MEDIAN(数値1, [数値2], …)',d:'数値を並べたときの真ん中の値（中央値）を返します。',ex:{f:'=MEDIAN(A1:A9)',res:'58'},note:'極端な値の影響を受けにくい代表値。',k:['中央値','真ん中','まんなか','median']},
+{n:'STDEV.P',r:'スタンダードデビエーション',c:'stat',s:'STDEV.P(数値1, [数値2], …)',d:'データのばらつき（標準偏差）を求めます。',ex:{f:'=STDEV.P(A1:A30)',res:'12.4'},note:'データ全体を母集団として計算。',k:['標準偏差','ばらつき','偏差','stdev']},
+{n:'FILTER',r:'フィルター',c:'new',s:'FILTER(範囲, 条件, [空の場合])',d:'条件に合う行だけを、まとめて別の場所に抽出します。',ex:{f:'=FILTER(A2:C99,B2:B99="東京")',res:'東京の行'},note:'結果が自動で複数行に展開（スピル）。',k:['抽出','絞り込み','条件','絞る','取り出す','該当行','フィルター','filter']},
+{n:'SORT',r:'ソート',c:'new',s:'SORT(範囲, [基準列], [順序])',d:'範囲を関数で並べ替えます。元データは変えません。',ex:{f:'=SORT(A2:B50,2,-1)',res:'降順に整列'},note:'-1で降順、1で昇順。',k:['並べ替え','並び替え','ソート','昇順','降順','順番に','整列','sort']},
+{n:'UNIQUE',r:'ユニーク',c:'new',s:'UNIQUE(範囲, [列方向], [1回だけ])',d:'重複を取り除いて、一意の値だけを取り出します。',ex:{f:'=UNIQUE(A2:A100)',res:'重複なし一覧'},note:'重複削除や名簿作成に。',k:['重複','削除','一意','重複削除','重複を消す','ダブり','かぶり','一覧化','unique']},
+{n:'SEQUENCE',r:'シーケンス',c:'new',s:'SEQUENCE(行数, [列数], [開始], [増分])',d:'連続した数値の並び（連番）を一気に作ります。',ex:{f:'=SEQUENCE(5)',res:'1,2,3,4,5'},note:'番号ふりやカレンダー作成に。',k:['連番','連続','番号','通し番号','番号ふり','sequence']},
+];
+
+/* ============ ショートカット データ ============ */
+const SC = [
+/* 基本操作 */
+{a:'コピー',c:'basic',win:['Ctrl','C'],mac:['⌘','C'],d:'選択したセルや範囲をコピーします。',k:['コピー','複製','copy']},
+{a:'貼り付け',c:'basic',win:['Ctrl','V'],mac:['⌘','V'],d:'コピー・切り取りした内容を貼り付けます。',k:['貼り付け','ペースト','はりつけ','paste']},
+{a:'切り取り',c:'basic',win:['Ctrl','X'],mac:['⌘','X'],d:'選択範囲を切り取ります（移動）。',k:['切り取り','カット','cut']},
+{a:'元に戻す',c:'basic',win:['Ctrl','Z'],mac:['⌘','Z'],d:'直前の操作を取り消します。',k:['元に戻す','取り消し','アンドゥ','undo']},
+{a:'やり直し',c:'basic',win:['Ctrl','Y'],mac:['⌘','Y'],d:'元に戻した操作をやり直します。',k:['やり直し','リドゥ','redo']},
+{a:'上書き保存',c:'basic',win:['Ctrl','S'],mac:['⌘','S'],d:'ファイルを上書き保存します。',k:['保存','上書き保存','セーブ','save']},
+{a:'名前を付けて保存',c:'basic',win:['F12'],mac:['⌘','⇧','S'],d:'別名・別の場所に保存します。',k:['名前を付けて保存','別名保存','save as']},
+{a:'印刷',c:'basic',win:['Ctrl','P'],mac:['⌘','P'],d:'印刷画面を開きます。',k:['印刷','プリント','print']},
+{a:'検索',c:'basic',win:['Ctrl','F'],mac:['⌘','F'],d:'シート内の文字を検索します。',k:['検索','探す','find']},
+{a:'置換',c:'basic',win:['Ctrl','H'],mac:['⌃','H'],d:'文字を別の文字に置き換えます。',k:['置換','置き換え','replace']},
+{a:'すべて選択',c:'basic',win:['Ctrl','A'],mac:['⌘','A'],d:'表全体（またはシート全体）を選択します。',k:['全選択','すべて選択','全部選択','select all']},
+{a:'ファイルを開く',c:'basic',win:['Ctrl','O'],mac:['⌘','O'],d:'既存のファイルを開きます。',k:['開く','ファイルを開く','open']},
+{a:'新規ブック',c:'basic',win:['Ctrl','N'],mac:['⌘','N'],d:'新しいブックを作成します。',k:['新規','新しいブック','new']},
+{a:'閉じる',c:'basic',win:['Ctrl','W'],mac:['⌘','W'],d:'今のブックを閉じます。',k:['閉じる','close']},
+
+/* 移動・選択 */
+{a:'データの端まで移動',c:'move',win:['Ctrl','↑↓←→'],mac:['⌘','↑↓←→'],d:'データのある最後のセルまで一気に移動します。',k:['端まで移動','一気に移動','ジャンプ','端','移動','方向','矢印']},
+{a:'端まで範囲選択',c:'move',win:['Ctrl','Shift','↑↓←→'],mac:['⌘','⇧','↑↓←→'],d:'データの端まで一気に範囲選択します。',k:['範囲選択','まとめて選択','端まで選択','選択','方向','矢印']},
+{a:'行を選択',c:'move',win:['Shift','Space'],mac:['⇧','Space'],d:'今いる行全体を選択します。',k:['行選択','行を選択','一行選択'],note:'日本語入力はオフで'},
+{a:'列を選択',c:'move',win:['Ctrl','Space'],mac:['⌃','Space'],d:'今いる列全体を選択します。',k:['列選択','列を選択','一列選択']},
+{a:'先頭（A1）へ移動',c:'move',win:['Ctrl','Home'],mac:['⌃','Home'],d:'シートの先頭セルA1へ移動します。',k:['先頭','A1','ホーム','一番上','戻る']},
+{a:'最終セルへ移動',c:'move',win:['Ctrl','End'],mac:['⌃','End'],d:'データのある一番右下のセルへ移動します。',k:['最後','末尾','最終セル','一番下']},
+{a:'シートを切り替え',c:'move',win:['Ctrl','PageDown'],mac:['⌥','→'],d:'右隣のシートへ移動します（PageUpで左）。',k:['シート移動','タブ移動','次のシート','シート切り替え']},
+{a:'ジャンプ（セル移動）',c:'move',win:['Ctrl','G'],mac:['⌃','G'],d:'指定したセル番地へジャンプします（F5でも可）。',k:['ジャンプ','移動','指定セル','goto']},
+{a:'セルを編集',c:'move',win:['F2'],mac:['⌃','U'],d:'選んだセルを編集モードにします。',k:['編集','編集モード','セル編集','edit']},
+
+/* 編集 */
+{a:'行・列を挿入',c:'edit',win:['Ctrl','Shift','+'],mac:['⌘','⇧','+'],d:'選択した位置に行や列を挿入します。',k:['挿入','行を挿入','列を挿入','追加','insert']},
+{a:'行・列を削除',c:'edit',win:['Ctrl','-'],mac:['⌘','-'],d:'選択した行や列を削除します。',k:['削除','行を削除','列を削除','delete']},
+{a:'内容を消去',c:'edit',win:['Delete'],mac:['Delete'],d:'セルの中身だけを消します（書式は残る）。',k:['消去','クリア','消す','空にする']},
+{a:'下方向にコピー',c:'edit',win:['Ctrl','D'],mac:['⌘','D'],d:'上のセルの内容を下へコピーします（フィルダウン）。',k:['下にコピー','フィル','フィルダウン','下方向']},
+{a:'右方向にコピー',c:'edit',win:['Ctrl','R'],mac:['⌘','R'],d:'左のセルの内容を右へコピーします。',k:['右にコピー','右方向','フィル']},
+{a:'セル内で改行',c:'edit',win:['Alt','Enter'],mac:['⌃','⌥','Enter'],d:'1つのセルの中で改行します。',k:['改行','セル内改行','折り返し入力','line break']},
+{a:'直前の操作を繰り返す',c:'edit',win:['F4'],mac:['⌘','Y'],d:'直前の操作をもう一度実行します。',k:['繰り返し','同じ操作','リピート','repeat']},
+{a:'絶対参照にする（$）',c:'edit',win:['F4'],mac:['⌘','T'],d:'数式の参照に$を付けて固定します。押すたび切替。',k:['絶対参照','ドル','固定','ロック','参照固定','$']},
+{a:'フラッシュフィル',c:'edit',win:['Ctrl','E'],mac:['⌘','E'],d:'入力例から規則を読み取り、自動でまとめて入力します。',k:['フラッシュフィル','自動入力','一括入力','flash fill']},
+{a:'セルの書式設定',c:'edit',win:['Ctrl','1'],mac:['⌘','1'],d:'書式設定ダイアログを開きます。',k:['書式設定','セルの書式','書式ダイアログ','format']},
+{a:'ハイパーリンク挿入',c:'edit',win:['Ctrl','K'],mac:['⌘','K'],d:'リンクを挿入します。',k:['リンク','ハイパーリンク','hyperlink']},
+
+/* 書式 */
+{a:'太字',c:'fmt',win:['Ctrl','B'],mac:['⌘','B'],d:'文字を太字にします。',k:['太字','ボールド','bold']},
+{a:'斜体',c:'fmt',win:['Ctrl','I'],mac:['⌘','I'],d:'文字を斜体にします。',k:['斜体','イタリック','italic']},
+{a:'下線',c:'fmt',win:['Ctrl','U'],mac:['⌘','U'],d:'文字に下線を引きます。',k:['下線','アンダーライン','underline']},
+{a:'桁区切り（カンマ）',c:'fmt',win:['Ctrl','Shift','1'],mac:['⌃','⇧','1'],d:'数値を3桁区切りのカンマ表示にします。',k:['桁区切り','カンマ','3桁区切り','コンマ']},
+{a:'パーセント表示',c:'fmt',win:['Ctrl','Shift','5'],mac:['⌃','⇧','5'],d:'数値を％表示にします。',k:['パーセント','百分率','percent']},
+{a:'通貨表示',c:'fmt',win:['Ctrl','Shift','4'],mac:['⌃','⇧','4'],d:'数値を通貨（金額）表示にします。',k:['通貨','円','金額表示','currency']},
+{a:'日付表示',c:'fmt',win:['Ctrl','Shift','3'],mac:['⌃','⇧','3'],d:'数値を日付の表示形式にします。',k:['日付書式','日付表示']},
+{a:'外枠の罫線',c:'fmt',win:['Ctrl','Shift','&'],mac:['⌘','⇧','&'],d:'選択範囲の外側に罫線を引きます。',k:['罫線','外枠','枠線','border']},
+
+/* 数式 */
+{a:'オートSUM',c:'formula',win:['Alt','Shift','='],mac:['⌘','⇧','T'],d:'合計の数式を自動で入力します。',k:['オートサム','合計','自動合計','autosum','sum']},
+{a:'今日の日付を入力',c:'formula',win:['Ctrl',';'],mac:['⌃',';'],d:'今日の日付を固定値で入力します。',k:['今日','日付入力','本日'],note:'更新されない固定値'},
+{a:'現在時刻を入力',c:'formula',win:['Ctrl',':'],mac:['⌃',':'],d:'現在の時刻を固定値で入力します。',k:['時刻','現在時刻','今'],note:'更新されない固定値'},
+{a:'数式を表示／非表示',c:'formula',win:['Ctrl','`'],mac:['⌃','`'],d:'計算結果と数式そのものの表示を切り替えます。',k:['数式表示','数式を表示','show formulas']},
+{a:'再計算',c:'formula',win:['F9'],mac:['F9'],d:'ブック全体を再計算します。',k:['再計算','計算','recalc']},
+
+/* 行・列・シート */
+{a:'フィルター',c:'struct',win:['Ctrl','Shift','L'],mac:['⌘','⇧','F'],d:'オートフィルターのオン/オフを切り替えます。',k:['フィルター','オートフィルター','絞り込み','filter']},
+{a:'テーブル作成',c:'struct',win:['Ctrl','T'],mac:['⌘','T'],d:'選択範囲をテーブルに変換します。',k:['テーブル','テーブル化','table']},
+{a:'新しいシート',c:'struct',win:['Shift','F11'],mac:['⇧','F11'],d:'新しいワークシートを追加します。',k:['シート追加','新しいシート','タブ追加','worksheet']},
+{a:'グループ化',c:'struct',win:['Alt','Shift','→'],mac:['⌘','⇧','K'],d:'選択した行や列をグループ化（折りたたみ）します。',k:['グループ化','アウトライン','まとめる','折りたたみ']},
+];
+SC.forEach(s=>{ s._k = Array.from(new Set([...s.k, ...s.win, ...s.mac].map(x=>x.toLowerCase()))); });
+
+/* ============ UIパーツ データ ============ */
+const UCATS = {
+  layout:{ja:'レイアウト・ページ構成',v:'--c-log',wash:'#FAF1DF'},
+  nav:{ja:'ナビゲーション',v:'--c-look',wash:'#E4EEF8'}, display:{ja:'表示・コンテナ',v:'--c-text',wash:'#F0EAFA'},
+  input:{ja:'入力',v:'--c-agg',wash:'#E7F1EB'}, feedback:{ja:'通知・読み込み',v:'--c-math',wash:'#FBEBDF'},
+  gesture:{ja:'操作・ジェスチャー',v:'--c-stat',wash:'#FAE6F1'},
+};
+const SVGW='stroke="currentColor" fill="none" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"';
+const UI = [
+/* ナビゲーション */
+{n:'ハンバーガーメニュー',e:'Hamburger Menu',c:'nav',d:'三本線のアイコン。タップするとメニューが開きます。画面の左上か右上によくあります。',k:['三本線','3本線','さんぼんせん','線が3本','線が三本','メニュー','メニューボタン','左上のボタン','右上のボタン','設定を開く','hamburger'],svg:`<svg viewBox="0 0 72 48"><g ${SVGW}><line x1="24" y1="17" x2="48" y2="17"/><line x1="24" y1="24" x2="48" y2="24"/><line x1="24" y1="31" x2="48" y2="31"/></g></svg>`},
+{n:'ケバブメニュー',e:'Kebab Menu',c:'nav',d:'縦に3つ並んだ点。タップすると「編集」「削除」などの操作メニューが出ます。',k:['縦三点','縦の点','点が3つ','縦に点','三点メニュー','その他','メニュー','kebab'],svg:`<svg viewBox="0 0 72 48"><g fill="currentColor"><circle cx="36" cy="16" r="2.6"/><circle cx="36" cy="24" r="2.6"/><circle cx="36" cy="32" r="2.6"/></g></svg>`},
+{n:'ミートボールメニュー',e:'Meatball Menu',c:'nav',d:'横に3つ並んだ点のメニュー。追加の操作を隠しておくのに使います。',k:['横三点','横の点','点が3つ','横に点','メニュー','その他','meatball'],svg:`<svg viewBox="0 0 72 48"><g fill="currentColor"><circle cx="28" cy="24" r="2.6"/><circle cx="36" cy="24" r="2.6"/><circle cx="44" cy="24" r="2.6"/></g></svg>`},
+{n:'ドロワー',e:'Drawer / Side Menu',c:'nav',d:'画面の横からスーッと出てくるメニューパネル。ハンバーガーをタップすると現れます。',k:['サイドメニュー','横から出る','スライドメニュー','引き出し','左メニュー','drawer'],svg:`<svg viewBox="0 0 72 48"><rect x="14" y="10" width="44" height="28" rx="3" ${SVGW}/><rect x="14" y="10" width="17" height="28" rx="3" fill="currentColor" opacity="0.14"/><g ${SVGW}><line x1="18" y1="18" x2="27" y2="18"/><line x1="18" y1="24" x2="27" y2="24"/><line x1="18" y1="30" x2="27" y2="30"/></g></svg>`},
+{n:'ボトムナビゲーション',e:'Bottom Navigation',c:'nav',d:'画面下に固定された、アイコン付きの切り替えメニュー。アプリの主要画面を行き来します。',k:['下のメニュー','タブバー','下のタブ','フッターメニュー','画面下','下に並ぶ','bottom nav','tab bar'],svg:`<svg viewBox="0 0 72 48"><rect x="14" y="30" width="44" height="11" rx="3" ${SVGW}/><g fill="currentColor"><circle cx="22" cy="35.5" r="2.2"/><circle cx="31" cy="35.5" r="2.2"/><circle cx="41" cy="35.5" r="2.2"/><circle cx="50" cy="35.5" r="2.2"/></g></svg>`},
+{n:'タブ',e:'Tabs',c:'nav',d:'上部で内容を切り替える見出し。タップで表示が入れ替わります。',k:['タブ','切り替え','上の見出し','ページ切替','見出し切替','tab'],svg:`<svg viewBox="0 0 72 48"><g ${SVGW}><line x1="16" y1="20" x2="26" y2="20"/><line x1="32" y1="20" x2="42" y2="20"/><line x1="48" y1="20" x2="56" y2="20"/></g><line x1="16" y1="25" x2="26" y2="25" stroke="currentColor" stroke-width="3.2" stroke-linecap="round"/></svg>`},
+{n:'セグメンテッドコントロール',e:'Segmented Control',c:'nav',d:'横並びのボタンで一つを選ぶ切り替え。2〜3個の選択肢に向きます。',k:['切り替えボタン','選択切替','セグメント','トグルボタン','3つ切替','segmented'],svg:`<svg viewBox="0 0 72 48"><rect x="16" y="18" width="40" height="13" rx="6.5" ${SVGW}/><rect x="16" y="18" width="13.3" height="13" rx="6.5" fill="currentColor" opacity="0.16"/><line x1="29.3" y1="18" x2="29.3" y2="31" ${SVGW}/><line x1="42.6" y1="18" x2="42.6" y2="31" ${SVGW}/></svg>`},
+{n:'パンくずリスト',e:'Breadcrumb',c:'nav',d:'「ホーム > 商品 > 詳細」のように今いる階層を示すナビゲーション。',k:['階層','今どこ','パンくず','ホームから','現在地','breadcrumb'],svg:`<svg viewBox="0 0 72 48"><g ${SVGW}><line x1="14" y1="24" x2="22" y2="24"/><polyline points="27,21 30,24 27,27"/><line x1="34" y1="24" x2="42" y2="24"/><polyline points="47,21 50,24 47,27"/><line x1="54" y1="24" x2="60" y2="24"/></g></svg>`},
+{n:'FAB（フローティングアクションボタン）',e:'Floating Action Button',c:'nav',d:'画面の右下に浮かぶ丸いボタン。「新規作成」など主要な操作に使います。',k:['右下の丸ボタン','丸いボタン','プラスボタン','浮いてるボタン','追加ボタン','新規作成','fab'],svg:`<svg viewBox="0 0 72 48"><circle cx="46" cy="30" r="10" fill="currentColor" opacity="0.16"/><circle cx="46" cy="30" r="10" ${SVGW}/><g ${SVGW}><line x1="46" y1="26" x2="46" y2="34"/><line x1="42" y1="30" x2="50" y2="30"/></g></svg>`},
+{n:'ステッパー',e:'Stepper / Wizard',c:'nav',d:'「1→2→3」と進む手順表示。入力フォームの進捗などに。',k:['手順','ステップ','進捗','1 2 3','ウィザード','段階','stepper'],svg:`<svg viewBox="0 0 72 48"><g ${SVGW}><circle cx="20" cy="24" r="5"/><line x1="25" y1="24" x2="31" y2="24"/><circle cx="36" cy="24" r="5"/><line x1="41" y1="24" x2="47" y2="24"/><circle cx="52" cy="24" r="5"/></g><circle cx="20" cy="24" r="5" fill="currentColor" opacity="0.16"/></svg>`},
+
+/* 表示・コンテナ */
+{n:'アコーディオン',e:'Accordion',c:'display',d:'タイトルをタップすると中身が開閉する折りたたみ表示。FAQでよく使われます。',k:['折りたたみ','折り畳み','開閉','たたむ','展開','開く閉じる','faq','q&a','accordion'],svg:`<svg viewBox="0 0 72 48"><rect x="16" y="9" width="40" height="11" rx="3" ${SVGW}/><polyline points="46,12.5 49,15.5 52,12.5" ${SVGW}/><rect x="16" y="23" width="40" height="14" rx="3" fill="currentColor" opacity="0.12"/><rect x="16" y="23" width="40" height="14" rx="3" ${SVGW}/></svg>`},
+{n:'カルーセル',e:'Carousel',c:'display',d:'横にスワイプして画像やカードを切り替える表示。下に丸い点が並びます。',k:['スワイプ','横スクロール','画像切り替え','スライドショー','スライダー','流れる画像','carousel'],svg:`<svg viewBox="0 0 72 48"><rect x="26" y="12" width="20" height="18" rx="3" ${SVGW}/><rect x="13" y="15" width="10" height="12" rx="2" ${SVGW} opacity="0.5"/><rect x="49" y="15" width="10" height="12" rx="2" ${SVGW} opacity="0.5"/><g fill="currentColor"><circle cx="32" cy="36" r="1.6"/><circle cx="36" cy="36" r="1.6"/><circle cx="40" cy="36" r="1.6"/></g></svg>`},
+{n:'モーダル',e:'Modal / Dialog',c:'display',d:'画面中央に出る小窓。背景が暗くなり、閉じるまで他を操作できません。',k:['ポップアップ','小窓','ダイアログ','確認画面','中央に出る','重ねて出る','modal','dialog'],svg:`<svg viewBox="0 0 72 48"><rect x="12" y="8" width="48" height="32" rx="3" fill="currentColor" opacity="0.12"/><rect x="24" y="15" width="24" height="18" rx="3" ${SVGW} fill="#fff"/><line x1="29" y1="22" x2="43" y2="22" ${SVGW}/><line x1="29" y1="27" x2="38" y2="27" ${SVGW}/></svg>`},
+{n:'ボトムシート',e:'Bottom Sheet',c:'display',d:'画面下からせり上がるパネル。共有メニューや選択肢の表示に。',k:['下から出る','せり上がる','共有メニュー','引き上げ','下のパネル','bottom sheet'],svg:`<svg viewBox="0 0 72 48"><rect x="14" y="26" width="44" height="20" rx="4" fill="currentColor" opacity="0.12"/><rect x="14" y="26" width="44" height="20" rx="4" ${SVGW}/><line x1="32" y1="31" x2="40" y2="31" stroke="currentColor" stroke-width="3" stroke-linecap="round"/></svg>`},
+{n:'ツールチップ',e:'Tooltip',c:'display',d:'アイコンに触れると出る小さな説明の吹き出し。',k:['吹き出し','ふきだし','説明','補足','ヒント','チップ','tooltip'],svg:`<svg viewBox="0 0 72 48"><rect x="20" y="14" width="32" height="14" rx="4" fill="currentColor" opacity="0.12"/><rect x="20" y="14" width="32" height="14" rx="4" ${SVGW}/><polygon points="33,28 39,28 36,33" fill="currentColor"/><line x1="26" y1="21" x2="46" y2="21" ${SVGW}/></svg>`},
+{n:'バッジ',e:'Badge',c:'display',d:'アイコンの右上につく数字や赤い点。未読・通知件数を示します。',k:['通知','赤い点','数字','未読','通知バッジ','赤丸','件数','badge'],svg:`<svg viewBox="0 0 72 48"><rect x="26" y="16" width="18" height="18" rx="4" ${SVGW}/><circle cx="44" cy="16" r="6" fill="currentColor"/><text x="44" y="19.5" font-size="8" fill="#fff" text-anchor="middle" font-family="monospace" font-weight="700">3</text></svg>`},
+{n:'チップ',e:'Chip / Tag',c:'display',d:'丸みのある小さなラベル。タグや絞り込み条件の表示に。',k:['タグ','ラベル','小さいボタン','絞り込み','丸いラベル','chip','tag'],svg:`<svg viewBox="0 0 72 48"><rect x="22" y="19" width="28" height="12" rx="6" fill="currentColor" opacity="0.14"/><rect x="22" y="19" width="28" height="12" rx="6" ${SVGW}/><line x1="29" y1="25" x2="40" y2="25" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg>`},
+{n:'カード',e:'Card',c:'display',d:'情報をひとまとまりの枠にまとめた表示。一覧でよく並びます。',k:['カード','枠','まとめ表示','一覧','箱','card'],svg:`<svg viewBox="0 0 72 48"><rect x="20" y="10" width="32" height="28" rx="3" ${SVGW}/><rect x="20" y="10" width="32" height="11" rx="3" fill="currentColor" opacity="0.14"/><g ${SVGW}><line x1="25" y1="27" x2="47" y2="27"/><line x1="25" y1="32" x2="40" y2="32"/></g></svg>`},
+{n:'スケルトン',e:'Skeleton',c:'display',d:'読み込み中に表示する灰色の仮置き。中身が来ると差し替わります。',k:['読み込み中','グレーの枠','仮表示','ローディング表示','ちらつき','skeleton'],svg:`<svg viewBox="0 0 72 48"><g fill="currentColor" opacity="0.2"><circle cx="22" cy="24" r="6"/><rect x="32" y="18" width="26" height="5" rx="2.5"/><rect x="32" y="27" width="18" height="5" rx="2.5"/></g></svg>`},
+{n:'リスト',e:'List',c:'display',d:'項目を縦に並べた一覧。タップで詳細へ進みます。',k:['一覧','縦並び','項目リスト','並んだ項目','list'],svg:`<svg viewBox="0 0 72 48"><g ${SVGW}><line x1="20" y1="15" x2="52" y2="15"/><line x1="20" y1="24" x2="52" y2="24"/><line x1="20" y1="33" x2="52" y2="33"/></g><g fill="currentColor"><circle cx="16" cy="15" r="1.6"/><circle cx="16" cy="24" r="1.6"/><circle cx="16" cy="33" r="1.6"/></g></svg>`},
+
+/* 入力 */
+{n:'トグルスイッチ',e:'Toggle / Switch',c:'input',d:'オン/オフを切り替えるスイッチ。設定画面でよく見ます。',k:['オンオフ','オン オフ','スイッチ','切り替え','オンオフ切替','設定','切替','toggle','switch'],svg:`<svg viewBox="0 0 72 48"><rect x="22" y="17" width="28" height="14" rx="7" fill="currentColor" opacity="0.2"/><rect x="22" y="17" width="28" height="14" rx="7" ${SVGW}/><circle cx="43" cy="24" r="5.4" fill="currentColor"/></svg>`},
+{n:'チェックボックス',e:'Checkbox',c:'input',d:'四角にチェックを入れて選ぶ。複数選べます。',k:['チェック','四角','複数選択','選択','レ点','チェック欄','checkbox'],svg:`<svg viewBox="0 0 72 48"><rect x="30" y="18" width="14" height="14" rx="3" ${SVGW}/><polyline points="33,25 36,28 41,21" ${SVGW}/></svg>`},
+{n:'ラジオボタン',e:'Radio Button',c:'input',d:'丸印で一つだけ選ぶ。どれか一つの選択に使います。',k:['丸','1つ選ぶ','単一選択','どれか一つ','丸印','選択','radio'],svg:`<svg viewBox="0 0 72 48"><circle cx="37" cy="25" r="8" ${SVGW}/><circle cx="37" cy="25" r="3.6" fill="currentColor"/></svg>`},
+{n:'スライダー',e:'Slider',c:'input',d:'つまみを左右に動かして数値を調整。音量や明るさなどに。',k:['つまみ','音量','調整','スライド','目盛り','ボリューム','slider'],svg:`<svg viewBox="0 0 72 48"><line x1="16" y1="24" x2="56" y2="24" ${SVGW}/><line x1="16" y1="24" x2="38" y2="24" stroke="currentColor" stroke-width="3.4" stroke-linecap="round"/><circle cx="38" cy="24" r="6" fill="#fff"/><circle cx="38" cy="24" r="6" ${SVGW}/></svg>`},
+{n:'ドロップダウン',e:'Dropdown / Pulldown',c:'input',d:'タップすると選択肢が下に開くメニュー。',k:['プルダウン','選択肢','下に開く','リスト選択','セレクト','選ぶ','dropdown'],svg:`<svg viewBox="0 0 72 48"><rect x="18" y="18" width="36" height="13" rx="3" ${SVGW}/><polyline points="44,22.5 47,25.5 50,22.5" ${SVGW}/><line x1="23" y1="24.5" x2="38" y2="24.5" ${SVGW}/></svg>`},
+{n:'ステッパー入力',e:'Stepper Input',c:'input',d:'「−」と「＋」で数を増減する入力。個数の指定などに。',k:['数を増やす','プラスマイナス','個数','数量','増減','マイナスプラス','stepper'],svg:`<svg viewBox="0 0 72 48"><g ${SVGW}><circle cx="22" cy="24" r="6"/><line x1="19" y1="24" x2="25" y2="24"/><rect x="31" y="18" width="10" height="12" rx="2"/><circle cx="50" cy="24" r="6"/><line x1="47" y1="24" x2="53" y2="24"/><line x1="50" y1="21" x2="50" y2="27"/></g></svg>`},
+{n:'検索バー',e:'Search Bar',c:'input',d:'虫めがねアイコン付きの入力欄。キーワードで探します。',k:['検索','虫めがね','入力欄','検索窓','検索ボックス','search'],svg:`<svg viewBox="0 0 72 48"><rect x="16" y="18" width="40" height="13" rx="6.5" ${SVGW}/><g ${SVGW}><circle cx="24" cy="24" r="3"/><line x1="26.2" y1="26.2" x2="28.5" y2="28.5"/></g></svg>`},
+{n:'ピッカー',e:'Picker',c:'input',d:'くるくる回して選ぶホイール。日付や時刻の選択に。',k:['ホイール','日付選択','時刻','回して選ぶ','ドラム','picker'],svg:`<svg viewBox="0 0 72 48"><rect x="22" y="10" width="28" height="28" rx="4" ${SVGW}/><rect x="22" y="20" width="28" height="9" fill="currentColor" opacity="0.14"/><g ${SVGW}><line x1="28" y1="16" x2="44" y2="16" opacity="0.5"/><line x1="28" y1="24.5" x2="44" y2="24.5"/><line x1="28" y1="33" x2="44" y2="33" opacity="0.5"/></g></svg>`},
+{n:'オートコンプリート',e:'Autocomplete',c:'input',d:'入力の途中で候補を出してくれる入力補助。',k:['入力候補','サジェスト','予測','候補表示','補完','autocomplete'],svg:`<svg viewBox="0 0 72 48"><rect x="18" y="10" width="36" height="11" rx="3" ${SVGW}/><line x1="23" y1="15.5" x2="33" y2="15.5" ${SVGW}/><g ${SVGW} opacity="0.6"><line x1="20" y1="27" x2="50" y2="27"/><line x1="20" y1="33" x2="44" y2="33"/></g></svg>`},
+
+/* 通知・読み込み */
+{n:'トースト',e:'Toast / Snackbar',c:'feedback',d:'画面の下に少しの間だけ出る通知。「保存しました」など。',k:['一時通知','下に出る','メッセージ','スナックバー','お知らせ','通知','toast','snackbar'],svg:`<svg viewBox="0 0 72 48"><rect x="16" y="30" width="40" height="11" rx="4" fill="currentColor" opacity="0.14"/><rect x="16" y="30" width="40" height="11" rx="4" ${SVGW}/><line x1="21" y1="35.5" x2="40" y2="35.5" ${SVGW}/></svg>`},
+{n:'プログレスバー',e:'Progress Bar',c:'feedback',d:'進み具合を横棒で示す表示。ダウンロードなどに。',k:['進捗','バー','読み込み','進み具合','ダウンロード','進行','progress'],svg:`<svg viewBox="0 0 72 48"><rect x="16" y="21" width="40" height="7" rx="3.5" fill="currentColor" opacity="0.16"/><rect x="16" y="21" width="24" height="7" rx="3.5" fill="currentColor"/></svg>`},
+{n:'スピナー',e:'Spinner / Loader',c:'feedback',d:'くるくる回る読み込み中マーク。',k:['くるくる','読み込み中','ローディング','待ち','ぐるぐる','読込中','spinner','loader'],svg:`<svg viewBox="0 0 72 48"><path d="M36 14 a10 10 0 1 1 -8 4" ${SVGW}/></svg>`},
+{n:'プログレスリング',e:'Circular Progress',c:'feedback',d:'円形で進捗を示す表示。',k:['円形','進捗','丸い読み込み','リング','円グラフ風','circular'],svg:`<svg viewBox="0 0 72 48"><circle cx="36" cy="24" r="10" stroke="currentColor" stroke-width="3.4" fill="none" opacity="0.18"/><path d="M36 14 a10 10 0 0 1 7 17" stroke="currentColor" stroke-width="3.4" fill="none" stroke-linecap="round"/></svg>`},
+
+/* 操作・ジェスチャー */
+{n:'引っ張って更新',e:'Pull to Refresh',c:'gesture',d:'一覧を下に引っ張ると最新に更新される操作。',k:['引っ張る','更新','リロード','下に引く','プルリフレッシュ','読み込み直し','pull to refresh'],svg:`<svg viewBox="0 0 72 48"><path d="M30 24 a6 6 0 1 1 2 4.5" ${SVGW}/><polyline points="29,20 30,25 35,24" ${SVGW}/><line x1="36" y1="33" x2="36" y2="40" ${SVGW} opacity="0.5"/></svg>`},
+{n:'無限スクロール',e:'Infinite Scroll',c:'gesture',d:'一番下までスクロールすると自動で続きが読み込まれる仕組み。',k:['自動読み込み','続き表示','もっと見る','エンドレス','延々と','infinite scroll'],svg:`<svg viewBox="0 0 72 48"><g ${SVGW}><line x1="22" y1="14" x2="50" y2="14"/><line x1="22" y1="21" x2="50" y2="21" opacity="0.7"/><line x1="22" y1="28" x2="50" y2="28" opacity="0.4"/></g><path d="M31 36 a5 5 0 1 1 -4 2" ${SVGW}/></svg>`},
+{n:'スワイプ',e:'Swipe',c:'gesture',d:'指で横や縦になぞる操作。削除や切り替えに使います。',k:['なぞる','横に払う','スワイプ','スライド','払う','指でなぞる','swipe'],svg:`<svg viewBox="0 0 72 48"><g ${SVGW}><line x1="22" y1="24" x2="48" y2="24"/><polyline points="43,19 48,24 43,29"/><line x1="22" y1="24" x2="27" y2="20" opacity="0.5"/><line x1="22" y1="24" x2="27" y2="28" opacity="0.5"/></g></svg>`},
+{n:'長押し',e:'Long Press',c:'gesture',d:'少し長く押し続ける操作。メニュー表示などのきっかけに。',k:['長押し','押し続ける','ホールド','じっと押す','long press','ロングタップ'],svg:`<svg viewBox="0 0 72 48"><circle cx="36" cy="24" r="9" ${SVGW} opacity="0.4"/><circle cx="36" cy="24" r="4.5" fill="currentColor"/></svg>`},
+
+/* レイアウト・ページ構成（ウェブ） */
+{n:'ヒーローセクション',e:'Hero Section',c:'layout',d:'ページ最上部の大きな見せ場。キャッチコピーとボタンを大きく置く区画です。',k:['ヒーロー','メインビジュアル','一番上の大きい所','キャッチ','ファーストビュー','トップの大きい','hero'],svg:`<svg viewBox="0 0 72 48"><rect x="12" y="9" width="48" height="30" rx="3" ${SVGW}/><line x1="20" y1="18" x2="40" y2="18" stroke="currentColor" stroke-width="3.4" stroke-linecap="round"/><line x1="20" y1="24" x2="34" y2="24" ${SVGW} opacity="0.55"/><rect x="20" y="29" width="14" height="5" rx="2.5" fill="currentColor"/></svg>`},
+{n:'ナビゲーションバー（ヘッダー）',e:'Navbar / Header',c:'layout',d:'ページ上部の横長メニュー。ロゴとリンクが並びます。',k:['ヘッダー','上のメニュー','ナビバー','グローバルナビ','上の帯','navbar','header'],svg:`<svg viewBox="0 0 72 48"><rect x="12" y="14" width="48" height="11" rx="3" ${SVGW}/><circle cx="19" cy="19.5" r="2.4" fill="currentColor"/><g ${SVGW}><line x1="40" y1="19.5" x2="46" y2="19.5"/><line x1="49" y1="19.5" x2="55" y2="19.5"/></g></svg>`},
+{n:'サイドバー',e:'Sidebar',c:'layout',d:'画面の横にずっと表示される縦長のメニュー領域。',k:['横のメニュー','左メニュー','縦メニュー','サイドメニュー','常時表示の横','sidebar'],svg:`<svg viewBox="0 0 72 48"><rect x="12" y="10" width="48" height="28" rx="3" ${SVGW}/><rect x="12" y="10" width="16" height="28" fill="currentColor" opacity="0.14"/><line x1="28" y1="10" x2="28" y2="38" ${SVGW}/><g ${SVGW}><line x1="17" y1="17" x2="23" y2="17"/><line x1="17" y1="22" x2="23" y2="22"/><line x1="17" y1="27" x2="23" y2="27"/></g></svg>`},
+{n:'フッター',e:'Footer',c:'layout',d:'ページ最下部の領域。会社情報やリンクをまとめます。',k:['フッター','下の領域','一番下','下の帯','コピーライト','footer'],svg:`<svg viewBox="0 0 72 48"><rect x="12" y="9" width="48" height="30" rx="3" ${SVGW}/><rect x="12" y="30" width="48" height="9" fill="currentColor" opacity="0.14"/><line x1="12" y1="30" x2="60" y2="30" ${SVGW}/><g ${SVGW}><line x1="18" y1="35" x2="26" y2="35"/><line x1="31" y1="35" x2="39" y2="35"/><line x1="44" y1="35" x2="52" y2="35"/></g></svg>`},
+{n:'ページネーション',e:'Pagination',c:'layout',d:'「1 2 3 …」とページを切り替える番号ナビ。',k:['ページ送り','ページ番号','1 2 3','次のページ','ページ切替','pagination'],svg:`<svg viewBox="0 0 72 48"><g ${SVGW}><rect x="14" y="19" width="9" height="10" rx="2"/><rect x="25" y="19" width="9" height="10" rx="2"/><rect x="36" y="19" width="9" height="10" rx="2"/><rect x="47" y="19" width="9" height="10" rx="2"/></g><rect x="25" y="19" width="9" height="10" rx="2" fill="currentColor" opacity="0.16"/></svg>`},
+{n:'スティッキーヘッダー',e:'Sticky Header',c:'layout',d:'スクロールしても上に貼り付いたままのヘッダー。',k:['追従ヘッダー','固定ヘッダー','貼り付く','スクロールしても残る','追従','sticky'],svg:`<svg viewBox="0 0 72 48"><rect x="12" y="10" width="48" height="28" rx="3" ${SVGW}/><rect x="12" y="10" width="48" height="8" rx="3" fill="currentColor" opacity="0.16"/><line x1="12" y1="18" x2="60" y2="18" ${SVGW}/><g ${SVGW} opacity="0.6"><line x1="36" y1="24" x2="36" y2="32"/><polyline points="33,29 36,32 39,29"/></g></svg>`},
+{n:'バック・トゥ・トップ',e:'Back to Top',c:'layout',d:'押すとページ先頭まで戻る、右下などの矢印ボタン。',k:['トップへ戻る','上に戻る','先頭へ','ページの一番上','上に戻るボタン','back to top'],svg:`<svg viewBox="0 0 72 48"><circle cx="46" cy="30" r="9" fill="currentColor" opacity="0.12"/><circle cx="46" cy="30" r="9" ${SVGW}/><g ${SVGW}><line x1="46" y1="26" x2="46" y2="34"/><polyline points="42,30 46,26 50,30"/></g></svg>`},
+
+/* ナビゲーション（ウェブ追加） */
+{n:'メガメニュー',e:'Mega Menu',c:'nav',d:'ナビにカーソルを乗せると開く、大きな多段のメニューパネル。',k:['大きいメニュー','多段メニュー','広いドロップダウン','メガ','mega menu'],svg:`<svg viewBox="0 0 72 48"><line x1="14" y1="12" x2="58" y2="12" ${SVGW}/><rect x="22" y="17" width="34" height="21" rx="3" ${SVGW}/><g ${SVGW} opacity="0.7"><line x1="27" y1="24" x2="35" y2="24"/><line x1="27" y1="30" x2="35" y2="30"/><line x1="43" y1="24" x2="51" y2="24"/><line x1="43" y1="30" x2="51" y2="30"/></g></svg>`},
+{n:'コンテキストメニュー',e:'Context Menu',c:'nav',d:'右クリックで出る操作メニュー。',k:['右クリックメニュー','右クリック','操作メニュー','コンテキスト','context menu'],svg:`<svg viewBox="0 0 72 48"><path d="M19 13 l0 17 l4 -4 l3 6 l3 -1.3 l-3 -6 l6 -0.4 z" fill="currentColor"/><rect x="31" y="19" width="22" height="20" rx="3" ${SVGW}/><g ${SVGW} opacity="0.7"><line x1="35" y1="25" x2="49" y2="25"/><line x1="35" y1="30" x2="49" y2="30"/><line x1="35" y1="35" x2="45" y2="35"/></g></svg>`},
+{n:'ツールバー',e:'Toolbar',c:'nav',d:'操作アイコンを横に並べたバー。編集画面の上などに。',k:['ツールバー','アイコンの列','操作バー','道具の列','toolbar'],svg:`<svg viewBox="0 0 72 48"><rect x="14" y="18" width="44" height="12" rx="3" ${SVGW}/><g fill="currentColor"><rect x="19" y="22" width="4" height="4" rx="1"/><rect x="27" y="22" width="4" height="4" rx="1"/><rect x="35" y="22" width="4" height="4" rx="1"/><rect x="49" y="22" width="4" height="4" rx="1" opacity="0.5"/></g></svg>`},
+
+/* 表示・コンテナ（ウェブ追加） */
+{n:'データテーブル',e:'Data Table',c:'display',d:'行と列でデータを並べ、並べ替えや絞り込みができる表。',k:['表','テーブル','一覧表','並べ替えできる表','データ表','グリッド','data table'],svg:`<svg viewBox="0 0 72 48"><rect x="13" y="11" width="46" height="26" rx="2" ${SVGW}/><rect x="13" y="11" width="46" height="8" fill="currentColor" opacity="0.14"/><g ${SVGW}><line x1="13" y1="19" x2="59" y2="19"/><line x1="13" y1="28" x2="59" y2="28"/><line x1="29" y1="11" x2="29" y2="37"/><line x1="44" y1="11" x2="44" y2="37"/></g></svg>`},
+{n:'ツリービュー',e:'Tree View',c:'display',d:'階層を入れ子で開閉できる一覧。フォルダ構造などに。',k:['ツリー','階層','入れ子','フォルダ表示','開閉できる一覧','tree'],svg:`<svg viewBox="0 0 72 48"><g ${SVGW}><polyline points="18,15 21,18 18,21"/><line x1="25" y1="18" x2="42" y2="18"/><line x1="27" y1="18" x2="27" y2="33"/><line x1="27" y1="26" x2="31" y2="26"/><line x1="33" y1="26" x2="46" y2="26"/><line x1="27" y1="33" x2="31" y2="33"/><line x1="33" y1="33" x2="44" y2="33"/></g></svg>`},
+{n:'タイムライン',e:'Timeline',c:'display',d:'出来事を時系列に縦に並べた表示。活動履歴などに。',k:['タイムライン','時系列','履歴','活動履歴','縦の流れ','timeline'],svg:`<svg viewBox="0 0 72 48"><line x1="24" y1="11" x2="24" y2="37" ${SVGW}/><g fill="currentColor"><circle cx="24" cy="15" r="3"/><circle cx="24" cy="24" r="3"/><circle cx="24" cy="33" r="3"/></g><g ${SVGW} opacity="0.8"><line x1="31" y1="15" x2="48" y2="15"/><line x1="31" y1="24" x2="48" y2="24"/><line x1="31" y1="33" x2="44" y2="33"/></g></svg>`},
+{n:'アバター',e:'Avatar',c:'display',d:'ユーザーを表す丸いアイコン画像。',k:['アイコン画像','プロフィール画像','丸い顔','ユーザー画像','顔アイコン','avatar'],svg:`<svg viewBox="0 0 72 48"><circle cx="36" cy="24" r="13" ${SVGW}/><g fill="currentColor"><circle cx="36" cy="20" r="4.2"/><path d="M28.5 33 a7.5 6.5 0 0 1 15 0 z"/></g></svg>`},
+{n:'アラート / バナー',e:'Alert / Banner',c:'display',d:'画面上部などに出る、色付きのお知らせ帯。',k:['お知らせ帯','警告','注意バー','メッセージ帯','バナー','alert','banner'],svg:`<svg viewBox="0 0 72 48"><rect x="13" y="18" width="46" height="13" rx="3" fill="currentColor" opacity="0.12"/><rect x="13" y="18" width="46" height="13" rx="3" ${SVGW}/><circle cx="21" cy="24.5" r="3.4" ${SVGW}/><line x1="21" y1="23" x2="21" y2="24.6" ${SVGW}/><line x1="28" y1="24.5" x2="50" y2="24.5" ${SVGW} opacity="0.7"/></svg>`},
+{n:'ライトボックス',e:'Lightbox',c:'display',d:'画像をクリックすると暗い背景で大きく表示する仕組み。',k:['画像拡大','暗くして表示','写真ポップアップ','拡大表示','ギャラリー','lightbox'],svg:`<svg viewBox="0 0 72 48"><rect x="12" y="8" width="48" height="32" rx="3" fill="currentColor" opacity="0.16"/><rect x="24" y="15" width="24" height="18" rx="2" fill="#F6F8F6" ${SVGW}/><g ${SVGW}><circle cx="31" cy="22" r="1.7"/><polyline points="26,30 33,24 38,28 43,23 46,27"/></g></svg>`},
+{n:'カンバンボード',e:'Kanban Board',c:'display',d:'「未着手・進行中・完了」などの列にカードを並べて管理する板。',k:['カンバン','タスク管理','列でカード','ボード','付箋','kanban'],svg:`<svg viewBox="0 0 72 48"><g ${SVGW}><rect x="13" y="11" width="14" height="26" rx="2"/><rect x="29" y="11" width="14" height="26" rx="2"/><rect x="45" y="11" width="14" height="26" rx="2"/></g><g fill="currentColor" opacity="0.2"><rect x="16" y="15" width="8" height="5" rx="1.5"/><rect x="16" y="22" width="8" height="5" rx="1.5"/><rect x="32" y="15" width="8" height="5" rx="1.5"/></g></svg>`},
+
+/* 入力（ウェブ追加） */
+{n:'デートピッカー',e:'Date Picker',c:'input',d:'カレンダーから日付を選ぶ入力。',k:['日付選択','カレンダー','日付入力','カレンダー入力','date picker'],svg:`<svg viewBox="0 0 72 48"><rect x="18" y="12" width="36" height="27" rx="3" ${SVGW}/><line x1="18" y1="20" x2="54" y2="20" ${SVGW}/><g ${SVGW}><line x1="26" y1="9" x2="26" y2="14"/><line x1="46" y1="9" x2="46" y2="14"/></g><g fill="currentColor" opacity="0.55"><circle cx="27" cy="27" r="1.5"/><circle cx="34" cy="27" r="1.5"/><circle cx="41" cy="27" r="1.5"/><circle cx="27" cy="33" r="1.5"/></g><circle cx="34" cy="33" r="2.6" fill="currentColor"/></svg>`},
+{n:'ファイルアップロード',e:'File Upload / Dropzone',c:'input',d:'ファイルをドラッグして置くと取り込める枠。',k:['アップロード','ドラッグ&ドロップ','ファイル添付','ドロップゾーン','投稿','upload','dropzone'],svg:`<svg viewBox="0 0 72 48"><rect x="16" y="11" width="40" height="26" rx="4" stroke="currentColor" fill="none" stroke-width="2.4" stroke-dasharray="4 4"/><g ${SVGW}><line x1="36" y1="20" x2="36" y2="30"/><polyline points="31,25 36,20 41,25"/></g></svg>`},
+{n:'リッチテキストエディタ',e:'Rich Text Editor',c:'input',d:'太字や箇条書きなど、装飾しながら書ける入力欄。',k:['装飾できる入力','wysiwyg','エディタ','太字にできる','文章編集','リッチテキスト'],svg:`<svg viewBox="0 0 72 48"><rect x="14" y="11" width="44" height="26" rx="3" ${SVGW}/><line x1="14" y1="20" x2="58" y2="20" ${SVGW}/><g fill="currentColor" font-family="monospace" font-weight="700" font-size="6"><text x="19" y="18">B</text><text x="26" y="18">I</text><text x="33" y="18">U</text></g><g ${SVGW} opacity="0.6"><line x1="19" y1="26" x2="50" y2="26"/><line x1="19" y1="31" x2="42" y2="31"/></g></svg>`},
+{n:'カラーピッカー',e:'Color Picker',c:'input',d:'色を選ぶための見本やパレット。',k:['色選択','色を選ぶ','パレット','カラー','color picker'],svg:`<svg viewBox="0 0 72 48"><rect x="20" y="13" width="22" height="22" rx="3" ${SVGW}/><g fill="currentColor"><rect x="23" y="16" width="6" height="6" rx="1" opacity="0.3"/><rect x="31" y="16" width="6" height="6" rx="1" opacity="0.55"/><rect x="23" y="24" width="6" height="6" rx="1" opacity="0.8"/><rect x="31" y="24" width="6" height="6" rx="1"/></g><circle cx="50" cy="20" r="3.2" ${SVGW}/></svg>`},
+{n:'フローティングラベル',e:'Floating Label',c:'input',d:'入力すると見出しが枠の上に浮き上がるラベル。',k:['浮くラベル','上に上がる見出し','ラベルが動く','floating label'],svg:`<svg viewBox="0 0 72 48"><rect x="16" y="20" width="40" height="14" rx="3" ${SVGW}/><rect x="22" y="17" width="18" height="6" fill="#F6F8F6"/><text x="23.5" y="22" font-size="5.4" fill="currentColor" font-family="sans-serif" font-weight="700">Name</text><line x1="22" y1="29" x2="40" y2="29" ${SVGW} opacity="0.5"/></svg>`},
+
+/* 通知・読み込み（ウェブ追加） */
+{n:'エンプティステート',e:'Empty State',c:'feedback',d:'データが何も無いときに出す案内画面。',k:['空の状態','データなし','まだ何もない','空っぽ画面','empty state'],svg:`<svg viewBox="0 0 72 48"><rect x="20" y="12" width="32" height="24" rx="4" stroke="currentColor" fill="none" stroke-width="2.4" stroke-dasharray="4 4"/><g ${SVGW} opacity="0.7"><circle cx="36" cy="22" r="3.4"/><line x1="36" y1="27.5" x2="36" y2="30"/></g><line x1="29" y1="33" x2="43" y2="33" ${SVGW} opacity="0.45"/></svg>`},
+];
+UI.forEach(u=>{ u._k = Array.from(new Set([...u.k, u.n.toLowerCase(), ...u.e.toLowerCase().split(/[\s\/]+/)].filter(Boolean))); });
+
+/* ============ 共通検索 ============ */
+let mode='fn', plat='win', activeCat=null;
+
+/* ============ 広告設定 ============ */
+/* 後で各スロットの中身を AdSense 等の広告コードに差し替えてください。
+   有効/無効や挿入間隔はここで切り替えられます。 */
+const ADS = {
+  enabled:true,   // 広告全体のオン/オフ
+  top:true,       // 答えの下のバナー
+  feed:true,      // 結果一覧に挟むネイティブ枠
+  footer:true,    // フッター上のバナー
+  anchor:true,    // スマホ下部の固定バナー（×で閉じられる）
+  feedStart:6,    // 何件目の後に最初の枠を入れるか
+  feedEvery:8,    // その後、何件ごとに入れるか
+};
+function norm(s){return (s||'').toString().toLowerCase().trim();}
+
+function genScore(q, rec){
+  if(!q) return 0;
+  const name=norm(rec.name), read=norm(rec.read), desc=norm(rec.desc), keys=rec.keys.map(norm);
+  let sc=0;
+  if(name===q) sc+=1000; else if(name.startsWith(q)) sc+=600; else if(name.includes(q)) sc+=350;
+  if(read && (read.includes(q)||(q.length>=2 && q.includes(read)))) sc+=220;
+  if(keys.some(k=>k===q)) sc+=420;
+  if(keys.some(k=>k.includes(q))) sc+=170;
+  if(keys.some(k=>k.length>=2 && q.includes(k))) sc+=230;
+  if(desc.includes(q)) sc+=60;
+  const toks=q.split(/[\s　+＋]+/).filter(Boolean);
+  if(toks.length>1){
+    toks.forEach(t=>{
+      if(name.includes(t)) sc+=90;
+      if(read.includes(t)) sc+=50;
+      if(keys.some(k=>k===t)) sc+=140;
+      if(keys.some(k=>k.includes(t)||(k.length>=2 && t.includes(k)))) sc+=85;
+      if(desc.includes(t)) sc+=30;
+    });
+  }
+  return sc;
+}
+const fnRecord=it=>({name:it.n, read:it.r, desc:it.d, keys:it.k});
+const scRecord=it=>({name:it.a, read:'', desc:it.d, keys:it._k});
+const uiRecord=it=>({name:it.n, read:it.e, desc:it.d, keys:it._k});
+
+/* ============ カード描画 ============ */
+function catTag(cats,c){const m=cats[c];return `<span class="cat-tag" style="--cat:var(${m.v});--cat-wash:${m.wash}">${m.ja}</span>`;}
+function fnCard(it){
+  const m=CATS[it.c];
+  const syntax=it.s.replace(/\(([^)]*)\)/,(x,a)=>'('+a.split(',').map(s=>`<span class="arg">${s.trim()}</span>`).join(', ')+')');
+  return `<article class="card" style="--cat:var(${m.v});--cat-wash:${m.wash}" tabindex="0">
+    <div class="card-top"><div><div class="fn-name">${it.n}</div><div class="fn-read">${it.r}</div></div>${catTag(CATS,it.c)}</div>
+    <p class="fn-desc">${it.d}</p>
+    <div class="syntax">=${syntax}</div>
+    <div class="example">
+      <span class="ex-cell formula" data-f="${it.ex.f}" role="button" tabindex="0" title="クリックでコピー">${it.ex.f}</span>
+      <span class="ex-arrow">→</span><span class="ex-cell result">${it.ex.res}</span>
+    </div>
+    <p class="ex-note">${it.note}</p></article>`;
+}
+function scCard(it){
+  const m=SCATS[it.c];
+  const keys=(plat==='win'?it.win:it.mac);
+  const caps=keys.map(k=>`<span class="kbd">${k}</span>`).join('<span class="kplus">+</span>');
+  return `<article class="card" style="--cat:var(${m.v});--cat-wash:${m.wash}" tabindex="0">
+    <div class="card-top"><div class="sc-action">${it.a}</div>${catTag(SCATS,it.c)}</div>
+    <div class="kcombo">${caps}</div>
+    <p class="fn-desc" style="margin-top:0">${it.d}</p>
+    ${it.note?`<p class="sc-note">※ ${it.note}</p>`:''}</article>`;
+}
+function uiCard(it){
+  const m=UCATS[it.c];
+  return `<article class="card" style="--cat:var(${m.v});--cat-wash:${m.wash}" tabindex="0">
+    <div class="card-top"><div><div class="sc-action">${it.n}</div><div class="ui-en">${it.e}</div></div>${catTag(UCATS,it.c)}</div>
+    <div class="ui-ico">${it.svg}</div>
+    <p class="fn-desc" style="margin-top:0">${it.d}</p></article>`;
+}
+
+/* ============ ビジネス敬語・言い換え ============ */
+const KEIGO=[
+  {casual:'了解しました', polite:['承知いたしました','かしこまりました'], scene:'返信', keys:['了解','りょうかい','わかりました','把握','OK']},
+  {casual:'すみません', polite:['恐れ入ります','申し訳ございません'], scene:'謝罪・依頼', note:'依頼の前置きなら「恐れ入りますが」、お詫びなら「申し訳ございません」。', keys:['すみません','すいません','ごめん']},
+  {casual:'ごめんなさい', polite:['申し訳ございません','お詫び申し上げます'], scene:'謝罪', keys:['ごめん','謝る','陳謝']},
+  {casual:'ありがとうございます', polite:['厚く御礼申し上げます','感謝申し上げます'], scene:'御礼', keys:['ありがとう','感謝','お礼','御礼']},
+  {casual:'お願いします', polite:['お願い申し上げます','〜いただけますと幸いです'], scene:'依頼', keys:['お願い','頼む','依頼']},
+  {casual:'教えてください', polite:['ご教示いただけますでしょうか','お聞かせいただけますか'], scene:'依頼', keys:['教えて','知りたい','聞きたい']},
+  {casual:'確認してください', polite:['ご確認いただけますでしょうか','ご査収ください'], scene:'依頼', note:'資料を送って確認を求めるなら「ご査収ください」。', keys:['確認','チェック','見て','目を通して']},
+  {casual:'知っていますか', polite:['ご存じでしょうか'], scene:'確認', keys:['知ってる','ご存知']},
+  {casual:'言っておきます', polite:['申し伝えます'], scene:'伝言', keys:['伝える','伝言','言っとく','申し伝え']},
+  {casual:'会いたいです', polite:['お目にかかりたく存じます'], scene:'アポイント', keys:['会う','面会','お会いしたい']},
+  {casual:'行きます', polite:['伺います','参ります'], scene:'訪問', keys:['行く','訪問','来訪','お伺い']},
+  {casual:'もらえますか', polite:['いただけますでしょうか','頂戴できますでしょうか'], scene:'依頼', keys:['もらう','ください','頂戴']},
+  {casual:'やっておきます', polite:['対応いたします','進めてまいります'], scene:'返信', keys:['やる','対応','対処','進める']},
+  {casual:'できません', polite:['いたしかねます','対応が難しい状況です'], scene:'断り', note:'やわらかく断るときは「いたしかねます」。', keys:['無理','断る','できない','お断り']},
+  {casual:'待ってください', polite:['お待ちいただけますでしょうか','少々お時間を頂戴できますか'], scene:'依頼', keys:['待って','保留','時間がほしい']},
+  {casual:'忙しいところ', polite:['ご多用のところ','お忙しいところ'], scene:'クッション', keys:['忙しい','多忙','お忙しい']},
+  {casual:'すぐに', polite:['早急に','速やかに'], scene:'表現', keys:['すぐ','至急','急いで']},
+  {casual:'ちょっと', polite:['少々','些少'], scene:'表現', keys:['ちょっと','少し']},
+  {casual:'見ました', polite:['拝見しました'], scene:'返信', keys:['見た','読んだ','確認した']},
+  {casual:'もらいました', polite:['頂戴しました','賜りました'], scene:'返信', keys:['もらった','受け取った','受領']},
+  {casual:'行けません', polite:['都合がつかず欠席いたします'], scene:'欠席', keys:['欠席','行けない','不参加','参加できない']},
+  {casual:'大丈夫です', polite:['問題ございません','差し支えございません'], scene:'返信', keys:['大丈夫','OK','問題ない']},
+  {casual:'受け取ってください', polite:['ご査収ください','お納めください'], scene:'添付', keys:['査収','添付','送る','受け取って']},
+  {casual:'都合はどうですか', polite:['ご都合はいかがでしょうか'], scene:'アポイント', keys:['都合','日程','スケジュール','空いてる']},
+  {casual:'思います', polite:['存じます','〜と考えております'], scene:'表現', keys:['思う','考える']},
+  {casual:'わかりました（理解）', polite:['承知いたしました','理解いたしました'], scene:'返信', keys:['わかった','理解','把握']},
+  {casual:'すごいですね', polite:['素晴らしいですね','感服いたします'], scene:'称賛', keys:['すごい','さすが']},
+  {casual:'クッション言葉', polite:['恐れ入りますが','お手数をおかけしますが','差し支えなければ','勝手ながら'], scene:'前置き', note:'依頼やお願いの前に置くと、角が立ちにくくなります。', keys:['クッション','前置き','やわらかく','枕詞']},
+];
+const keigoRecord=it=>({name:it.casual, read:'', desc:it.polite.join(' ')+' '+(it.note||''), keys:it.keys});
+function keigoCard(it){
+  return `<article class="card kg-card" tabindex="0">
+    <div class="card-top"><div><div class="fn-name">${esc(it.casual)}</div><div class="fn-read">ふだんの言い方</div></div><span class="kg-scene">${esc(it.scene)}</span></div>
+    <div class="kg-label">ビジネス向けの言い換え（タップでコピー）</div>
+    <div class="kg-polite">${it.polite.map(p=>`<span class="kg-chip" data-copy="${esc(p)}" role="button" tabindex="0" title="クリックでコピー">${esc(p)}</span>`).join('')}</div>
+    ${it.note?`<p class="ex-note">${esc(it.note)}</p>`:''}
+  </article>`;
+}
+
+/* ============ カタカナ語・略語辞典 ============ */
+const KATAGO=[
+  {term:'アジェンダ', en:'agenda', mean:'会議の議題・進行表。話し合う項目をまとめたもの。', keys:['アジェンダ','議題','進行表']},
+  {term:'エビデンス', en:'evidence', mean:'証拠・根拠。主張を裏づけるデータや資料。', keys:['エビデンス','証拠','根拠']},
+  {term:'コンセンサス', en:'consensus', mean:'関係者の合意・意見の一致。', keys:['コンセンサス','合意','同意']},
+  {term:'リソース', en:'resource', mean:'人員・資金・時間などの資源。', keys:['リソース','人手','資源']},
+  {term:'ペンディング', en:'pending', mean:'保留・先送り。結論を出さずに置いておくこと。', keys:['ペンディング','保留','先送り']},
+  {term:'アサイン', en:'assign', mean:'担当として割り当てること。', keys:['アサイン','割り当て','担当']},
+  {term:'フィックス', en:'fix', mean:'内容を確定させること。', keys:['フィックス','確定','決定']},
+  {term:'ナレッジ', en:'knowledge', mean:'蓄積された知識・ノウハウ。', keys:['ナレッジ','知見','知識']},
+  {term:'ローンチ', en:'launch', mean:'新サービスや製品の公開・開始。', keys:['ローンチ','公開','開始','リリース']},
+  {term:'スキーム', en:'scheme', mean:'計画・仕組み。物事の枠組み。', keys:['スキーム','仕組み','枠組み']},
+  {term:'ボトルネック', en:'bottleneck', mean:'全体の進行を妨げている要因。', keys:['ボトルネック','障害','詰まり']},
+  {term:'リスケ', en:'reschedule', mean:'予定の組み直し・日程変更。', keys:['リスケ','日程変更','スケジュール変更']},
+  {term:'ペルソナ', en:'persona', mean:'想定する典型的なユーザー像。', keys:['ペルソナ','ユーザー像']},
+  {term:'KPI', en:'Key Performance Indicator', mean:'重要業績評価指標。目標の達成度を測る中間指標。', keys:['KPI','指標']},
+  {term:'KGI', en:'Key Goal Indicator', mean:'最終目標を数値化した指標。', keys:['KGI','目標指標']},
+  {term:'PDCA', en:'Plan-Do-Check-Action', mean:'計画→実行→評価→改善を繰り返す業務改善の手法。', keys:['PDCA','改善']},
+  {term:'ASAP', en:'as soon as possible', mean:'できるだけ早く。', keys:['ASAP','至急','なるはや']},
+  {term:'FYI', en:'for your information', mean:'ご参考まで。情報共有のときの前置き。', keys:['FYI','参考まで']},
+  {term:'MTG', en:'meeting', mean:'会議・打ち合わせ。', keys:['MTG','会議','打合せ','ミーティング']},
+  {term:'リマインド', en:'remind', mean:'再確認のための連絡・念押し。', keys:['リマインド','催促','念押し']},
+  {term:'ブラッシュアップ', en:'brush up', mean:'内容をより良く磨き上げること。', keys:['ブラッシュアップ','改善','磨く']},
+  {term:'ドラフト', en:'draft', mean:'下書き・草案。', keys:['ドラフト','下書き','草案','たたき台']},
+  {term:'オンスケ', en:'on schedule', mean:'予定どおり進んでいること。', keys:['オンスケ','予定通り']},
+  {term:'バッファ', en:'buffer', mean:'余裕。時間や予算のゆとり。', keys:['バッファ','余裕','ゆとり']},
+  {term:'デフォルト', en:'default', mean:'初期設定・標準の状態。', keys:['デフォルト','初期','標準']},
+  {term:'イニシアチブ', en:'initiative', mean:'主導権。物事を率先して進める力。', keys:['イニシアチブ','主導権']},
+  {term:'コミット', en:'commit', mean:'責任を持って関与・約束すること。', keys:['コミット','約束','関与']},
+  {term:'アライアンス', en:'alliance', mean:'企業同士の提携・連携。', keys:['アライアンス','提携','連携']},
+  {term:'ステークホルダー', en:'stakeholder', mean:'利害関係者。事業に関わる人や組織。', keys:['ステークホルダー','利害関係者']},
+  {term:'リテラシー', en:'literacy', mean:'情報や知識を正しく理解・活用する力。', keys:['リテラシー','活用能力']},
+  {term:'ニッチ', en:'niche', mean:'すき間。大手が手をつけていない小さな市場。', keys:['ニッチ','すき間','隙間']},
+];
+const kataRecord=it=>({name:it.term, read:it.en, desc:it.mean, keys:it.keys});
+function kataCard(it){
+  return `<article class="card" tabindex="0">
+    <div class="card-top"><div><div class="fn-name">${esc(it.term)}</div><div class="fn-read">${esc(it.en||'')}</div></div><span class="kg-scene">カタカナ語</span></div>
+    <p class="fn-desc">${esc(it.mean)}</p>
+  </article>`;
+}
+function bindCopySel(sel){
+  document.querySelectorAll(sel).forEach(el=>{
+    const t=el.dataset.copy||el.textContent;
+    const f=()=>{navigator.clipboard?.writeText(t).then(()=>{el.classList.add('copied');setTimeout(()=>el.classList.remove('copied'),1100);}).catch(()=>{});};
+    el.onclick=f; el.onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();f();}};
+  });
+}
+
+const MODES = {
+  fn:{data:FN, rec:fnRecord, card:fnCard, cats:CATS, listLabel:'関数一覧', catSuffix:'の関数', plat:false,
+      fxtab:'<span class="fxmark">fx</span><span class="eq">=</span>', placeholder:'例：合計 / 足す / 重複を消す …',
+      lede:'関数名でも「合計」「重複を消す」みたいな言葉でも検索できます。',
+      emptyHint:'関数名や、やりたいことを別の言葉で入れてみてください。',
+      suggest:[['合計','合計'],['足す','足す'],['条件','条件で集計'],['探す','表から探す'],['重複を消す','重複を消す']]},
+  sc:{data:SC, rec:scRecord, card:scCard, cats:SCATS, listLabel:'ショートカット一覧', catSuffix:'のショートカット', plat:true,
+      fxtab:'<span class="fxmark" style="font-style:normal;font-size:17px">⌨</span>', placeholder:'例：コピー / 保存 / 絶対参照 / Ctrl+C …',
+      lede:'操作名（コピー・保存など）でも、キー（Ctrl+C）でも検索できます。',
+      emptyHint:'操作名（コピー・保存など）やキー（Ctrl+C）で探せます。',
+      suggest:[['コピー','コピー'],['保存','保存'],['絶対参照','絶対参照'],['行を挿入','行を挿入'],['フィルター','フィルター']]},
+  ui:{data:UI, rec:uiRecord, card:uiCard, cats:UCATS, listLabel:'UIパーツ一覧', catSuffix:'のパーツ', plat:false,
+      fxtab:'<span class="fxmark" style="font-style:normal;font-size:15px">▦</span>', placeholder:'例：三本線のメニュー / 折りたたみ / オンオフ …',
+      lede:'「あの三本線の…」のように見た目や特徴で検索すると、正式名称がわかります。',
+      emptyHint:'見た目や特徴（三本線・折りたたみ・右下の丸ボタン など）で探せます。',
+      suggest:[['三本線','三本線のメニュー'],['折りたたみ','折りたたみ'],['オンオフ','オンオフ切替'],['右下の丸ボタン','右下の丸ボタン'],['吹き出し','吹き出し']]},
+  char:{cats:{}, plat:false,
+      fxtab:'<span class="fxmark" style="font-style:normal;font-size:16px">字</span>', placeholder:'漢字を1字 入力・貼り付け、または読み（チュウ など）…',
+      lede:'漢字を手書き・入力すると、音読み・訓読みがわかります（このタブはインターネット接続が必要です）。'},
+  dict:{cats:{}, plat:false,
+      fxtab:'<span class="fxmark" style="font-style:normal;font-size:15px">辞</span>', placeholder:'英単語や日本語を入力（例：apple / りんご / 走る）…',
+      lede:'英単語の意味も、日本語からの英訳も引けます（このタブはインターネット接続が必要です）。'},
+  sub:{cats:{}, plat:false,
+      fxtab:'<span class="fxmark" style="font-style:normal;font-size:15px">¥</span>', placeholder:'',
+      lede:'毎月のサブスクを登録して、合計・1日あたり・見直し候補を管理できます（このブラウザに保存）。'},
+  wari:{cats:{}, plat:false,
+      fxtab:'<span class="fxmark" style="font-style:normal;font-size:15px">割</span>', placeholder:'',
+      lede:'メンバーと立替えを入れると、誰が誰にいくら払えば精算完了かを自動計算します（このブラウザに保存）。'},
+  keigo:{data:KEIGO, rec:keigoRecord, card:keigoCard, cats:{}, listLabel:'言い換え一覧', catSuffix:'', plat:false,
+      fxtab:'<span class="fxmark" style="font-style:normal;font-size:15px">礼</span>', placeholder:'例：了解 / すみません / お願いします …',
+      lede:'ふだんの言い方を入れると、ビジネス向けの丁寧な言い換えが出ます。',
+      emptyHint:'「了解」「すみません」「お願い」など、ふだんの言い方で探せます。',
+      suggest:[['了解','了解しました'],['すみません','すみません'],['お願い','お願いします'],['確認','確認してください'],['ありがとう','ありがとうございます']]},
+  kata:{data:KATAGO, rec:kataRecord, card:kataCard, cats:{}, listLabel:'カタカナ語一覧', catSuffix:'', plat:false,
+      fxtab:'<span class="fxmark" style="font-style:normal;font-size:15px">カ</span>', placeholder:'例：アジェンダ / KPI / エビデンス / ASAP …',
+      lede:'カタカナ語・ビジネス略語の意味をすぐに引けます。',
+      emptyHint:'「アジェンダ」「KPI」「FYI」「リスケ」などで探せます。',
+      suggest:[['アジェンダ','アジェンダ'],['エビデンス','エビデンス'],['KPI','KPI'],['FYI','FYI'],['リスケ','リスケ']]},
+};
+
+/* ============ レンダリング ============ */
+const elQ=document.getElementById('q'), elClear=document.getElementById('clear'),
+      elChips=document.getElementById('chips'), elResults=document.getElementById('results'),
+      elAnswer=document.getElementById('answer'), elCount=document.getElementById('count'),
+      elMetaLabel=document.getElementById('metaLabel'), elPlat=document.getElementById('platwrap'),
+      elFxtab=document.getElementById('fxtab'), elLede=document.getElementById('lede'),
+      elCtopTitle=document.getElementById('ctopTitle');
+const MODE_LABELS={fn:'Excelの関数',sc:'ショートカットキー',ui:'UIパーツ',char:'漢字手書き検索',dict:'英語⇄日本語の辞書',sub:'サブスク管理',keigo:'ビジネス敬語・言い換え',kata:'カタカナ語・略語辞典',wari:'割り勘・立替の精算'};
+const adTopEl=document.getElementById('adTop'), adFootEl=document.getElementById('adFoot'), adAnchorEl=document.getElementById('adAnchor');
+
+function render(){
+  const q=norm(elQ.value);
+  elClear.classList.toggle('show', !!elQ.value);
+  clearTimeout(heroLogTimer);
+  updateRecentVisibility();
+  const cfg=MODES[mode];
+  const data=cfg.data, recOf=cfg.rec, cardOf=cfg.card, cats=cfg.cats;
+
+  let list=data.map(it=>({it, sc:genScore(q, recOf(it))}));
+  if(activeCat) list=list.filter(x=>x.it.c===activeCat);
+  if(q) list=list.filter(x=>x.sc>0).sort((a,b)=>b.sc-a.sc);
+
+  if(q) elMetaLabel.textContent='検索結果';
+  else if(activeCat) elMetaLabel.textContent=cats[activeCat].ja+cfg.catSuffix;
+  else elMetaLabel.textContent=cfg.listLabel;
+  elCount.innerHTML = list.length?`<b>${list.length}</b> 件`:'';
+
+  elAnswer.innerHTML='';
+  let rest=list;
+  if(q && list.length && list[0].sc>=300){
+    elAnswer.innerHTML=`<div class="answer"><div class="ans-eyebrow">いちばん近い答え</div><div class="selected-cell">${cardOf(list[0].it)}</div></div>`;
+    rest=list.slice(1);
+    scheduleHeroLog(mode, list[0].it);
+  }
+
+  if(!list.length){
+    elResults.innerHTML=`<div class="empty"><div class="big">=?</div>
+      <h3>見つかりませんでした</h3>
+      <p>${cfg.emptyHint}</p>
+      <div class="sugg">${cfg.suggest.map(s=>`<button data-s="${s[0]}">${s[1]}</button>`).join('')}</div></div>`;
+    elResults.querySelectorAll('.sugg button').forEach(b=>b.onclick=()=>{elQ.value=b.dataset.s;activeCat=null;syncChips();render();elQ.focus();});
+    return;
+  }
+  elResults.innerHTML=withFeedAds(rest.map(x=>cardOf(x.it)));
+  if(mode==='fn') bindCopy(); else if(mode==='keigo') bindCopySel('.kg-chip');
+}
+
+/* 結果一覧に「広告」カードを差し込む（先頭の答えと検索の間には入れない） */
+function adCardHTML(){
+  return `<div class="card ad-card" role="complementary" aria-label="広告">
+    <span class="ad-tag">広告</span>
+    <div class="ad-body"><div class="ad-ico">▦</div><p>広告スペース</p><span class="ad-mini">ネイティブ / レスポンシブ</span></div>
+    <!-- 広告コードをここに挿入（例：AdSense のネイティブ広告ユニット） -->
+  </div>`;
+}
+function withFeedAds(cards){
+  if(!(ADS.enabled&&ADS.feed) || cards.length<=ADS.feedStart) return cards.join('');
+  const out=[];
+  cards.forEach((c,i)=>{
+    out.push(c);
+    const pos=i+1;
+    if(pos>=ADS.feedStart && (pos-ADS.feedStart)%ADS.feedEvery===0 && pos!==cards.length) out.push(adCardHTML());
+  });
+  return out.join('');
+}
+
+function bindCopy(){
+  document.querySelectorAll('.ex-cell.formula').forEach(el=>{
+    const copy=()=>{navigator.clipboard?.writeText(el.dataset.f).then(()=>{el.classList.add('copied');setTimeout(()=>el.classList.remove('copied'),1100);}).catch(()=>{});};
+    el.onclick=copy; el.onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();copy();}};
+  });
+}
+
+/* ============ よく使う（アカウント不要・このブラウザに記録）============ */
+const RECENT_KEY='nanikore_recent_v1', RECENT_MAX=40, RECENT_SHOW=8;
+const recentBar=document.getElementById('recentBar');
+const RMARK={fn:'fx',sc:'⌨',ui:'▦',char:'字',dict:'A',keigo:'礼',kata:'カ'};
+let heroLogTimer=null;
+function recentLoad(){ try{ const a=JSON.parse(localStorage.getItem(RECENT_KEY)); return Array.isArray(a)?a:[]; }catch(e){ return []; } }
+function recentSave(a){ try{ localStorage.setItem(RECENT_KEY, JSON.stringify(a.slice(0,RECENT_MAX))); }catch(e){} }
+function logUse(m,key,label,q){
+  if(!key) return;
+  const id=m+':'+key, a=recentLoad();
+  const i=a.findIndex(x=>x.id===id);
+  if(i>=0){ a[i].n=(a[i].n||1)+1; a[i].t=Date.now(); a[i].label=label; a[i].q=q; }
+  else a.push({id,m,key,label,q,n:1,t:Date.now()});
+  a.sort((x,y)=>(y.n-x.n)||(y.t-x.t));
+  recentSave(a); renderRecent();
+}
+function scheduleHeroLog(m,it){
+  clearTimeout(heroLogTimer);
+  heroLogTimer=setTimeout(()=>{
+    let key; if(m==='fn'||m==='ui') key=it.n; else if(m==='sc') key=it.a; else if(m==='keigo') key=it.casual; else if(m==='kata') key=it.term;
+    if(key) logUse(m,key,key,key);
+  },1100);
+}
+function openRecent(x){
+  if(!x) return;
+  if(x.m==='char'){ setMode('char'); elQ.value=x.q; elClear.classList.add('show'); charLookup(x.key); }
+  else if(x.m==='dict'){ setMode('dict'); elQ.value=x.q; elClear.classList.add('show'); dictSearch(x.q); }
+  else { setMode(x.m); elQ.value=x.q; activeCat=null; syncChips(); render(); }
+  updateRecentVisibility(); elQ.focus();
+}
+function renderRecent(){
+  const show=recentLoad().slice(0,RECENT_SHOW);
+  if(!show.length){ recentBar.innerHTML=''; recentBar.hidden=true; return; }
+  recentBar.innerHTML=`<div class="rc-head"><span class="rc-title">よく使う</span><button class="rc-clear" id="rcClear">履歴を消す</button></div>`+
+    `<div class="rc-chips">${show.map((x,i)=>`<button class="rc-chip" data-i="${i}"><span class="rc-mk">${RMARK[x.m]||'•'}</span>${esc(x.label)}</button>`).join('')}</div>`;
+  recentBar.querySelectorAll('.rc-chip').forEach(b=>{ b.onclick=()=>openRecent(show[+b.dataset.i]); });
+  const rc=document.getElementById('rcClear'); if(rc) rc.onclick=()=>{ try{localStorage.removeItem(RECENT_KEY);}catch(e){} renderRecent(); };
+  updateRecentVisibility();
+}
+function updateRecentVisibility(){
+  recentBar.hidden=!(recentLoad().length>0 && !elQ.value.trim() && mode!=='sub' && mode!=='wari');
+}
+
+/* ============ サブスク管理（アカウント不要・このブラウザに保存）============ */
+const SUBS_KEY='nanikore_subs_v1';
+const subPanel=document.getElementById('subpanel');
+const searchwrapEl=document.querySelector('.searchwrap');
+const SUBCATS=[
+  {k:'video',ja:'動画',c:'#E0524B'},{k:'music',ja:'音楽',c:'#12855B'},
+  {k:'work',ja:'仕事',c:'#3B6FE0'},{k:'study',ja:'学習',c:'#C98A12'},
+  {k:'game',ja:'ゲーム',c:'#8A4FD0'},{k:'comm',ja:'通信',c:'#0E9E9E'},
+  {k:'other',ja:'その他',c:'#7A8694'},
+];
+const SUBPRESET=[
+  {name:'Netflix',amount:1490,cycle:'m',cat:'video'},
+  {name:'Spotify',amount:980,cycle:'m',cat:'music'},
+  {name:'YouTube Premium',amount:1280,cycle:'m',cat:'video'},
+  {name:'Amazonプライム',amount:600,cycle:'m',cat:'video'},
+  {name:'Apple Music',amount:1080,cycle:'m',cat:'music'},
+  {name:'Disney+',amount:990,cycle:'m',cat:'video'},
+  {name:'ChatGPT Plus',amount:3000,cycle:'m',cat:'work'},
+  {name:'Adobe CC',amount:6480,cycle:'m',cat:'work'},
+];
+let subEditId=null;
+const subEl={};
+['subName','subAmount','subCat','subNext','subAdd','subCancel','subPresets','subList','subSummary','subCycle'].forEach(id=>subEl[id]=document.getElementById(id));
+function subsLoad(){ try{const a=JSON.parse(localStorage.getItem(SUBS_KEY));return Array.isArray(a)?a:[];}catch(e){return [];} }
+function subsSave(a){ try{localStorage.setItem(SUBS_KEY,JSON.stringify(a));}catch(e){} }
+function yen(n){ return '¥'+Math.round(n).toLocaleString('ja-JP'); }
+function subMonthly(s){ return s.cycle==='y'? s.amount/12 : s.amount; }
+function subCatOf(k){ return SUBCATS.find(c=>c.k===k)||SUBCATS[SUBCATS.length-1]; }
+function subCycleVal(){ const b=subEl.subCycle.querySelector('button.active'); return b?b.dataset.c:'m'; }
+function subSetCycle(c){ subEl.subCycle.querySelectorAll('button').forEach(b=>b.classList.toggle('active',b.dataset.c===c)); }
+function subUID(){ return 's'+Date.now().toString(36)+Math.random().toString(36).slice(2,6); }
+function subClearForm(){ subEl.subName.value=''; subEl.subAmount.value=''; subEl.subNext.value=''; subEl.subCat.value='video'; subSetCycle('m'); subEditId=null; subEl.subAdd.textContent='追加'; subEl.subCancel.hidden=true; }
+function subSubmit(){
+  const name=subEl.subName.value.trim(), amount=Math.round(parseFloat(subEl.subAmount.value));
+  if(!name){ subEl.subName.focus(); return; }
+  if(isNaN(amount)||amount<0){ subEl.subAmount.focus(); return; }
+  const cycle=subCycleVal(), cat=subEl.subCat.value, next=subEl.subNext.value||'';
+  const a=subsLoad();
+  if(subEditId){ const it=a.find(x=>x.id===subEditId); if(it){ it.name=name; it.amount=amount; it.cycle=cycle; it.cat=cat; it.next=next; } }
+  else a.push({id:subUID(),name,amount,cycle,cat,next,rating:0});
+  subsSave(a); subClearForm(); renderSubs();
+}
+function subEditStart(id){ const s=subsLoad().find(x=>x.id===id); if(!s) return; subEl.subName.value=s.name; subEl.subAmount.value=s.amount; subSetCycle(s.cycle); subEl.subCat.value=s.cat; subEl.subNext.value=s.next||''; subEditId=id; subEl.subAdd.textContent='更新'; subEl.subCancel.hidden=false; subEl.subName.focus(); subEl.subName.scrollIntoView({behavior:'smooth',block:'center'}); }
+function subDelete(id){ const a=subsLoad().filter(x=>x.id!==id); subsSave(a); if(subEditId===id) subClearForm(); renderSubs(); }
+function subAddPreset(p){ const a=subsLoad(); a.push({id:subUID(),name:p.name,amount:p.amount,cycle:p.cycle,cat:p.cat,next:'',rating:0}); subsSave(a); renderSubs(); }
+function subSetRating(id,r){ const a=subsLoad(); const it=a.find(x=>x.id===id); if(it){ it.rating=(it.rating===r?0:r); subsSave(a); renderSubs(); } }
+function renderSubs(){
+  const a=subsLoad();
+  if(!a.length){
+    subEl.subSummary.innerHTML=`<div class="sub-card sub-intro">サブスクを登録すると、<b>月額・年額・1日あたり</b>を自動計算します。満足度の低いものは「見直し候補」として表示。データはこのブラウザにだけ保存されます（アカウント不要）。<br>下の例から1タップで追加できます。</div>`;
+  } else {
+    const monthly=a.reduce((s,x)=>s+subMonthly(x),0), year=monthly*12, day=year/365;
+    const byCat={}; a.forEach(x=>{ byCat[x.cat]=(byCat[x.cat]||0)+subMonthly(x); });
+    const bars=SUBCATS.filter(c=>byCat[c.k]).sort((p,q)=>byCat[q.k]-byCat[p.k]).map(c=>{
+      const v=byCat[c.k], pct=monthly?Math.round(v/monthly*100):0;
+      return `<div class="sc-row"><span class="sc-name"><span class="sc-dot" style="background:${c.c}"></span>${c.ja}</span><span class="sc-bar"><span style="width:${pct}%;background:${c.c}"></span></span><span class="sc-val">${yen(v)}</span></div>`;
+    }).join('');
+    const review=a.filter(x=>x.rating>=1&&x.rating<=2); const save=review.reduce((s,x)=>s+subMonthly(x)*12,0);
+    subEl.subSummary.innerHTML=`<div class="sub-card sub-sum">
+      <div class="sum-top"><div><div class="sum-big">${yen(monthly)}</div><div class="sum-label">月額合計 ・ ${a.length}件</div></div>
+      <div class="sum-side">年間 <b>${yen(year)}</b><br>1日あたり <b>${yen(day)}</b></div></div>
+      <div class="sc-list">${bars}</div>
+      ${review.length?`<div class="sub-review">満足度の低い <b>${review.length}件</b> を見直すと、年間 <b>${yen(save)}</b> の節約に</div>`:''}
+    </div>`;
+  }
+  const sorted=a.slice().sort((p,q)=>subMonthly(q)-subMonthly(p));
+  subEl.subList.innerHTML=sorted.map(s=>{
+    const m=subMonthly(s), perDay=m*12/365, c=subCatOf(s.cat);
+    const stars=[1,2,3,4,5].map(n=>`<button class="sub-star ${s.rating>=n?'on':''}" data-id="${s.id}" data-r="${n}" aria-label="満足度${n}">★</button>`).join('');
+    return `<div class="sub-card sub-item${s.rating&&s.rating<=2?' low':''}">
+      <div class="si-main">
+        <div class="si-name">${esc(s.name)} <span class="si-cat" style="background:${c.c}1f;color:${c.c}">${c.ja}</span></div>
+        <div class="si-cost"><b>${yen(s.amount)}</b><span class="si-cyc">/${s.cycle==='y'?'年':'月'}</span><span class="si-day">${yen(perDay)}／日</span>${s.next?`<span class="si-next">次回 ${esc(s.next)}</span>`:''}</div>
+        <div class="si-stars">${stars}</div>
+      </div>
+      <div class="si-acts"><button class="si-edit" data-id="${s.id}">編集</button><button class="si-del" data-id="${s.id}">削除</button></div>
+    </div>`;
+  }).join('');
+  subEl.subList.querySelectorAll('.si-edit').forEach(b=>b.onclick=()=>subEditStart(b.dataset.id));
+  subEl.subList.querySelectorAll('.si-del').forEach(b=>b.onclick=()=>subDelete(b.dataset.id));
+  subEl.subList.querySelectorAll('.sub-star').forEach(b=>b.onclick=()=>subSetRating(b.dataset.id,+b.dataset.r));
+}
+function initSub(){
+  if(!subPanel) return;
+  subEl.subCat.innerHTML=SUBCATS.map(c=>`<option value="${c.k}">${c.ja}</option>`).join('');
+  subEl.subCat.value='video';
+  subEl.subPresets.innerHTML=SUBPRESET.map((p,i)=>`<button class="sub-preset" data-i="${i}">＋ ${esc(p.name)}</button>`).join('');
+  subEl.subPresets.querySelectorAll('.sub-preset').forEach(b=>b.onclick=()=>subAddPreset(SUBPRESET[+b.dataset.i]));
+  subEl.subCycle.querySelectorAll('button').forEach(b=>b.onclick=()=>subSetCycle(b.dataset.c));
+  subEl.subAdd.onclick=subSubmit;
+  subEl.subCancel.onclick=subClearForm;
+  [subEl.subName,subEl.subAmount].forEach(el=>el.addEventListener('keydown',e=>{ if(e.key==='Enter') subSubmit(); }));
+}
+
+/* ============ 割り勘・立替の精算（アカウント不要・このブラウザに保存）============ */
+const WARI_KEY='nanikore_wari_v1';
+const wariPanel=document.getElementById('waripanel');
+const wEl={};
+['wariName','wariAddMember','wariChips','wariTitle','wariAmount','wariPayer','wariAdd','wariParts','wariResult','wariList','wariForm'].forEach(id=>wEl[id]=document.getElementById(id));
+let wariSel={};
+function wariLoad(){ try{ const d=JSON.parse(localStorage.getItem(WARI_KEY)); if(d&&Array.isArray(d.members)&&Array.isArray(d.items)) return d; }catch(e){} return {members:[],items:[]}; }
+function wariSave(d){ try{ localStorage.setItem(WARI_KEY, JSON.stringify(d)); }catch(e){} }
+function wUID(){ return 'w'+Date.now().toString(36)+Math.random().toString(36).slice(2,5); }
+function wmName(d,id){ const m=d.members.find(x=>x.id===id); return m?m.name:'?'; }
+function wAddMember(){
+  const name=wEl.wariName.value.trim(); if(!name){ wEl.wariName.focus(); return; }
+  const d=wariLoad(); d.members.push({id:wUID(),name}); wariSave(d);
+  wEl.wariName.value=''; wariSel={}; renderWari(); wEl.wariName.focus();
+}
+function wRemoveMember(id){
+  const d=wariLoad();
+  d.members=d.members.filter(m=>m.id!==id);
+  d.items=d.items.filter(it=>it.payer!==id).map(it=>({...it,parts:it.parts.filter(p=>p!==id)})).filter(it=>it.parts.length>0);
+  wariSave(d); wariSel={}; renderWari();
+}
+function wAddItem(){
+  const d=wariLoad();
+  const title=wEl.wariTitle.value.trim()||'立替え';
+  const amount=Math.round(parseFloat(wEl.wariAmount.value));
+  if(isNaN(amount)||amount<=0){ wEl.wariAmount.focus(); return; }
+  const payer=wEl.wariPayer.value; if(!payer) return;
+  const parts=d.members.map(m=>m.id).filter(id=>wariSel[id]!==false);
+  if(!parts.length) return;
+  d.items.push({id:wUID(),title,amount,payer,parts}); wariSave(d);
+  wEl.wariTitle.value=''; wEl.wariAmount.value=''; renderWari(); wEl.wariTitle.focus();
+}
+function wDelItem(id){ const d=wariLoad(); d.items=d.items.filter(it=>it.id!==id); wariSave(d); renderWari(); }
+function wSettle(d){
+  const net={}; d.members.forEach(m=>net[m.id]=0);
+  d.items.forEach(it=>{
+    if(net[it.payer]!==undefined) net[it.payer]+=it.amount;
+    const share=it.amount/it.parts.length;
+    it.parts.forEach(p=>{ if(net[p]!==undefined) net[p]-=share; });
+  });
+  const debt=[], cred=[];
+  d.members.forEach(m=>{ const v=net[m.id]; if(v<-0.5) debt.push({id:m.id,amt:-v}); else if(v>0.5) cred.push({id:m.id,amt:v}); });
+  debt.sort((a,b)=>b.amt-a.amt); cred.sort((a,b)=>b.amt-a.amt);
+  const tx=[]; let i=0,j=0;
+  while(i<debt.length&&j<cred.length){
+    const pay=Math.min(debt[i].amt,cred[j].amt);
+    tx.push({from:debt[i].id,to:cred[j].id,amount:Math.round(pay)});
+    debt[i].amt-=pay; cred[j].amt-=pay;
+    if(debt[i].amt<=0.5) i++; if(cred[j].amt<=0.5) j++;
+  }
+  return {net, tx:tx.filter(t=>t.amount>0)};
+}
+function renderWari(){
+  const d=wariLoad();
+  wEl.wariChips.innerHTML=d.members.length? d.members.map(m=>`<span class="wari-chip">${esc(m.name)}<button class="wari-x" data-id="${m.id}" aria-label="削除">×</button></span>`).join('') : `<span class="wari-empty">まずは割り勘するメンバーを2人以上追加してください。</span>`;
+  wEl.wariChips.querySelectorAll('.wari-x').forEach(b=>b.onclick=()=>wRemoveMember(b.dataset.id));
+  wEl.wariPayer.innerHTML=d.members.map(m=>`<option value="${m.id}">${esc(m.name)}が立替</option>`).join('');
+  wEl.wariParts.innerHTML=d.members.map(m=>`<button type="button" class="wp-part ${wariSel[m.id]!==false?'on':''}" data-id="${m.id}">${esc(m.name)}</button>`).join('');
+  wEl.wariParts.querySelectorAll('.wp-part').forEach(b=>b.onclick=()=>{ const id=b.dataset.id; const sel=wariSel[id]!==false; wariSel[id]=!sel; b.classList.toggle('on',!sel); });
+  const ready=d.members.length>=2;
+  wEl.wariForm.style.opacity=ready?'1':'.45';
+  wEl.wariForm.style.pointerEvents=ready?'':'none';
+  if(ready && d.items.length){
+    const {net,tx}=wSettle(d);
+    const total=d.items.reduce((s,x)=>s+x.amount,0);
+    const bal=d.members.map(m=>{ const v=Math.round(net[m.id]); return `<div class="wb-row"><span class="wb-name">${esc(m.name)}</span><span class="wb-val ${v>0?'plus':(v<0?'minus':'')}">${v>0?'+':''}${yen(v)}</span></div>`; }).join('');
+    const txh=tx.length? tx.map(t=>`<div class="wt-row"><span class="wt-from">${esc(wmName(d,t.from))}</span><span class="wt-arrow">→</span><span class="wt-to">${esc(wmName(d,t.to))}</span><span class="wt-amt">${yen(t.amount)}</span></div>`).join('') : `<div class="wari-done">精算の必要はありません 🎉</div>`;
+    wEl.wariResult.innerHTML=`<div class="sub-card wari-sum">
+      <div class="sum-top"><div><div class="sum-big">${yen(total)}</div><div class="sum-label">立替え合計 ・ ${d.items.length}件</div></div></div>
+      <div class="wari-block-label">各メンバーの収支（＋は受け取り／−は支払い）</div>
+      <div class="wb-list">${bal}</div>
+      <div class="wari-block-label">精算方法（誰が誰にいくら払う）</div>
+      <div class="wt-list">${txh}</div>
+    </div>`;
+  } else { wEl.wariResult.innerHTML=''; }
+  wEl.wariList.innerHTML=d.items.slice().reverse().map(it=>`<div class="sub-card sub-item wari-item">
+      <div class="si-main"><div class="si-name">${esc(it.title)} <span class="wari-cat">${esc(wmName(d,it.payer))}が立替</span></div>
+      <div class="si-cost"><b>${yen(it.amount)}</b><span class="si-cyc">${it.parts.length}人で割る</span></div></div>
+      <div class="si-acts"><button class="si-del" data-id="${it.id}">削除</button></div>
+    </div>`).join('');
+  wEl.wariList.querySelectorAll('.si-del').forEach(b=>b.onclick=()=>wDelItem(b.dataset.id));
+}
+function initWari(){
+  if(!wariPanel) return;
+  wEl.wariAddMember.onclick=wAddMember;
+  wEl.wariAdd.onclick=wAddItem;
+  wEl.wariName.addEventListener('keydown',e=>{ if(e.key==='Enter') wAddMember(); });
+  wEl.wariTitle.addEventListener('keydown',e=>{ if(e.key==='Enter') wEl.wariAmount.focus(); });
+  wEl.wariAmount.addEventListener('keydown',e=>{ if(e.key==='Enter') wAddItem(); });
+}
+
+/* ============ チップ・トグル ============ */
+function buildChips(){
+  const cats = MODES[mode].cats;
+  elChips.innerHTML='';
+  Object.keys(cats).forEach(key=>{
+    const c=cats[key];
+    const chip=document.createElement('button');
+    chip.className='chip'; chip.dataset.cat=key;
+    chip.innerHTML=`<span class="dot" style="background:var(${c.v})"></span>${c.ja}`;
+    chip.onclick=()=>{activeCat=(activeCat===key)?null:key;syncChips();render();document.querySelector('.meta').scrollIntoView({behavior:'smooth',block:'start'});};
+    elChips.appendChild(chip);
+  });
+}
+function syncChips(){[...elChips.children].forEach(c=>c.classList.toggle('active',c.dataset.cat===activeCat));}
+
+function setMode(m){
+  if(mode===m) return;
+  mode=m; activeCat=null; elQ.value='';
+  const cfg=MODES[m];
+  document.querySelectorAll('.modetab').forEach(t=>t.classList.toggle('active',t.dataset.mode===m));
+  elPlat.classList.toggle('show', !!cfg.plat);
+  elQ.placeholder=cfg.placeholder;
+  elLede.textContent=cfg.lede;
+  if(elCtopTitle) elCtopTitle.textContent=MODE_LABELS[m]||'';
+  const isChar=(m==='char'), isDict=(m==='dict'), isSub=(m==='sub'), isWari=(m==='wari'), isData=!isChar&&!isDict&&!isSub&&!isWari;
+  charPanel.style.display = isChar?'block':'none';
+  subPanel.style.display = isSub?'block':'none';
+  wariPanel.style.display = isWari?'block':'none';
+  searchwrapEl.style.display = (isSub||isWari)?'none':'';
+  elChips.style.display = isData?'flex':'none';
+  document.querySelector('.meta').style.display = (isChar||isSub||isWari)?'none':'flex';
+  elAnswer.style.display = (isChar||isSub||isWari)?'none':'';
+  elResults.style.display = (isChar||isSub||isWari)?'none':'';
+  if(ADS.enabled&&ADS.top) adTopEl.style.display = (isChar||isSub||isWari)?'none':'flex';
+  if(isChar){ detailEl.innerHTML=charIntro(); candEl.innerHTML=''; elQ.focus(); }
+  else if(isDict){ elAnswer.innerHTML=''; elMetaLabel.textContent='辞書'; elCount.innerHTML=''; dictIntro(); elQ.focus(); }
+  else if(isSub){ renderSubs(); }
+  else if(isWari){ renderWari(); }
+  else { buildChips(); render(); elQ.focus(); }
+}
+
+/* ============ 広告の初期化（中身は広告コードに差し替え可能）============ */
+function adFill(label,size){
+  return `<span class="ad-tag">広告</span><div class="ad-banner-inner">広告スペース<br><span class="ad-mini">${size}</span></div>`;
+}
+function initAds(){
+  if(ADS.enabled&&ADS.top){ adTopEl.innerHTML=adFill('top','728×90 ほか / レスポンシブ バナー'); adTopEl.style.display='flex'; }
+  /* 上のバナーの中身（adTopEl）を広告コードに差し替えてください */
+  if(ADS.enabled&&ADS.footer){ adFootEl.innerHTML=adFill('foot','728×90 ほか / レスポンシブ バナー'); adFootEl.style.display='flex'; }
+  if(ADS.enabled&&ADS.anchor){
+    adAnchorEl.innerHTML=`<button class="ad-anchor-close" id="adClose" aria-label="広告を閉じる">×</button><span class="ad-tag">広告</span><div class="ad-banner-inner">広告スペース <span class="ad-mini">320×50</span></div>`;
+    adAnchorEl.classList.add('show'); document.body.classList.add('has-anchor');
+    document.getElementById('adClose').onclick=()=>{ adAnchorEl.classList.remove('show'); document.body.classList.remove('has-anchor'); };
+  }
+}
+
+/* ============ メニュー（並べ替え対応・順番を保存）============ */
+const ITEMS={
+  fn:{icon:'fx',label:'Excelの関数',italic:true},
+  sc:{icon:'⌘',label:'ショートカットキー'},
+  ui:{icon:'▦',label:'UIパーツ'},
+  char:{icon:'字',label:'漢字手書き検索'},
+  dict:{icon:'A',label:'英語⇄日本語の辞書'},
+  keigo:{icon:'礼',label:'ビジネス敬語・言い換え'},
+  kata:{icon:'カ',label:'カタカナ語・略語辞典'},
+  subly:{icon:'¥',label:'サブスク管理',href:'https://subly.jp/'},
+};
+let MENU=[
+  {id:'excel', label:'Excel', items:['fn','sc']},
+  {id:'word',  label:'ことば', items:['char','dict','keigo','kata']},
+  {id:'screen',label:'システム開発', items:['ui']},
+  {id:'subsc', label:'サブスク', items:['subly']},
+];
+const ORDER_KEY='nanikore_menu_order_v4';
+function saveOrder(){ try{ localStorage.setItem(ORDER_KEY, JSON.stringify(MENU.map(g=>({id:g.id,items:g.items})))); }catch(e){} }
+function loadOrder(){
+  try{
+    const raw=localStorage.getItem(ORDER_KEY); if(!raw) return;
+    const saved=JSON.parse(raw); if(!Array.isArray(saved)) return;
+    const def=Object.fromEntries(MENU.map(g=>[g.id,{id:g.id,label:g.label,items:g.items.slice()}]));
+    const used=new Set(), out=[];
+    saved.forEach(sg=>{
+      const d=def[sg.id]; if(!d) return;
+      const items=(sg.items||[]).filter(i=>ITEMS[i]&&!used.has(i)); items.forEach(i=>used.add(i));
+      out.push({id:d.id,label:d.label,items}); delete def[sg.id];
+    });
+    Object.values(def).forEach(d=>{ const items=d.items.filter(i=>!used.has(i)); items.forEach(i=>used.add(i)); out.push({id:d.id,label:d.label,items}); });
+    Object.keys(ITEMS).forEach(i=>{ if(used.has(i)) return; const home=MENU.find(g=>g.items.includes(i)); const t=out.find(g=>g.id===(home&&home.id))||out[0]; t.items.push(i); used.add(i); });
+    if(out.length) MENU=out;
+  }catch(e){}
+}
+let editMode=false;
+const sbEl=document.getElementById('sidebar'), navEl=document.getElementById('modetabs');
+const sbEdit=document.getElementById('sbEdit'), sbHint=document.getElementById('sbHint');
+const GROUP_COLORS={excel:'#12855B',word:'#2B6CB0',biz:'#B7791F',screen:'#7C5CD6',subsc:'#C0398B'};
+function groupColor(id){ return GROUP_COLORS[id]||'#5A6473'; }
+function renderNav(){
+  navEl.innerHTML=MENU.map((g,gi)=>{
+    const items=g.items.map((id,ii)=>{
+      const it=ITEMS[id]; if(!it) return '';
+      const ic=`<span class="ic"${it.italic?' style="font-style:italic"':''}>${it.icon}</span>`;
+      const ctrls=editMode?`<span class="reorder"><button class="rb" data-act="iu" data-g="${gi}" data-i="${ii}" aria-label="上へ">▲</button><button class="rb" data-act="idn" data-g="${gi}" data-i="${ii}" aria-label="下へ">▼</button></span>`:'';
+      return `<button class="modetab ${id===mode?'active':''}" data-mode="${id}"${it.href?` data-href="${it.href}"`:''}>${ic}<span class="mt-label">${it.label}${it.href?' ↗':''}</span>${ctrls}</button>`;
+    }).join('');
+    const gc=editMode?`<span class="reorder"><button class="rb" data-act="gu" data-g="${gi}" aria-label="グループを上へ">▲</button><button class="rb" data-act="gdn" data-g="${gi}" aria-label="グループを下へ">▼</button></span>`:'';
+    return `<div class="sb-sec" style="--g:${groupColor(g.id)}"><div class="sb-label"><span class="sb-dot"></span>${g.label}${gc}</div>${items}</div>`;
+  }).join('');
+  navEl.querySelectorAll('.modetab').forEach(t=>t.onclick=()=>{ if(editMode) return; if(t.dataset.href){ window.open(t.dataset.href,'_blank','noopener'); closeDrawer(); return; } setMode(t.dataset.mode); closeDrawer(); });
+  navEl.querySelectorAll('.rb').forEach(b=>b.onclick=e=>{
+    e.stopPropagation();
+    const a=b.dataset.act, gi=+b.dataset.g, ii=+b.dataset.i;
+    if(a==='gu') swapGroup(gi,gi-1); else if(a==='gdn') swapGroup(gi,gi+1);
+    else if(a==='iu') swapItem(gi,ii,ii-1); else if(a==='idn') swapItem(gi,ii,ii+1);
+  });
+}
+function swapGroup(i,j){ if(j<0||j>=MENU.length) return; [MENU[i],MENU[j]]=[MENU[j],MENU[i]]; saveOrder(); renderNav(); }
+function swapItem(gi,i,j){ const a=MENU[gi].items; if(j<0||j>=a.length) return; [a[i],a[j]]=[a[j],a[i]]; saveOrder(); renderNav(); }
+sbEdit.onclick=()=>{ editMode=!editMode; sbEl.classList.toggle('editing',editMode); sbEdit.classList.toggle('on',editMode); sbEdit.textContent=editMode?'完了':'並べ替え'; sbHint.hidden=!editMode; renderNav(); };
+
+/* ============ モバイル：ドロワー開閉 ============ */
+const mBurger=document.getElementById('mBurger'), mBackdrop=document.getElementById('mBackdrop'), sbClose=document.getElementById('sbClose');
+function openDrawer(){ document.body.classList.add('drawer-open'); }
+function closeDrawer(){ document.body.classList.remove('drawer-open'); }
+if(mBurger) mBurger.onclick=()=>{ document.body.classList.contains('drawer-open')?closeDrawer():openDrawer(); };
+if(mBackdrop) mBackdrop.onclick=closeDrawer;
+if(sbClose) sbClose.onclick=closeDrawer;
+document.addEventListener('keydown',e=>{ if(e.key==='Escape') closeDrawer(); });
+
+loadOrder(); renderNav();
+
+/* ============ アクセス数（リアルタイム・GitHub公開後に有効）============ */
+/* 無料カウンター Abacus を利用（CORS対応・登録不要・SSEでリアルタイム更新）。
+   ns/key は公開キーなので、自分専用の固有名に変えるのがおすすめです。
+   別サービスに替える場合の例：https://countapi.mileshilliard.com/api/v1/hit/<固有キー> */
+const COUNTER={base:'https://abacus.jasoncameron.dev', ns:'kotae-search-tool', key:'visits'};
+const acNum=document.getElementById('acNum');
+function setAccess(n){ if(acNum&&n!=null&&!isNaN(n)) acNum.textContent=Number(n).toLocaleString('ja-JP'); }
+(async function initCounter(){
+  try{
+    const r=await fetch(`${COUNTER.base}/hit/${COUNTER.ns}/${COUNTER.key}`);
+    if(r.ok){ const d=await r.json(); setAccess(d.value); }
+  }catch(e){}
+  try{
+    if('EventSource' in window){
+      const es=new EventSource(`${COUNTER.base}/stream/${COUNTER.ns}/${COUNTER.key}`);
+      es.onmessage=ev=>{ try{ const d=JSON.parse(ev.data); setAccess(d.value); }catch(_){} };
+    }
+  }catch(e){}
+})();
+
+/* ============ 引っ張って更新 ============ */
+const ptrEl=document.getElementById('ptr');
+const PTR_THRESH=72;
+let ptrStartY=null, ptrPulling=false, ptrDist=0;
+function refreshCurrent(){
+  elQ.value=''; elClear.classList.remove('show');
+  if(mode==='char'){ candEl.innerHTML=''; detailEl.innerHTML=charIntro(); strokes=[]; try{ctx.clearRect(0,0,canvas.width,canvas.height);}catch(e){} }
+  else if(mode==='dict'){ elAnswer.innerHTML=''; elMetaLabel.textContent='辞書'; elCount.innerHTML=''; dictIntro(); }
+  else { activeCat=null; buildChips(); render(); }
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+function ptrReset(){ ptrEl.style.transform=''; ptrEl.style.opacity=''; ptrEl.classList.remove('ready'); }
+window.addEventListener('touchstart',e=>{
+  if(window.scrollY>0 || (e.target.closest && e.target.closest('#hwcanvas'))){ ptrStartY=null; return; }
+  ptrStartY=e.touches[0].clientY; ptrPulling=false; ptrDist=0;
+},{passive:true});
+window.addEventListener('touchmove',e=>{
+  if(ptrStartY==null) return;
+  const dy=e.touches[0].clientY-ptrStartY;
+  if(dy>0 && window.scrollY<=0){
+    ptrPulling=true;
+    ptrDist=Math.min(dy*0.5,96);
+    ptrEl.style.transform=`translateY(${ptrDist}px)`;
+    ptrEl.style.opacity=Math.min(ptrDist/PTR_THRESH,1);
+    ptrEl.classList.toggle('ready', ptrDist>=PTR_THRESH);
+    if(dy>8) e.preventDefault();
+  }
+},{passive:false});
+window.addEventListener('touchend',()=>{
+  if(ptrStartY==null) return;
+  if(ptrPulling && ptrDist>=PTR_THRESH){
+    ptrEl.classList.add('spinning'); ptrEl.classList.remove('ready');
+    ptrEl.style.transform='translateY(56px)'; ptrEl.style.opacity='1';
+    setTimeout(()=>{ refreshCurrent(); ptrEl.classList.remove('spinning'); ptrReset(); },650);
+  } else ptrReset();
+  ptrStartY=null; ptrPulling=false;
+});
+
+document.querySelectorAll('.platseg button').forEach(b=>b.onclick=()=>{
+  plat=b.dataset.plat;
+  document.querySelectorAll('.platseg button').forEach(x=>x.classList.toggle('active',x.dataset.plat===plat));
+  render();
+});
+elQ.addEventListener('input', ()=>{ if(mode==='char') onCharInput(); else if(mode==='dict') onDictInput(); else render(); });
+elClear.addEventListener('click',()=>{ elQ.value=''; if(mode==='char') onCharInput(); else if(mode==='dict') onDictInput(); else render(); elQ.focus(); });
+
+/* ============ 文字（手書き・読み） ============ */
+const canvas=document.getElementById('hwcanvas'), ctx=canvas.getContext('2d');
+const charPanel=document.getElementById('charpanel'), candEl=document.getElementById('candidates'),
+      detailEl=document.getElementById('chardetail');
+let strokes=[], cur=null, drawing=false;
+
+ctx.lineWidth=7; ctx.lineCap='round'; ctx.lineJoin='round'; ctx.strokeStyle='#1B2420';
+function hwPos(e){
+  const r=canvas.getBoundingClientRect();
+  const cx=(e.touches?e.touches[0].clientX:e.clientX)-r.left;
+  const cy=(e.touches?e.touches[0].clientY:e.clientY)-r.top;
+  return {x:Math.round(cx*(canvas.width/r.width)), y:Math.round(cy*(canvas.height/r.height))};
+}
+function hwStart(e){ e.preventDefault(); drawing=true; const p=hwPos(e); cur={x:[p.x],y:[p.y]}; ctx.beginPath(); ctx.moveTo(p.x,p.y); }
+function hwMove(e){ if(!drawing) return; e.preventDefault(); const p=hwPos(e); cur.x.push(p.x); cur.y.push(p.y); ctx.lineTo(p.x,p.y); ctx.stroke(); }
+function hwEnd(){ if(!drawing) return; drawing=false; if(cur&&cur.x.length) strokes.push(cur); cur=null; }
+canvas.addEventListener('mousedown',hwStart); canvas.addEventListener('mousemove',hwMove);
+window.addEventListener('mouseup',hwEnd);
+canvas.addEventListener('touchstart',hwStart,{passive:false}); canvas.addEventListener('touchmove',hwMove,{passive:false});
+canvas.addEventListener('touchend',hwEnd);
+
+function hwRedraw(){
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+  strokes.forEach(s=>{ ctx.beginPath(); ctx.moveTo(s.x[0],s.y[0]); for(let i=1;i<s.x.length;i++) ctx.lineTo(s.x[i],s.y[i]); ctx.stroke(); });
+}
+document.getElementById('hwClear').onclick=()=>{ strokes=[]; ctx.clearRect(0,0,canvas.width,canvas.height); candEl.innerHTML=''; };
+document.getElementById('hwUndo').onclick=()=>{ strokes.pop(); hwRedraw(); };
+
+function setCand(msg, err){ candEl.innerHTML=`<p class="cand-msg${err?' err':''}">${msg}</p>`; }
+async function recognize(){
+  if(!strokes.length){ setCand('枠の中に漢字を書いてから「認識する」を押してください。'); return; }
+  setCand('認識中…');
+  const ink=strokes.map(s=>[s.x,s.y]);
+  const body=JSON.stringify({options:'enable_pre_space',requests:[{writing_guide:{writing_area_width:canvas.width,writing_area_height:canvas.height},ink,language:'ja'}]});
+  try{
+    const res=await fetch('https://inputtools.google.com/request?itc=ja-t-i0-handwrit&app=mobilesearch',{method:'POST',headers:{'Content-Type':'application/json'},body});
+    const data=await res.json();
+    if(data[0]!=='SUCCESS'||!data[1]||!data[1][0]) throw 0;
+    const cands=(data[1][0][1]||[]).filter(c=>/[\u3400-\u9faf]/.test(c)).slice(0,12);
+    if(!cands.length){ setCand('候補が見つかりませんでした。もう一度書いてみてください。'); return; }
+    candEl.innerHTML=`<span class="cand-label">候補（タップで読みを表示）</span>`+cands.map(c=>`<button class="cand" data-c="${c}">${c}</button>`).join('');
+    candEl.querySelectorAll('.cand').forEach(b=>b.onclick=()=>{ elQ.value=b.dataset.c; charLookup(b.dataset.c); detailEl.scrollIntoView({behavior:'smooth',block:'nearest'}); });
+  }catch(e){
+    setCand('手書き認識サービスに接続できませんでした。インターネット接続が必要です。上の入力欄に漢字を貼り付けて調べることもできます。', true);
+  }
+}
+document.getElementById('hwRecognize').onclick=recognize;
+
+const isKanji=s=>/[\u3400-\u9faf]/.test(s);
+const isKana=s=>/^[ぁ-んァ-ヶー]+$/.test(s);
+let charTimer=null;
+function onCharInput(){
+  elClear.classList.toggle('show', !!elQ.value);
+  updateRecentVisibility();
+  clearTimeout(charTimer);
+  const v=elQ.value.trim();
+  if(!v){ detailEl.innerHTML=charIntro(); return; }
+  charTimer=setTimeout(()=>{
+    const kanji=[...v].filter(isKanji);
+    if(kanji.length){ charLookup(kanji[kanji.length-1]); }
+    else if(isKana(v)){ readingSearch(v); }
+    else { detailEl.innerHTML=`<div class="char-msg">漢字を入力・貼り付けするか、読み（カタカナ・ひらがな）を入れてください。</div>`; }
+  },350);
+}
+
+function fmtKun(r){
+  let pre=''; if(r.startsWith('-')){pre='〜'; r=r.slice(1);}
+  let suf=''; if(r.endsWith('-')){suf='〜'; r=r.slice(0,-1);}
+  if(r.includes('.')){ const i=r.indexOf('.'); return pre+r.slice(0,i)+'('+r.slice(i+1)+')'+suf; }
+  return pre+r+suf;
+}
+function charIntro(){
+  return `<div class="char-msg">漢字を手書き、または上の欄に入力すると、ここに読み（音読み・訓読み）が表示されます。</div>`;
+}
+async function charLookup(ch){
+  detailEl.innerHTML=`<div class="char-msg">「${ch}」を調べています…</div>`;
+  try{
+    const res=await fetch('https://kanjiapi.dev/v1/kanji/'+encodeURIComponent(ch));
+    if(!res.ok) throw 0;
+    const k=await res.json();
+    detailEl.innerHTML=charCard(k);
+    logUse('char', k.kanji||ch, k.kanji||ch, k.kanji||ch);
+  }catch(e){
+    detailEl.innerHTML=`<div class="char-msg err">「${ch}」の読みが見つかりませんでした。常用漢字以外や記号、または接続できない場合があります（このタブはインターネット接続が必要です）。</div>`;
+  }
+}
+function charCard(k){
+  const on=k.on_readings||[], kun=k.kun_readings||[];
+  const onH=on.length?on.map(x=>`<span class="yomi-chip on">${x}</span>`).join(''):'<span class="yomi-none">—</span>';
+  const kunH=kun.length?kun.map(x=>`<span class="yomi-chip kun">${fmtKun(x)}</span>`).join(''):'<span class="yomi-none">—</span>';
+  const stats=[];
+  if(k.stroke_count) stats.push(`<span>画数 ${k.stroke_count}</span>`);
+  if(k.grade) stats.push(`<span>学年 ${k.grade}</span>`);
+  if(k.jlpt) stats.push(`<span>JLPT N${k.jlpt}</span>`);
+  const mean=(k.meanings&&k.meanings.length)?`<p class="char-mean"><b>意味</b>${k.meanings.slice(0,6).join('、')}</p>`:'';
+  return `<div class="char-card">
+    <div class="char-head"><div class="char-glyph">${k.kanji}</div><div class="char-stats">${stats.join('')}</div></div>
+    <div class="yomi">
+      <div class="yomi-row"><span class="yomi-label">音読み</span><span class="yomi-vals">${onH}</span></div>
+      <div class="yomi-row"><span class="yomi-label">訓読み</span><span class="yomi-vals">${kunH}</span></div>
+    </div>
+    ${mean}
+    <p class="char-note">送り仮名は ( ) で示しています。表外読み《外》の区別は、データの都合で表示していません。</p>
+  </div>`;
+}
+async function readingSearch(r){
+  detailEl.innerHTML=`<div class="char-msg">「${r}」と読む漢字を探しています…</div>`;
+  try{
+    const res=await fetch('https://kanjiapi.dev/v1/reading/'+encodeURIComponent(r));
+    if(!res.ok) throw 0;
+    const d=await res.json();
+    const ks=[...(d.main_kanji||[]),...(d.name_kanji||[])];
+    if(!ks.length){ detailEl.innerHTML=`<div class="char-msg">「${r}」を読みに持つ漢字は見つかりませんでした。音読みはカタカナ、訓読みはひらがなで入れてみてください。</div>`; return; }
+    detailEl.innerHTML=`<div class="char-card"><p class="rr-label">「${r}」と読む漢字（タップで読みを表示）</p><div class="rr-chips">${ks.slice(0,50).map(c=>`<button class="rr-chip" data-c="${c}">${c}</button>`).join('')}</div></div>`;
+    detailEl.querySelectorAll('.rr-chip').forEach(b=>b.onclick=()=>{ elQ.value=b.dataset.c; charLookup(b.dataset.c); });
+  }catch(e){
+    detailEl.innerHTML=`<div class="char-msg err">検索に接続できませんでした。インターネット接続が必要です。</div>`;
+  }
+}
+
+/* ============ 辞書（英和・和英）============ */
+/* ブラウザから直接使える無料APIを利用：
+   ・翻訳: MyMemory（CORS対応）   ・英単語の定義/発音: dictionaryapi.dev（CORS対応）
+   MyMemoryの無料枠を増やすには、mmTranslate内のURL末尾に &de=あなたのメール を足してください。 */
+function esc(s){return (s==null?'':String(s)).replace(/[&<>"]/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[m]));}
+const hasJa=s=>/[ぁ-んァ-ヶ一-龯々ー]/.test(s);
+const isLatin=s=>/[a-zA-Z]/.test(s)&&!hasJa(s);
+
+async function mmTranslate(q,from,to){
+  const url=`https://api.mymemory.translated.net/get?q=${encodeURIComponent(q)}&langpair=${from}|${to}`;
+  const r=await fetch(url);
+  if(!r.ok) throw new Error('conn');
+  const d=await r.json();
+  let main=((d.responseData&&d.responseData.translatedText)||'').trim();
+  if(/MYMEMORY WARNING|QUOTA|LIMIT EXCEEDED|INVALID/i.test(main)) throw new Error('conn');
+  const alts=[];
+  (d.matches||[]).forEach(m=>{ const t=(m.translation||'').trim(); if(t) alts.push(t); });
+  const uniq=[...new Set(alts.filter(a=>a&&a.toLowerCase()!==main.toLowerCase()))].slice(0,6);
+  return {main, alts:uniq};
+}
+async function enDefinition(word){
+  try{
+    const r=await fetch('https://api.dictionaryapi.dev/api/v2/entries/en/'+encodeURIComponent(word));
+    if(!r.ok) return null;
+    const d=await r.json();
+    return Array.isArray(d)?d[0]:null;
+  }catch(e){ return null; }
+}
+function transRow(label,t){
+  if(!t||!t.main) return '';
+  const alts=t.alts.length?`<div class="tr-alts">${t.alts.map(a=>`<span class="tr-alt">${esc(a)}</span>`).join('')}</div>`:'';
+  return `<div class="tr-main"><span class="tr-label">${label}</span><span class="tr-val">${esc(t.main)}</span></div>${alts}`;
+}
+function defBlocks(entry){
+  if(!entry||!entry.meanings) return '';
+  return entry.meanings.slice(0,4).map(mn=>{
+    const defs=(mn.definitions||[]).slice(0,2).map(d=>`<li>${esc(d.definition)}</li>`).join('');
+    return defs?`<div class="mean-block"><span class="mean-pos">${esc(mn.partOfSpeech||'')}</span><ol>${defs}</ol></div>`:'';
+  }).join('');
+}
+function phonetic(entry){
+  if(!entry) return '';
+  if(entry.phonetic) return entry.phonetic;
+  const p=(entry.phonetics||[]).find(x=>x.text);
+  return p?p.text:'';
+}
+function dictIntro(){
+  elResults.innerHTML=`<div class="char-msg">英単語や日本語を入力すると、訳（英和・和英）が表示されます。<br>例：apple ／ りんご ／ 走る ／ beautiful ／ 締め切り</div>`;
+}
+let dictTimer=null;
+function onDictInput(){
+  elClear.classList.toggle('show', !!elQ.value);
+  updateRecentVisibility();
+  clearTimeout(dictTimer);
+  const q=elQ.value.trim();
+  if(!q){ elAnswer.innerHTML=''; elMetaLabel.textContent='辞書'; elCount.innerHTML=''; dictIntro(); return; }
+  dictTimer=setTimeout(()=>dictSearch(q),420);
+}
+async function dictSearch(q){
+  elAnswer.innerHTML=''; elMetaLabel.textContent='検索結果'; elCount.innerHTML='';
+  elResults.innerHTML=`<div class="char-msg">「${esc(q)}」を調べています…</div>`;
+  try{
+    let inner='';
+    if(isLatin(q)){
+      const [jaR,enR]=await Promise.allSettled([mmTranslate(q,'en','ja'), enDefinition(q)]);
+      const ja=jaR.status==='fulfilled'?jaR.value:null;
+      const entry=enR.status==='fulfilled'?enR.value:null;
+      if(!entry && (!ja||!ja.main)){ throw new Error(jaR.status==='rejected'?'conn':'none'); }
+      const ph=phonetic(entry);
+      inner=`<div class="card dict-card">
+        <div class="dict-word">${esc(q)}</div>${ph?`<div class="dict-kana">${esc(ph)}</div>`:''}
+        ${transRow('和訳',ja)}
+        ${defBlocks(entry)}
+        <p class="dict-src">訳：MyMemory／英語定義：dictionaryapi.dev</p>
+      </div>`;
+    } else {
+      let en; try{ en=await mmTranslate(q,'ja','en'); }catch(_){ throw new Error('conn'); }
+      if(!en.main) throw new Error('none');
+      inner=`<div class="card dict-card">
+        <div class="dict-word">${esc(q)}</div>
+        ${transRow('英訳',en)}
+        <p class="dict-src">訳：MyMemory</p>
+      </div>`;
+    }
+    elAnswer.innerHTML=`<div class="answer"><div class="ans-eyebrow">いちばん近い答え</div><div class="selected-cell">${inner}</div></div>`;
+    elResults.innerHTML='';
+    logUse('dict', q.toLowerCase(), q, q);
+  }catch(e){
+    if(e&&e.message==='none'){
+      elResults.innerHTML=`<div class="char-msg">「${esc(q)}」の訳が見つかりませんでした。スペルや表記を変えて試してみてください。</div>`;
+    }else{
+      elResults.innerHTML=`<div class="char-msg err">辞書サービスに接続できませんでした。少し時間をおいて、もう一度お試しください（インターネット接続が必要です）。</div>`;
+    }
+  }
+}
+
+document.getElementById('foot').innerHTML =
+  `<span class="fxmini">？</span> コレなにナビ — Excel関数 ${FN.length}・ショートカットキー ${SC.length}・UIパーツ ${UI.length} を収録<br>`+
+  `「文字」「辞書」タブは手書き認識・翻訳のオンラインサービスを使うため、インターネット接続が必要です。`;
+
+initAds(); buildChips(); render(); renderRecent(); initSub(); initWari();
+
+/* ============ 時計 ============ */
+const nbDate=document.getElementById('nbDate'), nbWd=document.getElementById('nbWd'), nbTime=document.getElementById('nbTime');
+const WDAY=['日','月','火','水','木','金','土'];
+function tickClock(){
+  const d=new Date(), p=n=>String(n).padStart(2,'0');
+  nbDate.textContent=`${d.getFullYear()}年${d.getMonth()+1}月${d.getDate()}日`;
+  nbWd.textContent=`（${WDAY[d.getDay()]}）`;
+  nbTime.innerHTML=`${p(d.getHours())}:${p(d.getMinutes())}<span class="nb-sec">:${p(d.getSeconds())}</span>`;
+}
+tickClock(); setInterval(tickClock,1000);
+</script>
+</body>
+</html>
+
 <meta name="description" content="読めない漢字を手書きで検索、Excel関数やショートカットキー、画面のUIパーツの名前、英和・和英まで。「これ何？」をまとめて引ける無料の早引き検索ツール「ナニコレナビ」。">
 <meta property="og:title" content="ナニコレナビ｜「これ何？」をまとめて引ける早引き検索">
 <meta property="og:description" content="読めない漢字の手書き検索・Excel関数・ショートカット・UIパーツ・英和和英を、ひとつで。">
