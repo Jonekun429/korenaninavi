@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://korenaninavi.jp/sitemap.xml
