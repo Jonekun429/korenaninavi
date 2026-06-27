@@ -2,13 +2,13 @@
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>コレなにナビ｜読めない漢字の手書き検索・Excel関数・ショートカットの早引き</title>
 <meta name="description" content="読めない漢字を手書きで検索、Excel関数やショートカットキー、画面のUIパーツの名前、英和・和英まで。「これ何？」をまとめて引ける無料の早引き検索ツール「コレなにナビ」。">
 <meta property="og:title" content="コレなにナビ｜「これ何？」をまとめて引ける早引き検索">
 <meta property="og:description" content="読めない漢字の手書き検索・Excel関数・ショートカット・UIパーツ・英和和英を、ひとつで。">
 <meta property="og:type" content="website">
-<meta name="keywords" content="コレなにナビ,これ何,漢字 読み方,手書き 漢字 検索,Excel 関数 一覧,Excel ショートカット,UIパーツ 名前,カタカナ語 意味,ビジネス敬語 言い換え,英和辞典,和英,早引き 検索,無料">
+<meta name="keywords" content="コレなにナビ,これ何,この漢字なんて読む,読めない漢字 調べる,手書き 漢字 検索,漢字 読み方 検索,Excel 関数 一覧,Excel やりたいこと 関数,エクセル ショートカット 一覧,Windows Mac ショートカット,UIパーツ 名前,三本線 メニュー 名前,このボタン 名前,カタカナ語 意味,ビジネス用語 言い換え,敬語 言い換え ビジネスメール,英和 和英 翻訳,早引き 検索,無料 ツール">
 <meta name="author" content="Jone Lab">
 <meta name="robots" content="index,follow">
 <meta name="theme-color" content="#0f3192">
@@ -46,6 +46,15 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Noto+Sans+JP:wght@400;500;700;900&display=swap" rel="stylesheet">
+<!-- ▼ Google アナリティクス（GA4）。下の G-XXXXXXXXXX を、自分の測定IDに2か所とも置き換えてください -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-XXXXXXXXXX', { send_page_view: true });
+</script>
+<!-- ▲ Google アナリティクス ここまで -->
 <style>
   :root{
     --paper:#f4f6fb; --card:#FFFFFF; --ink:#1a2236; --ink-soft:#6b7689; --ink-faint:#9aa3b5;
@@ -109,8 +118,8 @@
   .clearbtn.show{display:flex}
 
   /* ===== 左サイドバー・レイアウト ===== */
-  .appshell{padding-left:264px}
-  .sidebar{position:fixed;top:0;left:0;width:264px;height:100vh;overflow-y:auto;background:var(--card);border-right:1px solid var(--line);padding:18px 14px 24px;display:flex;flex-direction:column;gap:2px}
+  .appshell{padding-left:264px;padding-top:56px}
+  .sidebar{position:fixed;top:56px;left:0;width:264px;height:calc(100vh - 56px);overflow-y:auto;background:var(--card);border-right:1px solid var(--line);padding:18px 14px 24px;display:flex;flex-direction:column;gap:2px}
   .sb-brand{display:flex;align-items:center;gap:11px;padding:6px 8px 18px}
   .sb-mark{font-family:var(--mono);font-weight:700;font-size:17px;color:#fff;background:var(--excel);width:36px;height:36px;border-radius:10px;display:grid;place-items:center;box-shadow:0 6px 14px -6px rgba(15,49,146,.55)}
   .sb-name{font-weight:900;font-size:18px;line-height:1.1}
@@ -129,6 +138,11 @@
   .sb-fmark{font-family:var(--mono);font-weight:700;color:var(--excel)}
 
   /* モバイル：トップバー＋ドロワー（PCでは非表示） */
+  .topbar{position:fixed;top:0;left:0;right:0;height:56px;z-index:130;display:flex;align-items:center;gap:14px;padding:0 22px;background:linear-gradient(105deg,var(--excel) 32%,var(--accent));color:#fff;box-shadow:0 2px 14px -5px rgba(15,49,146,.5)}
+  .tb-logo{display:flex;align-items:center;gap:10px;font-weight:900;font-size:18px;letter-spacing:.01em;color:#fff}
+  .tb-mark{font-family:var(--mono);font-weight:700;font-size:15px;width:30px;height:30px;border-radius:9px;background:rgba(255,255,255,.18);display:grid;place-items:center;color:#fff}
+  .tb-tag{font-size:12.5px;font-weight:600;color:rgba(255,255,255,.85);border-left:1px solid rgba(255,255,255,.32);padding-left:14px}
+  @media(max-width:620px){.tb-tag{display:none}}
   .mtopbar{display:none;position:fixed;top:0;left:0;right:0;height:52px;z-index:40;align-items:center;gap:10px;padding:0 14px;background:rgba(255,255,255,.92);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
   .mburger{display:inline-flex;flex-direction:column;justify-content:center;gap:4px;width:38px;height:38px;padding:8px;background:none;border:none;cursor:pointer}
   .mburger span{display:block;height:2.5px;border-radius:2px;background:var(--ink);transition:transform .22s,opacity .22s}
@@ -159,11 +173,11 @@
   .ac-num{font-family:var(--mono);font-weight:700;font-size:15px;color:var(--ink)}
   .ac-cap{font-size:11px;color:var(--ink-faint);font-weight:700}
 
-  .content{padding:24px 30px 70px;min-width:0;max-width:1120px}
+  .content{padding:24px clamp(16px,3.5vw,30px) 70px;min-width:0;max-width:1120px}
   .ctop{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;flex-wrap:wrap;margin-bottom:4px}
   .ctop-title{font-size:25px;font-weight:900;letter-spacing:-.01em}
   .ctop-sub{font-size:13.5px;color:var(--ink-soft);font-weight:600;margin-top:2px}
-  .ctop-clock{position:fixed;top:10px;right:16px;z-index:50;display:flex;align-items:center;gap:9px;background:rgba(255,255,255,.88);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border:1px solid var(--line);border-radius:999px;padding:7px 15px;box-shadow:var(--shadow);font-family:var(--mono);white-space:nowrap}
+  .ctop-clock{position:fixed;top:64px;right:16px;z-index:50;display:flex;align-items:center;gap:9px;background:rgba(255,255,255,.88);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border:1px solid var(--line);border-radius:999px;padding:7px 15px;box-shadow:var(--shadow);font-family:var(--mono);white-space:nowrap}
   .cc-dot{width:7px;height:7px;border-radius:50%;background:var(--excel-bright);box-shadow:0 0 0 0 rgba(22,65,176,.5);animation:nbpulse 2s infinite;flex:0 0 auto}
   .cc-date{font-size:12.5px;font-weight:700;color:var(--ink-soft)}
   .cc-date .nb-wd{color:var(--ink-faint);margin-left:3px;font-weight:600}
@@ -179,8 +193,12 @@
   }
 
   @media(max-width:900px){
-    .mtopbar{display:flex}
-    .appshell{padding-left:0}
+    .topbar{display:none}
+    .mtopbar{display:flex;background:linear-gradient(105deg,var(--excel) 32%,var(--accent));border-bottom:none;box-shadow:0 2px 12px -5px rgba(15,49,146,.5)}
+    .mtopbar .mburger span{background:#fff}
+    .mtopbar .mtop-brand{color:#fff}
+    .mtopbar .mtop-mark{background:rgba(255,255,255,.2);color:#fff}
+    .appshell{padding-left:0;padding-top:0}
     .content{padding:64px 16px 80px}
     .ctop-title{font-size:21px}
     .sidebar{position:fixed;top:0;left:0;height:100%;width:286px;max-width:84vw;z-index:120;
@@ -473,6 +491,19 @@
   .dict-src{font-size:11px;color:var(--ink-faint);margin-top:14px;border-top:1px solid var(--line);padding-top:10px}
 
   :focus-visible{outline:2.5px solid var(--excel);outline-offset:2px;border-radius:4px}
+  @media(max-width:420px){
+    .content{padding:60px 12px 80px}
+    .card{padding:16px 15px 15px;border-radius:12px}
+    .grid{gap:12px}
+    .fn-name{font-size:20px}
+    .sc-action{font-size:17px}
+    .ctop-title{font-size:19px}
+    .ctop-clock{gap:6px;padding:5px 9px}
+    .cc-time{font-size:11.5px}.cc-ac{font-size:11px}
+    #q{font-size:16px;padding:15px 12px}
+    .kbd{min-width:30px;padding:7px 9px;font-size:13px}
+    #backTop{right:14px;bottom:16px;width:46px;height:46px}
+  }
   @media (prefers-reduced-motion: reduce){*{transition:none!important;scroll-behavior:auto!important}.nb-dot{animation:none}}
 
   /* ===== UIパーツ「ここで使われています」案内・トースト・上へ戻る・件数バッジ ===== */
@@ -509,6 +540,10 @@
 </head>
 <body>
 <div class="ptr" id="ptr"><div class="ptr-spin"></div></div>
+<header class="topbar" id="topbar">
+  <span class="tb-logo"><span class="tb-mark">？</span>コレなにナビ</span>
+  <span class="tb-tag">「これ何？」を、すぐ答えに。</span>
+</header>
 <header class="mtopbar" id="mtopbar">
   <button class="mburger" id="mBurger" aria-label="メニューを開く"><span></span><span></span><span></span></button>
   <span class="mtop-brand"><span class="mtop-mark">？</span>コレなにナビ</span>
@@ -899,6 +934,18 @@ UI.forEach(u=>{ u._k = Array.from(new Set([...u.k, u.n.toLowerCase(), ...u.e.toL
 /* ============ 共通検索 ============ */
 let mode='fn', plat='win', activeCat=null;
 
+/* ============ GA4 イベント計測ヘルパー ============ */
+function ga(name, params){ try{ if(typeof gtag==='function') gtag('event', name, params||{}); }catch(e){} }
+let _gaSearchT=null;
+function trackSearch(q, m, count){
+  clearTimeout(_gaSearchT);
+  if(!q) return;
+  _gaSearchT=setTimeout(()=>{
+    ga('search',{search_term:q, tool:m, results:count});
+    if(count===0) ga('search_no_result',{search_term:q, tool:m});
+  }, 1200);
+}
+
 /* ============ 広告設定 ============ */
 /* 後で各スロットの中身を AdSense 等の広告コードに差し替えてください。
    有効/無効や挿入間隔はここで切り替えられます。 */
@@ -1059,7 +1106,7 @@ function kataCard(it){
 function bindCopySel(sel){
   document.querySelectorAll(sel).forEach(el=>{
     const t=el.dataset.copy||el.textContent;
-    const f=()=>{navigator.clipboard?.writeText(t).then(()=>{el.classList.add('copied');toast('コピーしました ✓');setTimeout(()=>el.classList.remove('copied'),1100);}).catch(()=>{});};
+    const f=()=>{navigator.clipboard?.writeText(t).then(()=>{el.classList.add('copied');toast('コピーしました ✓');ga('copy',{type:'keigo',value:t});setTimeout(()=>el.classList.remove('copied'),1100);}).catch(()=>{});};
     el.onclick=f; el.onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();f();}};
   });
 }
@@ -1130,6 +1177,7 @@ function render(){
   else if(activeCat) elMetaLabel.textContent=cats[activeCat].ja+cfg.catSuffix;
   else elMetaLabel.textContent=cfg.listLabel;
   elCount.innerHTML = list.length?`<b>${list.length}</b> 件`:'';
+  if(q) trackSearch(q, mode, list.length);
 
   elAnswer.innerHTML='';
   let rest=list;
@@ -1172,7 +1220,7 @@ function withFeedAds(cards){
 
 function bindCopy(){
   document.querySelectorAll('.ex-cell.formula').forEach(el=>{
-    const copy=()=>{navigator.clipboard?.writeText(el.dataset.f).then(()=>{el.classList.add('copied');toast('数式をコピーしました ✓');setTimeout(()=>el.classList.remove('copied'),1100);}).catch(()=>{});};
+    const copy=()=>{navigator.clipboard?.writeText(el.dataset.f).then(()=>{el.classList.add('copied');toast('数式をコピーしました ✓');ga('copy',{type:'formula',value:el.dataset.f});setTimeout(()=>el.classList.remove('copied'),1100);}).catch(()=>{});};
     el.onclick=copy; el.onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();copy();}};
   });
 }
@@ -1260,7 +1308,7 @@ function subSubmit(){
   const a=subsLoad();
   if(subEditId){ const it=a.find(x=>x.id===subEditId); if(it){ it.name=name; it.amount=amount; it.cycle=cycle; it.cat=cat; it.next=next; } }
   else a.push({id:subUID(),name,amount,cycle,cat,next,rating:0});
-  subsSave(a); subClearForm(); renderSubs();
+  subsSave(a); ga('sub_add',{name:name}); subClearForm(); renderSubs();
 }
 function subEditStart(id){ const s=subsLoad().find(x=>x.id===id); if(!s) return; subEl.subName.value=s.name; subEl.subAmount.value=s.amount; subSetCycle(s.cycle); subEl.subCat.value=s.cat; subEl.subNext.value=s.next||''; subEditId=id; subEl.subAdd.textContent='更新'; subEl.subCancel.hidden=false; subEl.subName.focus(); subEl.subName.scrollIntoView({behavior:'smooth',block:'center'}); }
 function subDelete(id){
@@ -1351,7 +1399,7 @@ function wAddItem(){
   const payer=wEl.wariPayer.value; if(!payer) return;
   const parts=d.members.map(m=>m.id).filter(id=>wariSel[id]!==false);
   if(!parts.length) return;
-  d.items.push({id:wUID(),title,amount,payer,parts}); wariSave(d);
+  d.items.push({id:wUID(),title,amount,payer,parts}); wariSave(d); ga('wari_add',{amount:amount});
   wEl.wariTitle.value=''; wEl.wariAmount.value=''; renderWari(); wEl.wariTitle.focus();
 }
 function wDelItem(id){ const d=wariLoad(); d.items=d.items.filter(it=>it.id!==id); wariSave(d); renderWari(); }
@@ -1431,6 +1479,7 @@ function syncChips(){[...elChips.children].forEach(c=>c.classList.toggle('active
 function setMode(m){
   if(mode===m) return;
   mode=m; activeCat=null; elQ.value='';
+  ga('mode_switch',{tool:m});
   const cfg=MODES[m];
   document.querySelectorAll('.modetab').forEach(t=>t.classList.toggle('active',t.dataset.mode===m));
   elPlat.classList.toggle('show', !!cfg.plat);
@@ -1523,7 +1572,7 @@ function renderNav(){
     const gc=editMode?`<span class="reorder"><button class="rb" data-act="gu" data-g="${gi}" aria-label="グループを上へ">▲</button><button class="rb" data-act="gdn" data-g="${gi}" aria-label="グループを下へ">▼</button></span>`:'';
     return `<div class="sb-sec" style="--g:${groupColor(g.id)}"><div class="sb-label"><span class="sb-dot"></span>${g.label}${gc}</div>${items}</div>`;
   }).join('');
-  navEl.querySelectorAll('.modetab').forEach(t=>t.onclick=()=>{ if(editMode) return; if(t.dataset.href){ window.open(t.dataset.href,'_blank','noopener'); closeDrawer(); return; } setMode(t.dataset.mode); closeDrawer(); });
+  navEl.querySelectorAll('.modetab').forEach(t=>t.onclick=()=>{ if(editMode) return; if(t.dataset.href){ ga('outbound_click',{url:t.dataset.href}); window.open(t.dataset.href,'_blank','noopener'); closeDrawer(); return; } setMode(t.dataset.mode); closeDrawer(); });
   navEl.querySelectorAll('.rb').forEach(b=>b.onclick=e=>{
     e.stopPropagation();
     const a=b.dataset.act, gi=+b.dataset.g, ii=+b.dataset.i;
@@ -1607,6 +1656,7 @@ document.addEventListener('click',e=>{
   const b=e.target.closest('.ui-use-btn'); if(!b) return;
   e.preventDefault();
   const sel=b.dataset.sel||'', where=b.dataset.where||'', kind=b.dataset.kind||'';
+  ga('ui_demo',{part:where||sel});
   if(kind==='toast'){ toast('保存しました ✓（これがトースト通知です）'); return; }
   if(kind==='modal-demo'){ confirmModal({title:'これがモーダルです', body:'削除など取り消せない操作の前に、こうして確認します。', okLabel:'なるほど', onOk:()=>{}}); return; }
   const narrow=window.matchMedia('(max-width:900px)').matches;
@@ -1786,7 +1836,7 @@ async function charLookup(ch){
     if(!res.ok) throw 0;
     const k=await res.json();
     detailEl.innerHTML=charCard(k);
-    logUse('char', k.kanji||ch, k.kanji||ch, k.kanji||ch);
+    logUse('char', k.kanji||ch, k.kanji||ch, k.kanji||ch); ga('kanji_lookup',{kanji:k.kanji||ch});
   }catch(e){
     detailEl.innerHTML=`<div class="char-msg err">「${ch}」の読みが見つかりませんでした。常用漢字以外や記号、または接続できない場合があります（このタブはインターネット接続が必要です）。</div>`;
   }
@@ -1911,7 +1961,7 @@ async function dictSearch(q){
     }
     elAnswer.innerHTML=`<div class="answer"><div class="ans-eyebrow">いちばん近い答え</div><div class="selected-cell">${inner}</div></div>`;
     elResults.innerHTML='';
-    logUse('dict', q.toLowerCase(), q, q);
+    logUse('dict', q.toLowerCase(), q, q); ga('dict_lookup',{term:q});
   }catch(e){
     if(e&&e.message==='none'){
       elResults.innerHTML=`<div class="char-msg">「${esc(q)}」の訳が見つかりませんでした。スペルや表記を変えて試してみてください。</div>`;
