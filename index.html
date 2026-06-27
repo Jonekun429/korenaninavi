@@ -353,6 +353,15 @@
   .didyou-b:hover{background:var(--excel);color:#fff}
 
   footer{text-align:center;margin-top:48px;color:var(--ink-faint);font-size:12px;line-height:1.7}
+  .subly-banner{display:flex;align-items:center;gap:15px;max-width:640px;margin:18px auto;background:var(--accent,#0d9488);border-radius:14px;padding:16px 18px;text-decoration:none;box-shadow:var(--shadow);transition:transform .14s,box-shadow .14s}
+  .subly-banner:hover{transform:translateY(-1px);box-shadow:0 8px 22px rgba(13,110,86,.28)}
+  .syb-ico{flex:0 0 auto;width:50px;height:50px;border-radius:13px;background:#fff;display:flex;align-items:center;justify-content:center;color:var(--accent,#0d9488)}
+  .syb-txt{flex:1 1 200px;min-width:0}
+  .syb-head{display:flex;align-items:center;flex-wrap:wrap;gap:7px;font-size:15.5px;font-weight:800;color:#fff;line-height:1.4}
+  .syb-tag{font-size:10px;font-weight:700;color:#d3efe8;border:1px solid rgba(255,255,255,.4);border-radius:5px;padding:1px 6px}
+  .syb-sub{display:block;margin-top:3px;font-size:12.5px;line-height:1.6;color:#e3f4f2}
+  .syb-cta{flex:0 0 auto;background:#fff;color:#0d6e56;font-size:13.5px;font-weight:800;padding:10px 16px;border-radius:10px;white-space:nowrap}
+  @media(max-width:560px){.subly-banner{flex-wrap:wrap}.syb-cta{width:100%;text-align:center}}
   .foot-links{display:flex;flex-wrap:wrap;gap:6px 16px;justify-content:center;margin:14px 0 6px}
   .foot-links a{color:var(--ink-soft);text-decoration:none;font-weight:600;font-size:12.5px}
   .foot-links a:hover{color:var(--excel);text-decoration:underline}
@@ -1620,7 +1629,7 @@ function setMode(m){
   document.querySelector('.meta').style.display = (isChar||isSub||isWari)?'none':'flex';
   elAnswer.style.display = (isChar||isSub||isWari)?'none':'';
   elResults.style.display = (isChar||isSub||isWari)?'none':'';
-  if(ADS.enabled&&ADS.top) adTopEl.style.display = (isChar||isSub||isWari)?'none':'flex';
+  if(ADS.enabled&&ADS.top) adTopEl.style.display = (isChar||isSub||isWari)?'none':'block';
   if(isChar){ detailEl.innerHTML=charIntro(); candEl.innerHTML=''; elQ.focus(); }
   else if(isDict){ elAnswer.innerHTML=''; elMetaLabel.textContent='辞書'; elCount.innerHTML=''; dictIntro(); elQ.focus(); }
   else if(isSub){ renderSubs(); }
@@ -1634,9 +1643,23 @@ function setMode(m){
 function adFill(label,size){
   return `<span class="ad-tag">広告</span><div class="ad-banner-inner">広告スペース<br><span class="ad-mini">${size}</span></div>`;
 }
+/* 自社サービス（Subly）バナー。アドセンス承認後は、下の initAds の adTopEl 部分を
+   adFill(...) または アドセンスの広告コードに戻してください（Subly はフッター等へ移動可）。 */
+function sublyBannerHTML(){
+  return `<a class="subly-banner" id="sublyBanner" href="https://subly.jp/" target="_blank" rel="noopener">`+
+    `<span class="syb-ico"><svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg></span>`+
+    `<span class="syb-txt"><span class="syb-head">サブスク、ぜんぶ把握できてる？<span class="syb-tag">運営者の別サービス</span></span>`+
+    `<span class="syb-sub">無料・広告なしのサブスク管理アプリ「Subly」で、毎月の固定費を見える化。</span></span>`+
+    `<span class="syb-cta">無料で見える化 →</span></a>`;
+}
 function initAds(){
-  if(ADS.enabled&&ADS.top){ adTopEl.innerHTML=adFill('top','728×90 ほか / レスポンシブ バナー'); adTopEl.style.display='flex'; }
-  /* 上のバナーの中身（adTopEl）を広告コードに差し替えてください */
+  if(ADS.enabled&&ADS.top){
+    adTopEl.className='subly-slot';            // 広告枠の点線スタイルを外す
+    adTopEl.style.display='block';
+    adTopEl.innerHTML=sublyBannerHTML();       // ← アドセンス承認後はここを広告コードに差し替え
+    const b=adTopEl.querySelector('#sublyBanner');
+    if(b) b.addEventListener('click',()=>ga('outbound_click',{to:'subly',from:'top'}));
+  }
   if(ADS.enabled&&ADS.footer){ adFootEl.innerHTML=adFill('foot','728×90 ほか / レスポンシブ バナー'); adFootEl.style.display='flex'; }
   if(ADS.enabled&&ADS.anchor){
     adAnchorEl.innerHTML=`<button class="ad-anchor-close" id="adClose" aria-label="広告を閉じる">×</button><span class="ad-tag">広告</span><div class="ad-banner-inner">広告スペース <span class="ad-mini">320×50</span></div>`;
