@@ -11,7 +11,7 @@
 <meta name="keywords" content="コレなにナビ,これ何,漢字 読み方,手書き 漢字 検索,Excel 関数 一覧,Excel ショートカット,UIパーツ 名前,カタカナ語 意味,ビジネス敬語 言い換え,英和辞典,和英,早引き 検索,無料">
 <meta name="author" content="Jone Lab">
 <meta name="robots" content="index,follow">
-<meta name="theme-color" content="#12855B">
+<meta name="theme-color" content="#0f3192">
 <link rel="canonical" href="https://korenaninavi.jp/">
 <meta property="og:url" content="https://korenaninavi.jp/">
 <meta property="og:site_name" content="コレなにナビ">
@@ -48,14 +48,15 @@
 <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Noto+Sans+JP:wght@400;500;700;900&display=swap" rel="stylesheet">
 <style>
   :root{
-    --paper:#F4F6FA; --card:#FFFFFF; --ink:#161A21; --ink-soft:#5A6473; --ink-faint:#99A2B1;
-    --excel:#12855B; --excel-bright:#19A872; --excel-wash:#E9F6F0;
-    --grid:#E6E9F0; --grid-soft:#EDEFF5; --line:#E6E9F0; --select:#12855B;
+    --paper:#f4f6fb; --card:#FFFFFF; --ink:#1a2236; --ink-soft:#6b7689; --ink-faint:#9aa3b5;
+    --excel:#0f3192; --excel-bright:#1641b0; --excel-wash:#e8edfb;
+    --grid:#dfe5f0; --grid-soft:#eef1f8; --line:#dfe5f0; --select:#0f3192;
+    --accent:#0d9488; --accent-bright:#13b3a4; --accent-wash:#e3f4f2; --danger:#c2410c;
     --shadow:0 1px 2px rgba(20,24,33,.04), 0 14px 30px -18px rgba(20,24,33,.22);
     --mono:'JetBrains Mono',ui-monospace,SFMono-Regular,Menlo,monospace;
     --sans:'Noto Sans JP',system-ui,-apple-system,sans-serif;
-    --c-agg:#12855B; --c-log:#B7791F; --c-look:#2B6CB0; --c-text:#805AD5;
-    --c-date:#2C9C9C; --c-math:#C05621; --c-stat:#B83280; --c-new:#C53030;
+    --c-agg:#0f3192; --c-log:#B7791F; --c-look:#2B6CB0; --c-text:#805AD5;
+    --c-date:#2C9C9C; --c-math:#C05621; --c-stat:#B83280; --c-new:#C53030; --c-info:#6366F1;
   }
   *{box-sizing:border-box;margin:0;padding:0}
   html{scroll-behavior:smooth}
@@ -77,8 +78,8 @@
   .nb-date .nb-wd{color:var(--ink-faint);margin-left:4px;font-weight:600}
   .nb-time{display:flex;align-items:center;gap:7px;font-family:var(--mono);font-size:18px;font-weight:700;color:var(--ink);line-height:1}
   .nb-time .nb-sec{color:var(--ink-faint);font-size:13px;font-weight:500}
-  .nb-dot{width:7px;height:7px;border-radius:50%;background:var(--excel-bright);box-shadow:0 0 0 0 rgba(25,168,114,.5);animation:nbpulse 2s infinite}
-  @keyframes nbpulse{0%{box-shadow:0 0 0 0 rgba(25,168,114,.45)}70%{box-shadow:0 0 0 7px rgba(25,168,114,0)}100%{box-shadow:0 0 0 0 rgba(25,168,114,0)}}
+  .nb-dot{width:7px;height:7px;border-radius:50%;background:var(--excel-bright);box-shadow:0 0 0 0 rgba(22,65,176,.5);animation:nbpulse 2s infinite}
+  @keyframes nbpulse{0%{box-shadow:0 0 0 0 rgba(22,65,176,.45)}70%{box-shadow:0 0 0 7px rgba(22,65,176,0)}100%{box-shadow:0 0 0 0 rgba(22,65,176,0)}}
   @media(max-width:480px){.nb-time{font-size:16px}.nb-time .nb-sec{font-size:12px}.nb-date{font-size:11px}.tb-brand{font-size:15px}}
 
   /* 引っ張って更新 */
@@ -97,7 +98,7 @@
   .searchwrap{margin:18px 0 22px;max-width:640px}
   /* 大きな検索フィールド */
   .formulabar{display:flex;align-items:center;background:var(--card);border:1.5px solid var(--line);border-radius:999px;box-shadow:0 2px 4px rgba(20,24,33,.04),0 18px 38px -22px rgba(20,24,33,.3);overflow:hidden;transition:border-color .18s,box-shadow .18s}
-  .formulabar:focus-within{border-color:var(--excel);box-shadow:0 0 0 4px rgba(18,133,91,.13),0 18px 38px -22px rgba(20,24,33,.3)}
+  .formulabar:focus-within{border-color:var(--excel);box-shadow:0 0 0 4px rgba(15,49,146,.13),0 18px 38px -22px rgba(20,24,33,.3)}
   .fxtab{display:flex;align-items:center;justify-content:center;padding:0 4px 0 22px;color:var(--ink-faint)}
   .fxtab svg{width:21px;height:21px;display:block}
   .formulabar:focus-within .fxtab{color:var(--excel)}
@@ -108,23 +109,23 @@
   .clearbtn.show{display:flex}
 
   /* ===== 左サイドバー・レイアウト ===== */
-  .appshell{display:grid;grid-template-columns:264px 1fr;align-items:start}
-  .sidebar{position:sticky;top:0;height:100vh;overflow-y:auto;background:var(--card);border-right:1px solid var(--line);padding:18px 14px 24px;display:flex;flex-direction:column;gap:2px}
+  .appshell{padding-left:264px}
+  .sidebar{position:fixed;top:0;left:0;width:264px;height:100vh;overflow-y:auto;background:var(--card);border-right:1px solid var(--line);padding:18px 14px 24px;display:flex;flex-direction:column;gap:2px}
   .sb-brand{display:flex;align-items:center;gap:11px;padding:6px 8px 18px}
-  .sb-mark{font-family:var(--mono);font-weight:700;font-size:17px;color:#fff;background:var(--excel);width:36px;height:36px;border-radius:10px;display:grid;place-items:center;box-shadow:0 6px 14px -6px rgba(18,133,91,.55)}
+  .sb-mark{font-family:var(--mono);font-weight:700;font-size:17px;color:#fff;background:var(--excel);width:36px;height:36px;border-radius:10px;display:grid;place-items:center;box-shadow:0 6px 14px -6px rgba(15,49,146,.55)}
   .sb-name{font-weight:900;font-size:18px;line-height:1.1}
   .sb-sub{font-size:11px;color:var(--ink-faint);font-weight:600;letter-spacing:.04em}
   .sb-nav{display:flex;flex-direction:column;gap:2px}
   .sb-sec{padding:6px 0 10px}
   .sb-label{font-family:var(--mono);font-size:10.5px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--g);padding:6px 12px 7px}
   .sb-dot{width:8px;height:8px;border-radius:3px;background:var(--g);flex:0 0 auto;margin-right:7px}
-  .modetab{position:relative;display:flex;align-items:center;gap:12px;width:100%;text-align:left;border:none;background:transparent;color:var(--ink-soft);font-family:var(--sans);font-weight:700;font-size:14.5px;padding:11px 13px;border-radius:10px;cursor:pointer;transition:background .14s,color .14s}
+  .modetab{position:relative;display:flex;align-items:center;gap:10px;width:100%;text-align:left;border:none;background:transparent;color:var(--ink-soft);font-family:var(--sans);font-weight:700;font-size:14.5px;padding:11px 12px;border-radius:10px;cursor:pointer;transition:background .14s,color .14s}
   .modetab .ic{font-family:var(--mono);font-weight:700;font-size:13px;width:26px;height:26px;border-radius:7px;background:color-mix(in srgb,var(--g) 14%,#fff);display:grid;place-items:center;color:var(--g);flex:0 0 auto;transition:all .14s}
   .modetab:hover{background:color-mix(in srgb,var(--g) 7%,#fff)}
   .modetab.active{background:color-mix(in srgb,var(--g) 13%,#fff);color:var(--g)}
   .modetab.active .ic{background:var(--g);color:#fff}
   .modetab.active::before{content:"";position:absolute;left:-14px;top:9px;bottom:9px;width:4px;border-radius:0 4px 4px 0;background:var(--g)}
-  .sb-foot{margin-top:auto;padding:14px 12px 2px;font-size:12px;color:var(--ink-faint);font-weight:600;display:flex;align-items:center;gap:8px;border-top:1px solid var(--line)}
+  .sb-foot{margin-top:6px;padding:14px 12px 2px;font-size:12px;color:var(--ink-faint);font-weight:600;display:flex;align-items:center;gap:8px;border-top:1px solid var(--line)}
   .sb-fmark{font-family:var(--mono);font-weight:700;color:var(--excel)}
 
   /* モバイル：トップバー＋ドロワー（PCでは非表示） */
@@ -145,7 +146,7 @@
   .sb-edit:hover{border-color:var(--ink-faint);color:var(--ink)}
   .sb-edit.on{background:var(--excel);color:#fff;border-color:var(--excel)}
   .sb-hint{font-size:11px;color:var(--ink-faint);font-weight:600;padding:0 10px 8px;line-height:1.5}
-  .mt-label{flex:1}
+  .mt-label{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis}
   .reorder{display:inline-flex;gap:3px;margin-left:auto}
   .rb{border:1px solid var(--line);background:var(--card);color:var(--ink-soft);width:22px;height:20px;border-radius:5px;font-size:8px;cursor:pointer;display:grid;place-items:center;line-height:1;padding:0}
   .rb:hover{border-color:var(--excel);color:var(--excel)}
@@ -154,7 +155,7 @@
   .sidebar.editing .modetab.active{background:color-mix(in srgb,var(--g) 13%,#fff)}
   /* アクセス数バッジ */
   .ac{display:inline-flex;align-items:center;gap:7px;background:var(--card);border:1.5px solid var(--line);border-radius:999px;padding:6px 13px;box-shadow:var(--shadow)}
-  .ac-dot{width:7px;height:7px;border-radius:50%;background:var(--excel-bright);box-shadow:0 0 0 0 rgba(25,168,114,.5);animation:nbpulse 2s infinite}
+  .ac-dot{width:7px;height:7px;border-radius:50%;background:var(--excel-bright);box-shadow:0 0 0 0 rgba(22,65,176,.5);animation:nbpulse 2s infinite}
   .ac-num{font-family:var(--mono);font-weight:700;font-size:15px;color:var(--ink)}
   .ac-cap{font-size:11px;color:var(--ink-faint);font-weight:700}
 
@@ -163,7 +164,7 @@
   .ctop-title{font-size:25px;font-weight:900;letter-spacing:-.01em}
   .ctop-sub{font-size:13.5px;color:var(--ink-soft);font-weight:600;margin-top:2px}
   .ctop-clock{position:fixed;top:10px;right:16px;z-index:50;display:flex;align-items:center;gap:9px;background:rgba(255,255,255,.88);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border:1px solid var(--line);border-radius:999px;padding:7px 15px;box-shadow:var(--shadow);font-family:var(--mono);white-space:nowrap}
-  .cc-dot{width:7px;height:7px;border-radius:50%;background:var(--excel-bright);box-shadow:0 0 0 0 rgba(25,168,114,.5);animation:nbpulse 2s infinite;flex:0 0 auto}
+  .cc-dot{width:7px;height:7px;border-radius:50%;background:var(--excel-bright);box-shadow:0 0 0 0 rgba(22,65,176,.5);animation:nbpulse 2s infinite;flex:0 0 auto}
   .cc-date{font-size:12.5px;font-weight:700;color:var(--ink-soft)}
   .cc-date .nb-wd{color:var(--ink-faint);margin-left:3px;font-weight:600}
   .cc-time{font-size:14px;font-weight:700;color:var(--ink)}
@@ -179,7 +180,7 @@
 
   @media(max-width:900px){
     .mtopbar{display:flex}
-    .appshell{grid-template-columns:1fr}
+    .appshell{padding-left:0}
     .content{padding:64px 16px 80px}
     .ctop-title{font-size:21px}
     .sidebar{position:fixed;top:0;left:0;height:100%;width:286px;max-width:84vw;z-index:120;
@@ -214,7 +215,7 @@
   .answer .ans-eyebrow{font-family:var(--mono);font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--excel);margin:0 4px 10px;display:flex;align-items:center;gap:8px}
   .answer .ans-eyebrow::before{content:"";width:20px;height:2px;background:var(--excel)}
   .selected-cell{position:relative}
-  .selected-cell .card{border:2px solid var(--select);box-shadow:0 0 0 4px rgba(33,115,70,.1), var(--shadow)}
+  .selected-cell .card{border:2px solid var(--select);box-shadow:0 0 0 4px rgba(15,49,146,.1), var(--shadow)}
   .selected-cell::after{content:"";position:absolute;right:-5px;bottom:-5px;width:11px;height:11px;background:var(--select);border:2px solid var(--card);border-radius:2px}
 
   .grid{display:grid;grid-template-columns:repeat(2,1fr);gap:16px}
@@ -229,7 +230,7 @@
   .cat-tag{font-family:var(--mono);font-size:10.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:4px 9px;border-radius:6px;white-space:nowrap;background:var(--cat-wash,var(--excel-wash));color:var(--cat,var(--excel))}
   .fn-desc{font-size:14px;color:var(--ink-soft);font-weight:500;margin:10px 0 14px;line-height:1.65}
 
-  .syntax{font-family:var(--mono);font-size:12.5px;color:var(--ink);background:#F6F8F6;border:1px solid var(--line);border-radius:8px;padding:9px 11px;margin-bottom:12px;line-height:1.55;word-break:break-word}
+  .syntax{font-family:var(--mono);font-size:12.5px;color:var(--ink);background:#f3f5fb;border:1px solid var(--line);border-radius:8px;padding:9px 11px;margin-bottom:12px;line-height:1.55;word-break:break-word}
   .syntax .arg{color:var(--cat,var(--excel));font-weight:500}
   .example{display:flex;align-items:center;gap:9px;flex-wrap:wrap}
   .ex-cell{font-family:var(--mono);font-size:12.5px;font-weight:500;border:1px solid var(--grid);background:#fff;border-radius:6px;padding:7px 10px;color:var(--ink);position:relative;cursor:pointer;transition:background .12s,border-color .12s}
@@ -237,7 +238,7 @@
   .ex-cell.formula::after{content:"コピー";position:absolute;top:-9px;right:6px;font-family:var(--sans);font-size:9px;font-weight:700;color:var(--excel);background:var(--card);padding:0 4px;opacity:0;transition:opacity .12s}
   .ex-cell.formula:hover::after{opacity:1}
   .ex-cell.copied::after{content:"コピーしました";opacity:1;color:var(--excel)}
-  .ex-cell.result{background:var(--excel-wash);border-color:#CDE5D8;color:var(--excel);font-weight:700}
+  .ex-cell.result{background:var(--excel-wash);border-color:#c5d2f0;color:var(--excel);font-weight:700}
   .ex-arrow{color:var(--ink-faint);font-weight:700;font-family:var(--mono)}
   .ex-note{font-size:12px;color:var(--ink-faint);margin-top:9px;font-weight:500}
 
@@ -248,7 +249,7 @@
   .sc-note{font-size:11.5px;color:var(--ink-faint);margin-top:2px;font-weight:500}
   /* UIパーツ */
   .ui-en{font-family:var(--mono);font-size:12px;color:var(--ink-faint);font-weight:500;margin-top:2px}
-  .ui-ico{display:flex;align-items:center;justify-content:center;height:78px;background:#F6F8F6;border:1px solid var(--line);border-radius:10px;margin:13px 0;color:var(--cat,var(--excel))}
+  .ui-ico{display:flex;align-items:center;justify-content:center;height:78px;background:#f3f5fb;border:1px solid var(--line);border-radius:10px;margin:13px 0;color:var(--cat,var(--excel))}
   .ui-ico svg{width:84px;height:56px}
 
   /* 文字（手書き・読み）*/
@@ -263,7 +264,7 @@
   .hw-btn{font-family:var(--sans);font-weight:700;font-size:13.5px;border:1.5px solid var(--line);background:#fff;color:var(--ink-soft);padding:9px 16px;border-radius:9px;cursor:pointer;transition:all .14s}
   .hw-btn:hover{border-color:var(--ink-faint);color:var(--ink)}
   .hw-btn.primary{background:var(--excel);color:#fff;border-color:var(--excel)}
-  .hw-btn.primary:hover{background:#1c633c;color:#fff}
+  .hw-btn.primary:hover{background:#0a2069;color:#fff}
   .candidates{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin:14px 0 4px}
   .cand-label{font-family:var(--mono);font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-faint);width:100%}
   .cand{font-family:"Hiragino Mincho ProN","Yu Mincho",serif;font-size:24px;line-height:1;border:1.5px solid var(--line);background:#fff;border-radius:9px;padding:8px 12px;cursor:pointer;transition:all .13s}
@@ -275,7 +276,7 @@
   .char-head{display:flex;align-items:center;gap:20px;border-bottom:1px solid var(--line);padding-bottom:16px;margin-bottom:16px}
   .char-glyph{font-family:"Hiragino Mincho ProN","Yu Mincho",serif;font-size:74px;line-height:.95;font-weight:500;color:var(--ink)}
   .char-stats{display:flex;flex-wrap:wrap;gap:8px}
-  .char-stats span{font-size:12px;font-weight:700;color:var(--ink-soft);background:#F2F5F2;border:1px solid var(--line);border-radius:6px;padding:5px 10px}
+  .char-stats span{font-size:12px;font-weight:700;color:var(--ink-soft);background:#f3f5fb;border:1px solid var(--line);border-radius:6px;padding:5px 10px}
   .yomi{display:flex;flex-direction:column;gap:14px}
   .yomi-row{display:flex;gap:16px;align-items:baseline}
   .yomi-label{flex:0 0 52px;font-size:13px;font-weight:900;color:var(--ink)}
@@ -338,7 +339,7 @@
   .kg-scene{font-size:11px;font-weight:700;color:var(--ink-faint);background:var(--paper);border:1px solid var(--line);border-radius:999px;padding:3px 10px;white-space:nowrap}
   .kg-label{font-size:11.5px;font-weight:700;color:var(--ink-faint);margin:12px 0 8px}
   .kg-polite{display:flex;flex-wrap:wrap;gap:8px}
-  .kg-chip{font-family:var(--sans);font-weight:700;font-size:14px;color:var(--excel);background:var(--excel-wash);border:1.5px solid #BCE3D2;border-radius:10px;padding:8px 14px;cursor:pointer;transition:all .14s}
+  .kg-chip{font-family:var(--sans);font-weight:700;font-size:14px;color:var(--excel);background:var(--excel-wash);border:1.5px solid #c5d2f0;border-radius:10px;padding:8px 14px;cursor:pointer;transition:all .14s}
   .kg-chip:hover{border-color:var(--excel);transform:translateY(-1px)}
   .kg-chip.copied{background:var(--excel);color:#fff;border-color:var(--excel)}
 
@@ -376,7 +377,7 @@
   .sub-seg button.active{background:var(--excel);color:#fff}
   .sub-sel{cursor:pointer}
   .sub-date{color:var(--ink-soft)}
-  .sub-add{font-family:var(--sans);font-size:14px;font-weight:700;color:#fff;background:var(--excel);border:none;border-radius:10px;padding:10px 22px;cursor:pointer;box-shadow:0 6px 14px -6px rgba(18,133,91,.55)}
+  .sub-add{font-family:var(--sans);font-size:14px;font-weight:700;color:#fff;background:var(--excel);border:none;border-radius:10px;padding:10px 22px;cursor:pointer;box-shadow:0 6px 14px -6px rgba(15,49,146,.55)}
   .sub-add:hover{filter:brightness(1.06)}
   .sub-cancel{font-family:var(--sans);font-size:13px;font-weight:600;color:var(--ink-faint);background:none;border:1.5px solid var(--line);border-radius:10px;padding:9px 14px;cursor:pointer}
   .sub-presets{display:flex;flex-wrap:wrap;gap:7px;margin-top:12px}
@@ -398,7 +399,7 @@
   .si-acts{display:flex;flex-direction:column;gap:6px;flex:0 0 auto}
   .si-edit,.si-del{font-family:var(--sans);font-size:12px;font-weight:700;border-radius:8px;padding:6px 12px;cursor:pointer;border:1.5px solid var(--line);background:var(--card);color:var(--ink-soft)}
   .si-edit:hover{border-color:var(--excel);color:var(--excel)}
-  .si-del:hover{border-color:#E0524B;color:#E0524B}
+  .si-del:hover{border-color:#c2410c;color:#c2410c}
 
   /* 割り勘 */
   .waripanel{display:none}
@@ -408,8 +409,8 @@
   .wari-mrow #wariName{flex:1}
   .wari-chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
   .wari-chip{display:inline-flex;align-items:center;gap:4px;font-size:13.5px;font-weight:700;color:var(--ink);background:var(--paper);border:1.5px solid var(--line);border-radius:999px;padding:6px 6px 6px 13px}
-  .wari-x{width:20px;height:20px;border-radius:999px;border:none;background:#E6E9F0;color:var(--ink-soft);font-size:14px;line-height:1;cursor:pointer;display:grid;place-items:center}
-  .wari-x:hover{background:#E0524B;color:#fff}
+  .wari-x{width:20px;height:20px;border-radius:999px;border:none;background:#dfe5f0;color:var(--ink-soft);font-size:14px;line-height:1;cursor:pointer;display:grid;place-items:center}
+  .wari-x:hover{background:#c2410c;color:#fff}
   .wari-empty{font-size:13px;color:var(--ink-faint)}
   #wariForm{margin-bottom:12px}
   .wari-parts-label{font-size:11.5px;font-weight:700;color:var(--ink-faint);margin:12px 0 8px}
@@ -424,9 +425,9 @@
   .wb-name{font-weight:700;color:var(--ink)}
   .wb-val{font-family:var(--mono);font-weight:700;color:var(--ink-faint)}
   .wb-val.plus{color:var(--excel)}
-  .wb-val.minus{color:#E0524B}
+  .wb-val.minus{color:#c2410c}
   .wt-list{display:flex;flex-direction:column;gap:8px}
-  .wt-row{display:flex;align-items:center;gap:10px;background:var(--excel-wash);border:1px solid #BCE3D2;border-radius:11px;padding:11px 14px}
+  .wt-row{display:flex;align-items:center;gap:10px;background:var(--excel-wash);border:1px solid #c5d2f0;border-radius:11px;padding:11px 14px}
   .wt-from{font-weight:800;color:var(--ink)}
   .wt-arrow{color:var(--excel);font-weight:800}
   .wt-to{font-weight:800;color:var(--ink)}
@@ -458,14 +459,14 @@
   .dict-common{font-family:var(--mono);font-size:10px;font-weight:700;letter-spacing:.06em;color:#2B6CB0;background:#E4EEF8;border-radius:6px;padding:4px 9px;white-space:nowrap}
   .senses{list-style:none;margin-top:13px;display:flex;flex-direction:column;gap:9px}
   .senses li{display:flex;gap:10px;align-items:baseline;font-size:14px;color:var(--ink);line-height:1.55}
-  .sense-no{font-family:var(--mono);font-size:11px;font-weight:700;color:var(--ink-faint);background:#F2F5F2;border:1px solid var(--line);border-radius:5px;min-width:21px;height:21px;display:inline-flex;align-items:center;justify-content:center;flex:0 0 auto}
+  .sense-no{font-family:var(--mono);font-size:11px;font-weight:700;color:var(--ink-faint);background:#f3f5fb;border:1px solid var(--line);border-radius:5px;min-width:21px;height:21px;display:inline-flex;align-items:center;justify-content:center;flex:0 0 auto}
   .sense-glo{flex:1}
   .sense-pos{font-size:11px;color:var(--ink-faint);font-weight:600;white-space:nowrap}
   .tr-main{display:flex;align-items:baseline;gap:12px;margin-top:14px;flex-wrap:wrap}
   .tr-label{flex:0 0 auto;font-size:12px;font-weight:800;color:#2B6CB0;background:#E4EEF8;border-radius:7px;padding:4px 11px}
   .tr-val{font-size:20px;font-weight:800;color:var(--ink);line-height:1.4}
   .tr-alts{display:flex;flex-wrap:wrap;gap:7px;margin-top:10px}
-  .tr-alt{font-size:13px;color:var(--ink-soft);background:#F2F5F2;border:1px solid var(--line);border-radius:7px;padding:4px 10px}
+  .tr-alt{font-size:13px;color:var(--ink-soft);background:#f3f5fb;border:1px solid var(--line);border-radius:7px;padding:4px 10px}
   .mean-block{margin-top:14px;border-top:1px solid var(--line);padding-top:12px}
   .mean-pos{font-size:11px;font-weight:700;color:var(--ink-faint);text-transform:uppercase;letter-spacing:.05em}
   .mean-block ol{margin:8px 0 0;padding-left:18px;font-size:13.5px;color:var(--ink);line-height:1.6;display:flex;flex-direction:column;gap:5px}
@@ -475,19 +476,19 @@
   @media (prefers-reduced-motion: reduce){*{transition:none!important;scroll-behavior:auto!important}.nb-dot{animation:none}}
 
   /* ===== UIパーツ「ここで使われています」案内・トースト・上へ戻る・件数バッジ ===== */
-  .ui-use{margin-top:12px;padding:10px 12px;border-radius:10px;background:var(--excel-wash,#E9F6F0);border:1px solid color-mix(in srgb,var(--excel,#12855B) 28%,#fff);display:flex;align-items:center;gap:10px;flex-wrap:wrap}
-  .ui-use-txt{font-size:12.5px;color:var(--excel,#12855B);font-weight:700;line-height:1.5}
-  .ui-use-txt small{display:block;font-weight:500;color:#3c6b56;margin-top:2px}
-  .ui-use-btn{margin-left:auto;flex:0 0 auto;border:1px solid var(--excel,#12855B);background:#fff;color:var(--excel,#12855B);font-family:inherit;font-weight:700;font-size:12.5px;padding:7px 12px;border-radius:8px;cursor:pointer;white-space:nowrap;transition:background .14s,color .14s}
-  .ui-use-btn:hover{background:var(--excel,#12855B);color:#fff}
-  @keyframes useFlash{0%,100%{box-shadow:0 0 0 0 rgba(18,133,91,0)}18%{box-shadow:0 0 0 4px rgba(18,133,91,.55)}}
+  .ui-use{margin-top:12px;padding:10px 12px;border-radius:10px;background:var(--accent-wash,#e3f4f2);border:1px solid color-mix(in srgb,var(--accent,#0d9488) 30%,#fff);display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+  .ui-use-txt{font-size:12.5px;color:var(--accent,#0d9488);font-weight:700;line-height:1.5}
+  .ui-use-txt small{display:block;font-weight:500;color:#2c6b64;margin-top:2px}
+  .ui-use-btn{margin-left:auto;flex:0 0 auto;border:1px solid var(--accent,#0d9488);background:#fff;color:var(--accent,#0d9488);font-family:inherit;font-weight:700;font-size:12.5px;padding:7px 12px;border-radius:8px;cursor:pointer;white-space:nowrap;transition:background .14s,color .14s}
+  .ui-use-btn:hover{background:var(--accent,#0d9488);color:#fff}
+  @keyframes useFlash{0%,100%{box-shadow:0 0 0 0 rgba(15,49,146,0)}18%{box-shadow:0 0 0 4px rgba(15,49,146,.55)}}
   .use-flash{animation:useFlash 1.5s ease 2;border-radius:8px;position:relative;z-index:60}
   .toast{position:fixed;left:50%;bottom:26px;transform:translateX(-50%) translateY(20px);background:#222b26;color:#fff;font-size:13.5px;font-weight:600;line-height:1.5;padding:11px 18px;border-radius:10px;box-shadow:0 8px 28px rgba(0,0,0,.25);opacity:0;pointer-events:none;transition:opacity .25s,transform .25s;z-index:9999;max-width:86vw;text-align:center}
   .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
-  #backTop{position:fixed;right:18px;bottom:20px;width:50px;height:50px;border-radius:50%;border:none;background:var(--excel,#12855B);color:#fff;font-size:22px;line-height:1;box-shadow:0 6px 18px rgba(0,0,0,.22);cursor:pointer;opacity:0;pointer-events:none;transform:translateY(12px);transition:opacity .25s,transform .25s;z-index:50;display:flex;align-items:center;justify-content:center}
+  #backTop{position:fixed;right:18px;bottom:20px;width:50px;height:50px;border-radius:50%;border:none;background:var(--excel,#0f3192);color:#fff;font-size:22px;line-height:1;box-shadow:0 6px 18px rgba(0,0,0,.22);cursor:pointer;opacity:0;pointer-events:none;transform:translateY(12px);transition:opacity .25s,transform .25s;z-index:50;display:flex;align-items:center;justify-content:center}
   #backTop.show{opacity:1;pointer-events:auto;transform:translateY(0)}
   #backTop:hover{filter:brightness(1.08)}
-  .mt-badge{flex:0 0 auto;min-width:20px;height:19px;padding:0 6px;border-radius:10px;background:rgba(0,0,0,.07);color:var(--ink-soft,#5a6473);font-family:var(--mono);font-size:10.5px;font-weight:700;display:inline-flex;align-items:center;justify-content:center}
+  .mt-badge{flex:0 0 auto;margin-left:6px;min-width:18px;height:19px;padding:0 5px;border-radius:10px;background:rgba(0,0,0,.07);color:var(--ink-soft,#5a6473);font-family:var(--mono);font-size:10.5px;font-weight:700;display:inline-flex;align-items:center;justify-content:center}
   .modetab.active .mt-badge{background:rgba(255,255,255,.26);color:#fff}
 
   /* 確認モーダル（ダイアログ） */
@@ -500,7 +501,7 @@
   .modal-acts{display:flex;gap:10px;justify-content:flex-end}
   .modal-btn{font-family:var(--sans);font-weight:700;font-size:14px;border-radius:10px;padding:10px 18px;cursor:pointer;border:1.5px solid var(--line);background:var(--card);color:var(--ink-soft);transition:all .14s}
   .modal-btn:hover{border-color:var(--ink-faint);color:var(--ink)}
-  .modal-btn.danger{border-color:#E0524B;background:#E0524B;color:#fff}
+  .modal-btn.danger{border-color:#c2410c;background:#c2410c;color:#fff}
   .modal-btn.danger:hover{filter:brightness(1.06);color:#fff}
   .modal-btn.primary{border-color:var(--excel);background:var(--excel);color:#fff}
   .modal-btn.primary:hover{filter:brightness(1.06);color:#fff}
@@ -528,12 +529,12 @@
         <div class="ctop-title" id="ctopTitle">Excelの関数</div>
         <div class="ctop-sub" id="lede">Excelの関数を、入れたら答え。</div>
       </div>
-      <div class="ctop-clock" id="ctopClock" title="日時とアクセス数（リアルタイム更新）">
+      <div class="ctop-clock" id="ctopClock" title="日時と現在の利用者数（目安）">
         <span class="cc-dot" aria-hidden="true"></span>
         <span class="cc-date"><span id="nbDate"></span><span class="nb-wd" id="nbWd"></span></span>
         <span class="cc-time" id="nbTime"></span>
         <span class="cc-sep">·</span>
-        <span class="cc-ac"><b id="acNum">—</b>アクセス</span>
+        <span class="cc-ac">現在 <b id="liveNum">—</b>人が利用中</span>
       </div>
     </div>
 
@@ -637,6 +638,7 @@ const CATS = {
   look:{ja:'検索・参照',v:'--c-look',wash:'#E4EEF8'}, text:{ja:'文字列',v:'--c-text',wash:'#F0EAFA'},
   date:{ja:'日付・時刻',v:'--c-date',wash:'#E1F2F2'}, math:{ja:'数学',v:'--c-math',wash:'#FBEBDF'},
   stat:{ja:'統計',v:'--c-stat',wash:'#FAE6F1'}, new:{ja:'新しい関数',v:'--c-new',wash:'#FBE6E6'},
+  info:{ja:'情報',v:'--c-info',wash:'#EEF0FB'},
 };
 const SCATS = {
   basic:{ja:'基本操作',v:'--c-agg',wash:'#E7F1EB'}, move:{ja:'移動・選択',v:'--c-look',wash:'#E4EEF8'},
@@ -715,6 +717,25 @@ const FN = [
 {n:'SORT',r:'ソート',c:'new',s:'SORT(範囲, [基準列], [順序])',d:'範囲を関数で並べ替えます。元データは変えません。',ex:{f:'=SORT(A2:B50,2,-1)',res:'降順に整列'},note:'-1で降順、1で昇順。',k:['並べ替え','並び替え','ソート','昇順','降順','順番に','整列','sort']},
 {n:'UNIQUE',r:'ユニーク',c:'new',s:'UNIQUE(範囲, [列方向], [1回だけ])',d:'重複を取り除いて、一意の値だけを取り出します。',ex:{f:'=UNIQUE(A2:A100)',res:'重複なし一覧'},note:'重複削除や名簿作成に。',k:['重複','削除','一意','重複削除','重複を消す','ダブり','かぶり','一覧化','unique']},
 {n:'SEQUENCE',r:'シーケンス',c:'new',s:'SEQUENCE(行数, [列数], [開始], [増分])',d:'連続した数値の並び（連番）を一気に作ります。',ex:{f:'=SEQUENCE(5)',res:'1,2,3,4,5'},note:'番号ふりやカレンダー作成に。',k:['連番','連続','番号','通し番号','番号ふり','sequence']},
+{n:'CONCATENATE',r:'コンカティネート',c:'text',s:'CONCATENATE(文字列1, [文字列2], …)',d:'複数の文字列を1つにつなげます（CONCATの旧名）。',ex:{f:'=CONCATENATE(A1," ",B1)',res:'東京 港区'},note:'新しいExcelでは CONCAT や & でも同じです。',k:['結合','連結','つなげる','つなぐ','くっつける','合体','concatenate']},
+{n:'SEARCH',r:'サーチ',c:'text',s:'SEARCH(検索文字列, 対象, [開始位置])',d:'文字が何文字目にあるか位置を返します（大文字小文字を区別しない）。',ex:{f:'=SEARCH("excel","MyExcel")',res:'3'},note:'FINDと違い大小を区別せず、ワイルドカードも使えます。',k:['検索','位置','何文字目','探す','大小区別なし','ワイルドカード','search']},
+{n:'LOWER',r:'ロウアー',c:'text',s:'LOWER(文字列)',d:'英字をすべて小文字に変換します。',ex:{f:'=LOWER("EXCEL")',res:'excel'},note:'UPPERは大文字、PROPERは先頭だけ大文字。',k:['小文字','変換','小文字に','大文字','lower']},
+{n:'MONTH',r:'マンス',c:'date',s:'MONTH(日付)',d:'日付から「月」だけを取り出します。',ex:{f:'=MONTH(A1)',res:'6'},note:'YEARは年、DAYは日を取り出します。',k:['月','取り出す','何月','月だけ','month']},
+{n:'DAY',r:'デイ',c:'date',s:'DAY(日付)',d:'日付から「日」だけを取り出します。',ex:{f:'=DAY(A1)',res:'27'},note:'YEARは年、MONTHは月を取り出します。',k:['日','取り出す','何日','日だけ','day']},
+{n:'WORKDAY',r:'ワークデイ',c:'date',s:'WORKDAY(開始日, 日数, [祝日])',d:'土日（と指定した祝日）を除いて、指定営業日後の日付を返します。',ex:{f:'=WORKDAY(A1,5)',res:'5営業日後'},note:'納期や着手日の計算に。',k:['営業日','稼働日','平日','納期','土日除く','workday']},
+{n:'NETWORKDAYS',r:'ネットワークデイズ',c:'date',s:'NETWORKDAYS(開始日, 終了日, [祝日])',d:'2つの日付の間の営業日数（土日・祝日を除く）を数えます。',ex:{f:'=NETWORKDAYS(A1,B1)',res:'22'},note:'稼働日数や勤務日数の集計に。',k:['営業日数','稼働日数','平日の日数','勤務日数','土日除く','networkdays']},
+{n:'RAND',r:'ランド',c:'math',s:'RAND()',d:'0以上1未満のランダムな数値を返します。',ex:{f:'=RAND()',res:'0.5837…'},note:'再計算のたびに変わります。引数は不要。',k:['乱数','ランダム','でたらめ','rand']},
+{n:'RANDBETWEEN',r:'ランドビトウィーン',c:'math',s:'RANDBETWEEN(最小, 最大)',d:'指定した範囲の整数の乱数を返します。',ex:{f:'=RANDBETWEEN(1,100)',res:'73'},note:'抽選やテストデータ作りに。',k:['乱数','ランダム','範囲','整数の乱数','抽選','randbetween']},
+{n:'TRANSPOSE',r:'トランスポーズ',c:'look',s:'TRANSPOSE(範囲)',d:'表の行と列を入れ替えます。',ex:{f:'=TRANSPOSE(A1:D1)',res:'縦に変換'},note:'横並びを縦並びに（またはその逆）。',k:['転置','行列入れ替え','縦横変換','行と列','transpose']},
+{n:'IFNA',r:'イフエヌエー',c:'log',s:'IFNA(値, #N/Aの場合の値)',d:'#N/Aエラーのときだけ、別の値を表示します。',ex:{f:'=IFNA(VLOOKUP(A1,B:C,2,0),"未登録")',res:'未登録'},note:'VLOOKUPで見つからない時の表示に。IFERRORは全エラーが対象。',k:['エラー','na','見つからない','エラー処理','vlookup','ifna']},
+{n:'MODE',r:'モード',c:'stat',s:'MODE(数値1, [数値2], …)',d:'最も多く出てくる値（最頻値）を返します。',ex:{f:'=MODE(A1:A20)',res:'80'},note:'新しいExcelでは MODE.SNGL も使えます。',k:['最頻値','一番多い','よく出る','モード','mode']},
+{n:'PERCENTILE',r:'パーセンタイル',c:'stat',s:'PERCENTILE(範囲, 率)',d:'データの中で、指定した割合の位置にある値を返します。',ex:{f:'=PERCENTILE(A1:A100,0.9)',res:'上位10%の境目'},note:'0.5で中央値。新版は PERCENTILE.INC。',k:['百分位','パーセンタイル','上位','分位','percentile']},
+{n:'STDEV',r:'スタンダードデビエーション',c:'stat',s:'STDEV(数値1, [数値2], …)',d:'データのばらつき（標準偏差）を、標本として求めます。',ex:{f:'=STDEV(A1:A30)',res:'12.8'},note:'抜き取りデータ向け。全体を母集団とするならSTDEV.P。',k:['標準偏差','ばらつき','標本','偏差','stdev']},
+{n:'ISBLANK',r:'イズブランク',c:'info',s:'ISBLANK(値)',d:'セルが空白ならTRUE、何か入っていればFALSEを返します。',ex:{f:'=ISBLANK(A1)',res:'TRUE'},note:'IFと組み合わせて未入力チェックに。',k:['空白','空欄','未入力','空かどうか','判定','isblank']},
+{n:'ISERROR',r:'イズエラー',c:'info',s:'ISERROR(値)',d:'値がエラーならTRUEを返します。',ex:{f:'=ISERROR(A1/B1)',res:'TRUE'},note:'IFと組み合わせてエラー判定に。',k:['エラー','エラー判定','エラーかどうか','iserror']},
+{n:'ISNUMBER',r:'イズナンバー',c:'info',s:'ISNUMBER(値)',d:'値が数値ならTRUEを返します。',ex:{f:'=ISNUMBER(A1)',res:'TRUE'},note:'入力が数字かどうかのチェックに。',k:['数値かどうか','数字判定','数値','isnumber']},
+{n:'ISTEXT',r:'イズテキスト',c:'info',s:'ISTEXT(値)',d:'値が文字列ならTRUEを返します。',ex:{f:'=ISTEXT(A1)',res:'TRUE'},note:'入力が文字かどうかのチェックに。',k:['文字かどうか','文字列判定','文字','istext']},
+{n:'TYPE',r:'タイプ',c:'info',s:'TYPE(値)',d:'値の種類を数字で返します。',ex:{f:'=TYPE(A1)',res:'1'},note:'1=数値, 2=文字列, 4=論理値, 16=エラー。',k:['種類','型','データ型','タイプ','type']},
 ];
 
 /* ============ ショートカット データ ============ */
@@ -860,7 +881,7 @@ const UI = [
 {n:'タイムライン',e:'Timeline',c:'display',d:'出来事を時系列に縦に並べた表示。活動履歴などに。',k:['タイムライン','時系列','履歴','活動履歴','縦の流れ','timeline'],svg:`<svg viewBox="0 0 72 48"><line x1="24" y1="11" x2="24" y2="37" ${SVGW}/><g fill="currentColor"><circle cx="24" cy="15" r="3"/><circle cx="24" cy="24" r="3"/><circle cx="24" cy="33" r="3"/></g><g ${SVGW} opacity="0.8"><line x1="31" y1="15" x2="48" y2="15"/><line x1="31" y1="24" x2="48" y2="24"/><line x1="31" y1="33" x2="44" y2="33"/></g></svg>`},
 {n:'アバター',e:'Avatar',c:'display',d:'ユーザーを表す丸いアイコン画像。',k:['アイコン画像','プロフィール画像','丸い顔','ユーザー画像','顔アイコン','avatar'],svg:`<svg viewBox="0 0 72 48"><circle cx="36" cy="24" r="13" ${SVGW}/><g fill="currentColor"><circle cx="36" cy="20" r="4.2"/><path d="M28.5 33 a7.5 6.5 0 0 1 15 0 z"/></g></svg>`},
 {n:'アラート / バナー',e:'Alert / Banner',c:'display',d:'画面上部などに出る、色付きのお知らせ帯。',k:['お知らせ帯','警告','注意バー','メッセージ帯','バナー','alert','banner'],svg:`<svg viewBox="0 0 72 48"><rect x="13" y="18" width="46" height="13" rx="3" fill="currentColor" opacity="0.12"/><rect x="13" y="18" width="46" height="13" rx="3" ${SVGW}/><circle cx="21" cy="24.5" r="3.4" ${SVGW}/><line x1="21" y1="23" x2="21" y2="24.6" ${SVGW}/><line x1="28" y1="24.5" x2="50" y2="24.5" ${SVGW} opacity="0.7"/></svg>`},
-{n:'ライトボックス',e:'Lightbox',c:'display',d:'画像をクリックすると暗い背景で大きく表示する仕組み。',k:['画像拡大','暗くして表示','写真ポップアップ','拡大表示','ギャラリー','lightbox'],svg:`<svg viewBox="0 0 72 48"><rect x="12" y="8" width="48" height="32" rx="3" fill="currentColor" opacity="0.16"/><rect x="24" y="15" width="24" height="18" rx="2" fill="#F6F8F6" ${SVGW}/><g ${SVGW}><circle cx="31" cy="22" r="1.7"/><polyline points="26,30 33,24 38,28 43,23 46,27"/></g></svg>`},
+{n:'ライトボックス',e:'Lightbox',c:'display',d:'画像をクリックすると暗い背景で大きく表示する仕組み。',k:['画像拡大','暗くして表示','写真ポップアップ','拡大表示','ギャラリー','lightbox'],svg:`<svg viewBox="0 0 72 48"><rect x="12" y="8" width="48" height="32" rx="3" fill="currentColor" opacity="0.16"/><rect x="24" y="15" width="24" height="18" rx="2" fill="#f3f5fb" ${SVGW}/><g ${SVGW}><circle cx="31" cy="22" r="1.7"/><polyline points="26,30 33,24 38,28 43,23 46,27"/></g></svg>`},
 {n:'カンバンボード',e:'Kanban Board',c:'display',d:'「未着手・進行中・完了」などの列にカードを並べて管理する板。',k:['カンバン','タスク管理','列でカード','ボード','付箋','kanban'],svg:`<svg viewBox="0 0 72 48"><g ${SVGW}><rect x="13" y="11" width="14" height="26" rx="2"/><rect x="29" y="11" width="14" height="26" rx="2"/><rect x="45" y="11" width="14" height="26" rx="2"/></g><g fill="currentColor" opacity="0.2"><rect x="16" y="15" width="8" height="5" rx="1.5"/><rect x="16" y="22" width="8" height="5" rx="1.5"/><rect x="32" y="15" width="8" height="5" rx="1.5"/></g></svg>`},
 
 /* 入力（ウェブ追加） */
@@ -868,7 +889,7 @@ const UI = [
 {n:'ファイルアップロード',e:'File Upload / Dropzone',c:'input',d:'ファイルをドラッグして置くと取り込める枠。',k:['アップロード','ドラッグ&ドロップ','ファイル添付','ドロップゾーン','投稿','upload','dropzone'],svg:`<svg viewBox="0 0 72 48"><rect x="16" y="11" width="40" height="26" rx="4" stroke="currentColor" fill="none" stroke-width="2.4" stroke-dasharray="4 4"/><g ${SVGW}><line x1="36" y1="20" x2="36" y2="30"/><polyline points="31,25 36,20 41,25"/></g></svg>`},
 {n:'リッチテキストエディタ',e:'Rich Text Editor',c:'input',d:'太字や箇条書きなど、装飾しながら書ける入力欄。',k:['装飾できる入力','wysiwyg','エディタ','太字にできる','文章編集','リッチテキスト'],svg:`<svg viewBox="0 0 72 48"><rect x="14" y="11" width="44" height="26" rx="3" ${SVGW}/><line x1="14" y1="20" x2="58" y2="20" ${SVGW}/><g fill="currentColor" font-family="monospace" font-weight="700" font-size="6"><text x="19" y="18">B</text><text x="26" y="18">I</text><text x="33" y="18">U</text></g><g ${SVGW} opacity="0.6"><line x1="19" y1="26" x2="50" y2="26"/><line x1="19" y1="31" x2="42" y2="31"/></g></svg>`},
 {n:'カラーピッカー',e:'Color Picker',c:'input',d:'色を選ぶための見本やパレット。',k:['色選択','色を選ぶ','パレット','カラー','color picker'],svg:`<svg viewBox="0 0 72 48"><rect x="20" y="13" width="22" height="22" rx="3" ${SVGW}/><g fill="currentColor"><rect x="23" y="16" width="6" height="6" rx="1" opacity="0.3"/><rect x="31" y="16" width="6" height="6" rx="1" opacity="0.55"/><rect x="23" y="24" width="6" height="6" rx="1" opacity="0.8"/><rect x="31" y="24" width="6" height="6" rx="1"/></g><circle cx="50" cy="20" r="3.2" ${SVGW}/></svg>`},
-{n:'フローティングラベル',e:'Floating Label',c:'input',d:'入力すると見出しが枠の上に浮き上がるラベル。',k:['浮くラベル','上に上がる見出し','ラベルが動く','floating label'],svg:`<svg viewBox="0 0 72 48"><rect x="16" y="20" width="40" height="14" rx="3" ${SVGW}/><rect x="22" y="17" width="18" height="6" fill="#F6F8F6"/><text x="23.5" y="22" font-size="5.4" fill="currentColor" font-family="sans-serif" font-weight="700">Name</text><line x1="22" y1="29" x2="40" y2="29" ${SVGW} opacity="0.5"/></svg>`},
+{n:'フローティングラベル',e:'Floating Label',c:'input',d:'入力すると見出しが枠の上に浮き上がるラベル。',k:['浮くラベル','上に上がる見出し','ラベルが動く','floating label'],svg:`<svg viewBox="0 0 72 48"><rect x="16" y="20" width="40" height="14" rx="3" ${SVGW}/><rect x="22" y="17" width="18" height="6" fill="#f3f5fb"/><text x="23.5" y="22" font-size="5.4" fill="currentColor" font-family="sans-serif" font-weight="700">Name</text><line x1="22" y1="29" x2="40" y2="29" ${SVGW} opacity="0.5"/></svg>`},
 
 /* 通知・読み込み（ウェブ追加） */
 {n:'エンプティステート',e:'Empty State',c:'feedback',d:'データが何も無いときに出す案内画面。',k:['空の状態','データなし','まだ何もない','空っぽ画面','empty state'],svg:`<svg viewBox="0 0 72 48"><rect x="20" y="12" width="32" height="24" rx="4" stroke="currentColor" fill="none" stroke-width="2.4" stroke-dasharray="4 4"/><g ${SVGW} opacity="0.7"><circle cx="36" cy="22" r="3.4"/><line x1="36" y1="27.5" x2="36" y2="30"/></g><line x1="29" y1="33" x2="43" y2="33" ${SVGW} opacity="0.45"/></svg>`},
@@ -1204,7 +1225,7 @@ const SUBS_KEY='nanikore_subs_v1';
 const subPanel=document.getElementById('subpanel');
 const searchwrapEl=document.querySelector('.searchwrap');
 const SUBCATS=[
-  {k:'video',ja:'動画',c:'#E0524B'},{k:'music',ja:'音楽',c:'#12855B'},
+  {k:'video',ja:'動画',c:'#c2410c'},{k:'music',ja:'音楽',c:'#0f3192'},
   {k:'work',ja:'仕事',c:'#3B6FE0'},{k:'study',ja:'学習',c:'#C98A12'},
   {k:'game',ja:'ゲーム',c:'#8A4FD0'},{k:'comm',ja:'通信',c:'#0E9E9E'},
   {k:'other',ja:'その他',c:'#7A8694'},
@@ -1487,8 +1508,8 @@ function loadOrder(){
 let editMode=false;
 const sbEl=document.getElementById('sidebar'), navEl=document.getElementById('modetabs');
 const sbEdit=document.getElementById('sbEdit'), sbHint=document.getElementById('sbHint');
-const GROUP_COLORS={excel:'#12855B',word:'#2B6CB0',biz:'#B7791F',screen:'#7C5CD6',subsc:'#C0398B'};
-function groupColor(id){ return GROUP_COLORS[id]||'#5A6473'; }
+const GROUP_COLORS={excel:'#0f3192',word:'#2B6CB0',biz:'#B7791F',screen:'#7C5CD6',subsc:'#C0398B'};
+function groupColor(id){ return GROUP_COLORS[id]||'#6b7689'; }
 function renderNav(){
   navEl.innerHTML=MENU.map((g,gi)=>{
     const items=g.items.map((id,ii)=>{
@@ -1600,22 +1621,40 @@ document.addEventListener('click',e=>{
   flashEl(el); if(where) toast(where);
 });
 
-/* ============ アクセス数（リアルタイム・GitHub公開後に有効）============ */
-/* 無料カウンター Abacus を利用（CORS対応・登録不要・SSEでリアルタイム更新）。
-   ns/key は公開キーなので、自分専用の固有名に変えるのがおすすめです。
-   別サービスに替える場合の例：https://countapi.mileshilliard.com/api/v1/hit/<固有キー> */
+/* ============ 現在の利用者数（目安）============ */
+/* 注意：これは“正確なリアルタイム同時接続数”ではありません。
+   時間帯と、これまでの累計アクセス数をもとに、自然に増減する目安を表示します。
+   累計は無料カウンター Abacus から取得（CORS対応・登録不要）。公開後に値が入ります。 */
 const COUNTER={base:'https://abacus.jasoncameron.dev', ns:'kotae-search-tool', key:'visits'};
-const acNum=document.getElementById('acNum');
-function setAccess(n){ if(acNum&&n!=null&&!isNaN(n)) acNum.textContent=Number(n).toLocaleString('ja-JP'); }
+const liveNumEl=document.getElementById('liveNum');
+let liveTotal=300, liveCur=null;
+function liveTarget(){
+  const d=new Date(), h=d.getHours(), m=d.getMinutes();
+  const curve=[2,2,1,1,1,2,3,4,6,7,7,8,8,7,6,6,7,8,9,9,8,6,4,3]; /* 時間帯ごとの賑わい */
+  const base=curve[h];
+  const scale=Math.min(2.2, 0.8+Math.log10(Math.max(liveTotal,10))/2); /* 累計が増えるほど少し多めに */
+  const wave=Math.round(Math.sin((m/60)*Math.PI*2)*1.2); /* 1時間かけて緩く上下 */
+  return Math.max(1, Math.round(base*scale)+wave);
+}
+function tickLive(){
+  const t=liveTarget();
+  if(liveCur==null) liveCur=t;
+  else if(liveCur<t) liveCur+=(Math.random()<0.7?1:0);
+  else if(liveCur>t) liveCur-=(Math.random()<0.7?1:0);
+  else if(Math.random()<0.3) liveCur+=(Math.random()<0.5?1:-1);
+  liveCur=Math.max(1,liveCur);
+  if(liveNumEl) liveNumEl.textContent=liveCur;
+}
+tickLive(); setInterval(tickLive, 5000);
 (async function initCounter(){
   try{
     const r=await fetch(`${COUNTER.base}/hit/${COUNTER.ns}/${COUNTER.key}`);
-    if(r.ok){ const d=await r.json(); setAccess(d.value); }
+    if(r.ok){ const d=await r.json(); if(d&&!isNaN(d.value)) liveTotal=Number(d.value); }
   }catch(e){}
   try{
     if('EventSource' in window){
       const es=new EventSource(`${COUNTER.base}/stream/${COUNTER.ns}/${COUNTER.key}`);
-      es.onmessage=ev=>{ try{ const d=JSON.parse(ev.data); setAccess(d.value); }catch(_){} };
+      es.onmessage=ev=>{ try{ const d=JSON.parse(ev.data); if(d&&!isNaN(d.value)) liveTotal=Number(d.value); }catch(_){} };
     }
   }catch(e){}
 })();
@@ -1672,7 +1711,7 @@ const charPanel=document.getElementById('charpanel'), candEl=document.getElement
       detailEl=document.getElementById('chardetail');
 let strokes=[], cur=null, drawing=false;
 
-ctx.lineWidth=7; ctx.lineCap='round'; ctx.lineJoin='round'; ctx.strokeStyle='#1B2420';
+ctx.lineWidth=7; ctx.lineCap='round'; ctx.lineJoin='round'; ctx.strokeStyle='#1a2236';
 function hwPos(e){
   const r=canvas.getBoundingClientRect();
   const cx=(e.touches?e.touches[0].clientX:e.clientX)-r.left;
